@@ -1,0 +1,23 @@
+.container {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+}
+
+.rightContainer {
+  display: flex;
+  flex-direction: column;
+  max-width: 450px;
+  padding: 20px;
+  gap: 1rem;
+}
+
+.getStartedBtn {
+  background-color: #b82623;
+  width: 40%;
+}
+
+.getStartedBtn:hover {
+  background-color: #db2f2c;
+}

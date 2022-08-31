@@ -5,7 +5,7 @@ import Navbar from "./Navbar";
 const Layout = ({ children }) => {
   return (
     <div className={styles.Layout}>
-      <Navbar />
+      {/* <Navbar /> */}
       {children}
     </div>
   );
