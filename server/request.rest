@@ -1,0 +1,17 @@
+# GET http://localhost:3001/users
+# https://api.coinstats.app/public/v1/coins?skip=0
+# GET http://localhost:3001/users/62ff7b0c4ef2f9ab65426902a
+# # https://api.cryptowat.ch/assets       
+# GET http://localhost:3001/todos?page=1&limit=1
+# GET http://localhost:3001/todos/63044e0f0d236ea6ca71785e
+#  PUT http://localhost:3001/update_todo
+
+POST https://sams.act.edu.ph
+Accept: : "application/json"
+Authorization: "dasdasdasdas"
+Content-Type: application/x-www-form-urlencoded
+
+{
+    "UserName": "19-2000148",
+    "Password":"bsitaleguiojo"
+}
