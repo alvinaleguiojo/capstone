@@ -5,7 +5,7 @@ import Layout from "../component/Layout";
 function MyApp({ Component, pageProps }) {
   return (
     <Layout>
-      <NextProgress delay={300} height="5px" options={{ showSpinner: false }} />
+      <NextProgress color="red" delay={300} height="5px" options={{ showSpinner: false }} />
       <Component {...pageProps} />
     </Layout>
   );

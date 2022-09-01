@@ -1,0 +1,21 @@
+.footer {
+  background-color: #b82623;
+  width: 100%;
+  padding: 20px;
+}
+
+.category {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+.categoryBox {
+  background-color: #ffff;
+  width: 200px;
+  height: 200px;
+  min-width: 200px;
+  border-radius: 30px;
+  padding: 10px;
+}

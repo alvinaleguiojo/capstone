@@ -1,0 +1,82 @@
+.ImageBanner {
+  object-fit: cover;
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.container__left {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 50%;
+  height: inherit;
+  padding-left: 130px;
+  padding-right: 130px;
+}
+
+.container__left > .registerLink {
+  text-align: center;
+}
+
+.input {
+  padding: 10px;
+  outline: none;
+  background-color: #dbdff3;
+  border-radius: 20px;
+  border: none;
+}
+
+.input:focus{
+    outline: solid 2px #b82623;
+}
+
+.input__username {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 10px;
+  outline: none;
+  background-color: #dbdff3;
+  border-radius: 20px;
+  border: none;
+  width: 100%;
+}
+
+.input__username:focus{
+    outline: solid 2px #b82623;
+}
+
+.terms label span{
+  color: #585858;
+  font-size: 11px !important;
+}
+
+.loginBtn {
+  background-color: #b82623;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.loginBtn:hover {
+  background-color: #e62e2b;
+  color: white;
+  border: none;
+}
+
+.registerLink a {
+  color: #b82623;
+}
+
+.registerLink a:hover {
+  color: #e62e2b;
+}
+
+.username {
+  display: flex;
+  gap: 0.5rem;
+  width: inherit;
+}

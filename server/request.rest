@@ -1,17 +1,41 @@
-# GET http://localhost:3001/users
-# https://api.coinstats.app/public/v1/coins?skip=0
-# GET http://localhost:3001/users/62ff7b0c4ef2f9ab65426902a
-# # https://api.cryptowat.ch/assets       
-# GET http://localhost:3001/todos?page=1&limit=1
-# GET http://localhost:3001/todos/63044e0f0d236ea6ca71785e
-#  PUT http://localhost:3001/update_todo
+@hostname = http://localhost
+@port = 3001
+@host = {{hostname}}:{{port}}
+@contentType = application/json
 
-POST https://sams.act.edu.ph
-Accept: : "application/json"
-Authorization: "dasdasdasdas"
-Content-Type: application/x-www-form-urlencoded
+# Retrieving or Read Data from DB
+# GET {{host}}/users
 
-{
-    "UserName": "19-2000148",
-    "Password":"bsitaleguiojo"
-}
+# retrieving or Read Data from DB By ID
+# GET {{host}}/users/62ff7b0c4ef2f9ab65426906  
+
+# retrieving or Read  AND Paginate Data from DB 
+# GET {{host}}/todos?page=1&limit=10
+
+# Create a new Data
+# POST {{host}}/todos HTTP/1.1
+# content-type: application/json
+
+# {
+#     "title": " testing adding todo",
+#     "selected": true
+# }
+
+# Update Data from DB By ID
+# PATCH {{host}}/update/631097c122f9c0887c3e6d89 HTTP/1.1
+# content-type: application/json
+
+# {
+#     "title": " new todo app",
+#     "selected": true
+# }
+
+# Delete Data By Id from DB
+# DELETE  {{host}}/delete/631097c122f9c0887c3e6d89 HTTP/1.1
+# content-type: application/json
+
+# {
+#     "title": " new todo app",
+#     "selected": true
+# }
+

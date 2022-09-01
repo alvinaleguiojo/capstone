@@ -33,7 +33,7 @@ app.get("/todos/:id", getById(Todos), (req, res) => {
   res.json(res);
 });
 
-app.put("/update_todo", async (req, res) => {
+app.patch("/update/:id", async (req, res) => {
   try {
     await Todos.findById(req.body.id)
       .then((updatedTodo) => {
@@ -41,27 +41,21 @@ app.put("/update_todo", async (req, res) => {
         updatedTodo.save();
         res.send("successfully updated");
         console.log("successfully updated");
+        res.status(200).json({ message: "data has been updated successfully" });
       })
       .catch((err) => {
-        console.log("Field is required");
+        res.status(400).json({ message: "field is required" });
       });
   } catch (err) {
     console.log(err);
   }
 });
 
-app.delete("/delete_todo/:id", async (req, res) => {
+app.delete("/delete/:id", async (req, res) => {
   const id = req.params.id;
   await Todos.findByIdAndRemove(id).exec();
   res.send("successfully deleted");
   console.log("successfully deleted");
-});
-
-app.get("/users/:id", async (req, res) => {
-  await Users.find({ _id: req.params.id }, (err, data) => {
-    if (err) return res.json({ message: "User Id is invalid" });
-    res.json(data);
-  });
 });
 
 app.get("/users/:id", getById(Users), (req, res) => {
@@ -72,8 +66,9 @@ app.post("/todos", paginatedResults(Todos), async (req, res) => {
   try {
     await Todos.create({ title: req.body.title, selected: req.body.selected });
     console.log("todo added successfully");
+    res.status(200).json({ message: "todo added successfully" });
   } catch (err) {
-    err;
+    res.status(400).json({ message: "Invalid data entry" });
   }
 });
 
