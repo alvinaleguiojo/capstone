@@ -1,0 +1,17 @@
+.tabs {
+  display: flex;
+  justify-content: space-between;
+  width: 50%;
+}
+
+.tabs > a {
+  padding: 10px 20px;
+  background-color: #b82623;
+  color: white;
+  box-sizing: border-box;
+  box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  z-index: 1;
+  border-radius: 10px 10px 0 0;
+}

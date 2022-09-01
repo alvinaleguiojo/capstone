@@ -10,7 +10,7 @@ const index = () => {
       <Navbar />
       <Box className={contentStyles.content}>
         <Tabs />
-        SERVICES
+        RECORDS
       </Box>
     </Box>
   );

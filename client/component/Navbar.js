@@ -7,14 +7,15 @@ import UserIcon from "../assets/image/User.svg";
 import ArrowDown from "../assets/image/arrow-down.svg";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
+import Today from "../assets/image/Today.svg";
 
 const Navbar = () => {
   return (
     <Box className={styles.navbar}>
       <Box className={styles.logo}></Box>
       <Box className={styles.navbar__right}>
-        <Image src={UserIcon} alt="user avatar" />
         <Box className={styles.user}>
+          <Image src={UserIcon} alt="user avatar" heigh={40} width={40} />
           <Box className={styles.user__name}>
             <Typography variant="h5" component="h5" color="#b82623">
               User
@@ -27,6 +28,20 @@ const Navbar = () => {
           <Button className={styles.btn__dropdown}>
             <Image src={ArrowDown} alt="drop down" heigh={15} width={15} />
           </Button>
+        </Box>
+        <Box className={styles.line}></Box>
+
+        <Box className={styles.date}>
+          <Image src={Today} alt="drop down" heigh={40} width={40} />
+          <Box>
+            <Typography variant="h5" component="h5" color="#b82623">
+              Today
+            </Typography>
+
+            <Typography variant="caption" component="h5" color="#b82623">
+              MM - DD - YYYY
+            </Typography>
+          </Box>
         </Box>
       </Box>
     </Box>
