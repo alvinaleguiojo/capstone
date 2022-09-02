@@ -48,6 +48,12 @@
     outline: solid 2px #b82623;
 }
 
+.password{
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
 .terms label span{
   color: #585858;
   font-size: 11px !important;

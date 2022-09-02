@@ -13,12 +13,15 @@
 # GET {{host}}/todos?page=1&limit=10
 
 # Create a new Data
-# POST {{host}}/todos HTTP/1.1
+# POST {{host}}/user HTTP/1.1
 # content-type: application/json
 
 # {
-#     "title": " testing adding todo",
-#     "selected": true
+#     "firstname": " shiela",
+#     "lastname": "test",
+#     "email": "sheila@gmail.com",
+#     "password": "dsadasdsad",
+#     "confirmPassword": "sadasdasdas"
 # }
 
 # Update Data from DB By ID

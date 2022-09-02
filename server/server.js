@@ -25,6 +25,23 @@ app.get("/users", paginatedResults(Users), (req, res) => {
   res.json(res.paginatedResults);
 });
 
+app.post("/user", async (req, res) => {
+
+  try {
+    await Users.create({
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      email: req.body.email,
+      password: req.body.password,
+      confirmPassword: req.body.confirmPassword
+    });
+    console.log("user added successfully");
+    res.status(200).json({ message: "user added successfully" });
+  } catch (err) {
+    res.status(400).json({ message: "Invalid data entry" });
+  }
+});
+
 app.get("/todos", paginatedResults(Todos), (req, res) => {
   res.json(res.paginatedResults);
 });

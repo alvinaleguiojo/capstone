@@ -1,18 +1,59 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../../styles/Register.module.css";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "next/link";
 import Meta from "../../component/Meta";
-import LoadingButton from "@mui/lab/LoadingButton";
+import LoadingButton, { loadingButtonClasses } from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Banner from "../../assets/image/banner_right.png";
 import Image from "next/image";
+import axios from "axios";
 
 const index = () => {
   const [loading, setLoading] = useState(false);
+  const [user, setUser] = useState({});
+  const [disabled, setDisabled] = useState(true);
+  const [terms, setTerms] = useState(false);
+  const [privacy, setPrivacy] = useState(false);
+
+  useEffect(() => {
+    let userInput = Object.values(user).includes("");
+    !userInput &&
+    Object.keys(user).length >= 5 &&
+    terms == true &&
+    privacy == true &&
+    user.password === user.confirmPassword
+      ? setDisabled(false)
+      : setDisabled(true);
+  }, [user, terms, privacy]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+    axios
+      .post("http://localhost:3001/user", {
+        ...user,
+      })
+      .then(() => {
+        setLoading(false);
+        setUser({
+          ...user,
+          firstname: "",
+          lastname: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        });
+        setTerms(false);
+        setPrivacy(false);
+      })
+      .catch((err) => console.log("Error" + err));
+    setUser({ ...user, firstname: "" });
+  };
+
   return (
     <>
       <Meta
@@ -42,8 +83,12 @@ const index = () => {
                 </Typography>
                 <input
                   className={styles.input__username}
+                  onChange={(e) =>
+                    setUser({ ...user, firstname: e.target.value })
+                  }
                   type="text"
                   name="firstname"
+                  value={user.firstname}
                 />
               </Box>
 
@@ -53,8 +98,12 @@ const index = () => {
                 </Typography>
                 <input
                   className={styles.input__username}
+                  onChange={(e) =>
+                    setUser({ ...user, lastname: e.target.value })
+                  }
                   type="text"
                   name="lastname"
+                  value={user.lastname}
                 />
               </Box>
             </Box>
@@ -63,13 +112,32 @@ const index = () => {
             <Typography variant="body2" component="h4" color="#585858">
               EMAIL ADDRESS
             </Typography>
-            <input className={styles.input} type="text" name="email" />
+            <input
+              className={styles.input}
+              type="text"
+              name="email"
+              value={user.email}
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+            />
 
             {/* password field */}
-            <Typography variant="body2" component="h4" color="#585858">
-              PASSWORD
-            </Typography>
-            <input className={styles.input} type="password" name="password" />
+            <Box className={styles.password}>
+              <Typography variant="body2" component="h4" color="#585858">
+                PASSWORD
+              </Typography>
+              {user.password !== user.confirmPassword && (
+                <Typography variant="caption" component="h5" color="#B82623">
+                  *Password and Confirm Password doesn't match!
+                </Typography>
+              )}
+            </Box>
+            <input
+              className={styles.input}
+              type="password"
+              name="password"
+              value={user.password}
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+            />
 
             {/* confirm password field */}
             <Typography variant="body2" component="h4" color="#585858">
@@ -79,26 +147,41 @@ const index = () => {
               className={styles.input}
               type="password"
               name="confirm password"
+              value={user.confirmPassword}
+              onChange={(e) =>
+                setUser({ ...user, confirmPassword: e.target.value })
+              }
             />
 
             <Box className={styles.terms}>
               <FormControlLabel
-                control={<Checkbox defaultChecked />}
+                control={
+                  <Checkbox
+                    checked={terms}
+                    onChange={(e) => setTerms(e.target.checked)}
+                  />
+                }
                 label="I AGREE WITH THE TERMS OF CONDITIONS"
               />
 
               <FormControlLabel
-                control={<Checkbox defaultChecked />}
+                control={
+                  <Checkbox
+                    checked={privacy}
+                    onChange={(e) => setPrivacy(e.target.checked)}
+                  />
+                }
                 label="I AGREE WITH THE PRIVACY POLICY"
               />
             </Box>
           </FormControl>
 
           <LoadingButton
-            onClick={() => setLoading(true)}
+            onClick={handleSubmit}
             loading={loading}
             variant="contained"
             className={styles.loginBtn}
+            disabled={disabled}
           >
             Submit
           </LoadingButton>
