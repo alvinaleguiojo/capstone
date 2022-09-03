@@ -15,7 +15,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
 // import Swal from "sweetalert2";
 
-const index = () => {
+const Index = () => {
   const [appointment, setAppointment] = useState({});
   const [calendar, setCalendar] = useState(new Date());
   const [loading, setLoading] = useState(false);
@@ -229,4 +229,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

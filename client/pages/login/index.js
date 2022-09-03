@@ -11,7 +11,7 @@ import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 
-const index = () => {
+const Index = () => {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -86,4 +86,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

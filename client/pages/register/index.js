@@ -12,7 +12,7 @@ import Banner from "../../assets/image/banner_right.png";
 import Image from "next/image";
 import axios from "axios";
 
-const index = () => {
+const Index = () => {
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
   const [disabled, setDisabled] = useState(true);
@@ -65,12 +65,12 @@ const index = () => {
         <Box className={styles.container__left}>
           <Box className={styles.title}>
             <Typography variant="h4" component="h4" color="#585858">
-              Let's get started
+              Let&apos;s get started
             </Typography>
           </Box>
 
           <Typography variant="body1" component="h4" color="#585858">
-            First things first, Let's Create you a account
+            First things first, Let&apos;s Create you a account
           </Typography>
 
           <FormControl
@@ -127,7 +127,7 @@ const index = () => {
               </Typography>
               {user.password !== user.confirmPassword && (
                 <Typography variant="caption" component="h5" color="#B82623">
-                  *Password and Confirm Password doesn't match!
+                  *Password and Confirm Password doesn&apos;t match!
                 </Typography>
               )}
             </Box>
@@ -209,4 +209,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
