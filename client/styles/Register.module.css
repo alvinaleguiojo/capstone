@@ -29,8 +29,8 @@
   border: none;
 }
 
-.input:focus{
-    outline: solid 2px #b82623;
+.input:focus {
+  outline: solid 2px #b82623;
 }
 
 .input__username {
@@ -44,17 +44,26 @@
   width: 100%;
 }
 
-.input__username:focus{
-    outline: solid 2px #b82623;
+.input__username:focus {
+  outline: solid 2px #b82623;
 }
 
-.password{
+.inputPassword {
+  display: flex;
+  align-items: center;
+}
+
+.inputPassword input {
+  flex: 1;
+}
+
+.password {
   display: flex;
   align-items: center;
   gap: 5px;
 }
 
-.terms label span{
+.terms label span {
   color: #585858;
   font-size: 11px !important;
 }

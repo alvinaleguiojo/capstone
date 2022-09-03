@@ -1,0 +1,36 @@
+.appointment {
+  background-color: #dbdff3;
+  height: 100vh;
+}
+
+.btn__appointment {
+  background-color: white;
+  color: #b82623;
+}
+
+.btn__appointment:hover {
+  background-color: #b82623;
+  color: #fff;
+}
+
+.content__left,
+.content__right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 10px;
+  box-sizing: border-box;
+  border: 1px solid #ebebeb;
+}
+
+.content__left {
+  width: 40%;
+}
+
+.content__right img {
+  justify-self: baseline;
+}
+
+.sunrise {
+  display: flex;
+}

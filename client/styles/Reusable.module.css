@@ -1,0 +1,25 @@
+.input {
+  padding: 10px;
+  outline: none;
+  background-color: #dbdff3;
+  border-radius: 20px;
+  border: none;
+}
+
+.input:focus {
+  outline: solid 2px #b82623;
+}
+
+.main__content {
+  display: flex;
+  background-color: #fff;
+  height: 80vh;
+  width: 90%;
+  padding: 30px;
+  box-sizing: border-box;
+  box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  z-index: 1;
+  border-radius: 0 10px 10px 10px;
+}

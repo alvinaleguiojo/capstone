@@ -1,8 +1,9 @@
 .content {
   display: flex;
+  height: 100vh;
   flex-direction: column;
-  padding: 20px;
-  justify-content: center;
+  justify-content: flex-start;
+  padding: 30px;
   align-items: center;
-  border: solid 1px black;
+  background-color: #dbdff3;
 }

@@ -51,11 +51,15 @@ const index = () => {
             <Typography variant="body2" component="h4" color="#585858">
               PASSWORD
             </Typography>
-            <input className={styles.input} type="password" name="password" />
+            <input
+              className={styles.input}
+              type="password"
+              name="password"
+            />
 
             <Box className={styles.remember__me}>
               <FormControlLabel
-                control={<Checkbox defaultChecked />}
+                control={<Checkbox value={false} />}
                 label="Remember me"
               />
             </Box>

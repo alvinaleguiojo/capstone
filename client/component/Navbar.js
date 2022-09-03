@@ -8,6 +8,7 @@ import ArrowDown from "../assets/image/arrow-down.svg";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Today from "../assets/image/Today.svg";
+import CustomizedSwitches from "./CustomizedSwitches";
 
 const Navbar = () => {
   return (
@@ -33,7 +34,7 @@ const Navbar = () => {
 
         <Box className={styles.date}>
           <Image src={Today} alt="drop down" heigh={40} width={40} />
-          <Box>
+          <Box className={styles.date__display}>
             <Typography variant="h5" component="h5" color="#b82623">
               Today
             </Typography>
@@ -42,6 +43,8 @@ const Navbar = () => {
               MM - DD - YYYY
             </Typography>
           </Box>
+
+          {/* <CustomizedSwitches /> */}
         </Box>
       </Box>
     </Box>

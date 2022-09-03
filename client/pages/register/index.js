@@ -131,13 +131,15 @@ const index = () => {
                 </Typography>
               )}
             </Box>
-            <input
-              className={styles.input}
-              type="password"
-              name="password"
-              value={user.password}
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-            />
+            <Box className={styles.inputPassword}>
+              <input
+                className={styles.input}
+                type="password"
+                name="password"
+                value={user.password}
+                onChange={(e) => setUser({ ...user, password: e.target.value })}
+              />
+            </Box>
 
             {/* confirm password field */}
             <Typography variant="body2" component="h4" color="#585858">

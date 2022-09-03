@@ -1,11 +1,37 @@
-.tabs {
+.active {
   display: flex;
-  justify-content: space-between;
-  width: 50%;
+  justify-content: flex-start;
+  align-items: center;
+  width: 20%;
+  height: 40px;
+  background-color: #fff;
+  color: #b82623;
+  box-sizing: border-box;
+  box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  z-index: 1;
+  border-radius: 10px 10px 0 0;
 }
 
-.tabs > a {
-  padding: 10px 20px;
+.active a {
+  width: 100%;
+  text-align: center;
+}
+
+.tabs {
+  display: flex;
+  justify-content: flex-start;
+  width: 90%;
+  gap: 1rem;
+}
+
+.tab {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 20%;
+  height: 40px;
   background-color: #b82623;
   color: white;
   box-sizing: border-box;
@@ -14,4 +40,28 @@
   -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   z-index: 1;
   border-radius: 10px 10px 0 0;
+}
+
+.tab:hover {
+  background-color: #fff;
+  color: #b82623;
+}
+
+.tab a {
+  width: 100%;
+  text-align: center;
+}
+
+.vertical__line {
+  width: 5px;
+  height: 50%;
+  background-color: #b82623;
+  border-radius: 3px 10px 10px 3px;
+}
+
+.vertical__line_appointment {
+  width: 5px;
+  height: 50%;
+  background-color: #b82623;
+  border-radius: 3px 10px 10px 3px;
 }

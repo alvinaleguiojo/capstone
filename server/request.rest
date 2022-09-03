@@ -3,8 +3,8 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
-# Retrieving or Read Data from DB
-# GET {{host}}/users
+# # Retrieving or Read Data from DB
+# GET {{host}}/list_appointments
 
 # retrieving or Read Data from DB By ID
 # GET {{host}}/users/62ff7b0c4ef2f9ab65426906  
@@ -12,17 +12,22 @@
 # retrieving or Read  AND Paginate Data from DB 
 # GET {{host}}/todos?page=1&limit=10
 
-# Create a new Data
-# POST {{host}}/user HTTP/1.1
+# # Create a new Data
+# POST {{host}}/appointment HTTP/1.1
 # content-type: application/json
 
-# {
-#     "firstname": " shiela",
-#     "lastname": "test",
-#     "email": "sheila@gmail.com",
-#     "password": "dsadasdsad",
-#     "confirmPassword": "sadasdasdas"
+#  {
+#       "firstname": "alvs5",
+#       "lastname": "test5",
+#       "address": "aleguiojo5",
+#       "phone": "0923232",
+#       "note": "test note",
+#       "vaccine": true,
+#       "immunization": true,
+#       "prenatal": true,
+#       "schedule": "2022-09-04T16:00:00.000Z"
 # }
+
 
 # Update Data from DB By ID
 # PATCH {{host}}/update/631097c122f9c0887c3e6d89 HTTP/1.1

@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,500;1,600;1,800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,500;1,600;1,800&display=swap");
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Poppins', sans-serif;
-    height: 100vh;
-    width: 100vw;
+  font-family: "Poppins", sans-serif;
+  height: 100vh;
+  width: 100vw;
 }
 
-h1{
-  color: #B82623;
+h1 {
+  color: #b82623;
   font-weight: 600;
 }
 
@@ -31,4 +31,33 @@ a {
     color: white;
     background: black;
   }
+}
+
+.react-calendar {
+  border: none !important;
+  background-color: #dbdff3 !important;
+  border-radius: 10px !important;
+  width: 100%!important;
+  height: 90%!important;
+}
+
+.react-calendar__navigation button {
+  border-radius: 10px !important;
+}
+
+.react-calendar__navigation button:enabled:hover,
+.react-calendar__navigation button:enabled:focus {
+  background-color: #B82623!important;
+  color: #fff!important;
+}
+
+/* current date active */
+.react-calendar__tile--now {
+  background: #e0bbba!important;
+}
+
+/* active calendar cell */
+.react-calendar__tile--active {
+  background: #B82623!important;
+  color: white;
 }

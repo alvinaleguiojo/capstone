@@ -6,8 +6,8 @@ const { Server } = require("socket.io");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const Users = require("./model/user");
+const Appointments = require("./model/appointment");
 const Todos = require("./model/todo");
-const { response } = require("express");
 
 mongoose.connect(process.env.MONGODB_URL);
 const db = mongoose.connection;
@@ -25,18 +25,43 @@ app.get("/users", paginatedResults(Users), (req, res) => {
   res.json(res.paginatedResults);
 });
 
+// create new User
 app.post("/user", async (req, res) => {
-
   try {
     await Users.create({
       firstname: req.body.firstname,
       lastname: req.body.lastname,
       email: req.body.email,
       password: req.body.password,
-      confirmPassword: req.body.confirmPassword
+      confirmPassword: req.body.confirmPassword,
     });
     console.log("user added successfully");
     res.status(200).json({ message: "user added successfully" });
+  } catch (err) {
+    res.status(400).json({ message: "Invalid data entry" });
+  }
+});
+
+app.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
+  res.json(res.paginatedResults);
+});
+
+// create new Appointment
+app.post("/appointment", async (req, res) => {
+  try {
+    await Appointments.create({
+      firstname: req.body.firstname,
+      lastname: req.body.lastname,
+      address: req.body.address,
+      phone: req.body.phone,
+      note: req.body.note,
+      vaccine: req.body.vaccine,
+      immunization: req.body.immunization,
+      prenatal: req.body.prenatal,
+      schedule: req.body.schedule
+    });
+    console.log("appointment added successfully");
+    res.status(200).json({ message: "appointment added successfully" });
   } catch (err) {
     res.status(400).json({ message: "Invalid data entry" });
   }

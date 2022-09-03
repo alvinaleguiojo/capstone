@@ -11,7 +11,7 @@ import Meta from "../component/Meta";
 export default function Home() {
   return (
     <>
-    <Meta title="Capstone Project"/>
+      <Meta title="Capstone Project" />
       <Box className={styles.container}>
         <Box className={styles.container__left}>
           <Typography variant="h3" component="h1">
