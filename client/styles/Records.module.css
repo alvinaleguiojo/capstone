@@ -1,0 +1,34 @@
+.input_search {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  outline: none;
+  background-color: #dbdff3;
+  border-radius: 20px;
+  border: none;
+  flex: 1;
+}
+.input_search > form > input {
+  background-color: transparent;
+  border: none;
+  outline: none;
+  width: 100%;
+}
+
+.input_search form {
+  flex: 1;
+}
+
+.input:focus {
+  outline: solid 2px #b82623;
+}
+
+.search {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 5px;
+}
+

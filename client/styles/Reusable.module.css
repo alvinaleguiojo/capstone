@@ -12,6 +12,7 @@
 
 .main__content {
   display: flex;
+  justify-content: center;
   background-color: #fff;
   height: 80vh;
   width: 90%;
@@ -22,4 +23,29 @@
   -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   z-index: 1;
   border-radius: 0 10px 10px 10px;
+}
+
+
+/* buttons here */
+
+.loginBtn {
+  background-color: #b82623;
+  color: white;
+  border: none;
+  border-radius: 20px;
+  margin-bottom: 20px;
+}
+
+.loginBtn:hover {
+  background-color: #e62e2b;
+  color: white;
+  border: none;
+}
+
+.registerLink a {
+  color: #b82623;
+}
+
+.registerLink a:hover {
+  color: #e62e2b;
 }

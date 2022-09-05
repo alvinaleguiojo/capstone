@@ -63,13 +63,23 @@ app.post("/appointment", async (req, res) => {
       immunization: req.body.immunization,
       prenatal: req.body.prenatal,
       schedule: req.body.schedule,
-      service_type: req.body.service_type
+      service_type: req.body.service_type,
     });
     console.log("appointment added successfully");
     res.status(200).json({ message: "appointment added successfully" });
   } catch (err) {
     res.status(400).json({ message: "Invalid data entry" });
   }
+});
+
+//search patients API
+app.get("/search", (req, res) => {
+  const searchField = req.query.firstname;
+  Appointments.find({
+    firstname: { $regex: searchField, $options: "$i" },
+  }).then((data) => {
+    res.json(data);
+  });
 });
 
 app.get("/todos", paginatedResults(Todos), (req, res) => {

@@ -47,3 +47,6 @@
 #     "selected": true
 # }
 
+# search data by query string
+GET {{host}}/patients?firstname=al
+

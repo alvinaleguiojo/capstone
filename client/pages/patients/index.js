@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import Navbar from "../../component/Navbar";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
+import styles from "../../styles/Patients.module.css";
 import GridTable from "../../component/GridTable";
-import CustomGrid from "../../component/CustomGrid";
 import Meta from "../../component/Meta";
+import Typography from "@mui/material/Typography";
 
 const columns = [
   {
@@ -75,7 +76,12 @@ const index = ({ patients }) => {
       <Box className={contentStyles.content}>
         <Tabs />
         <Box className={reusableStyle.main__content}>
-          <GridTable rows={rows} columns={columns} />
+          <Box className={styles.patients}>
+            <Typography variant="h5" component="h5" color="#B82623">
+              Patients for Today
+            </Typography>
+            <GridTable rows={rows} columns={columns} />
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -85,17 +91,16 @@ const index = ({ patients }) => {
 export default index;
 
 export const getStaticProps = async () => {
-  try{
+  try {
     const res = await fetch("http://localhost:3001/list_appointments");
     const { results } = await res.json();
-  
+
     return {
       props: {
         patients: results,
       },
     };
-  }catch(error){
-   console.log("please check your internet connection", error);
+  } catch (error) {
+    console.log("please check your internet connection", error);
   }
-
 };
