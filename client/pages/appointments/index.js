@@ -13,7 +13,8 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import LoadingButton from "@mui/lab/LoadingButton";
 import axios from "axios";
-// import Swal from "sweetalert2";
+import Swal from "sweetalert2";
+import Meta from "../../component/Meta";
 
 const Index = () => {
   const [appointment, setAppointment] = useState({});
@@ -41,7 +42,7 @@ const Index = () => {
         ...appointment,
       })
       .then(() => {
-        // await Swal.fire("Success!", "Appointment has been set!", "success");
+        Swal.fire("Success!", "Appointment has been set!", "success");
         setLoading(false);
         setAppointment({
           ...appointment,
@@ -53,6 +54,7 @@ const Index = () => {
           vaccine: false,
           immunization: false,
           prenatal: false,
+          service_type: "",
         });
       })
       .catch((err) => console.log("Error" + err));
@@ -60,6 +62,11 @@ const Index = () => {
 
   return (
     <Box className={styles.appointment}>
+      <Meta
+        title="Capstone | Appointments"
+        description="set an appointment to schedule your check-up"
+        keywords="Capstone project, health center, baranggay"
+      />
       <Navbar />
       <Box className={contentStyles.content}>
         <Tabs />
@@ -174,6 +181,7 @@ const Index = () => {
                       setAppointment({
                         ...appointment,
                         vaccine: e.target.checked,
+                        service_type: "Vaccine",
                       })
                     }
                   />
@@ -189,6 +197,7 @@ const Index = () => {
                       setAppointment({
                         ...appointment,
                         immunization: e.target.checked,
+                        service_type: "Immunization",
                       })
                     }
                   />
@@ -204,6 +213,7 @@ const Index = () => {
                       setAppointment({
                         ...appointment,
                         prenatal: e.target.checked,
+                        service_type: "Prenatal",
                       })
                     }
                   />

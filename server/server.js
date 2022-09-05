@@ -42,6 +42,10 @@ app.post("/user", async (req, res) => {
   }
 });
 
+app.get("/patients/:id", getById(Appointments), (req, res) => {
+  res.json(res);
+});
+
 app.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
   res.json(res.paginatedResults);
 });
@@ -58,7 +62,8 @@ app.post("/appointment", async (req, res) => {
       vaccine: req.body.vaccine,
       immunization: req.body.immunization,
       prenatal: req.body.prenatal,
-      schedule: req.body.schedule
+      schedule: req.body.schedule,
+      service_type: req.body.service_type
     });
     console.log("appointment added successfully");
     res.status(200).json({ message: "appointment added successfully" });

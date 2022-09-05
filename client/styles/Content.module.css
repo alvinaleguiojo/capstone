@@ -3,7 +3,7 @@
   height: 100vh;
   flex-direction: column;
   justify-content: flex-start;
-  padding: 30px;
   align-items: center;
   background-color: #dbdff3;
+  padding-top: 80px;
 }

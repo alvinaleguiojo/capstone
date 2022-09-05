@@ -6,8 +6,8 @@
 # # Retrieving or Read Data from DB
 # GET {{host}}/list_appointments
 
-# retrieving or Read Data from DB By ID
-# GET {{host}}/users/62ff7b0c4ef2f9ab65426906  
+# # retrieving or Read Data from DB By ID
+# GET {{host}}/patients/63156f41b289c06579965e5a
 
 # retrieving or Read  AND Paginate Data from DB 
 # GET {{host}}/todos?page=1&limit=10

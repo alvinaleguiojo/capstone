@@ -23,18 +23,22 @@ const appointmentSchema = new mongoose.Schema({
   },
   vaccine: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   immunization: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   prenatal: {
     type: Boolean,
-    required: true,
+    required: false,
   },
   schedule: {
     type: Date,
+    required: true,
+  },
+  service_type:{
+    type: String,
     required: true,
   }
 });

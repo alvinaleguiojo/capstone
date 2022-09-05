@@ -19,7 +19,7 @@
   box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
-  position: sticky;
+  position: fixed;
   background-color: #fff;
 }
 
