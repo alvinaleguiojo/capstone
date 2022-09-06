@@ -72,3 +72,42 @@ a {
   color: #fff;
   font-size: 1em;
 }
+
+/* .swal2-file, .swal2-input, .swal2-textarea {
+  box-sizing: border-box;
+  width: 80%!important;
+  transition: border-color .1s,box-shadow .1s;
+  border: 1px solid #d9d9d9;
+  border-radius: .1875em;
+  background: 0 0;
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.06),0 0 0 3px transparent;
+  color: inherit;
+  font-size: 1.125em;
+} */
+
+/* .swal2-title {
+  position: relative;
+  max-width: 100%;
+  margin: 0;
+  padding: .8em 1em 0;
+  color: inherit;
+  font-size: 1.875em;
+  font-weight: 600;
+  text-align: left!important;
+  text-transform: none;
+  word-wrap: break-word;
+} */
+
+/* .swal2-html-container {
+  color: inherit;
+  font-size: 1.125em;
+  font-weight: 400;
+  line-height: normal;
+  text-align: left!important;
+  word-wrap: break-word;
+  word-break: break-word;
+} */
+/* 
+.input-field{
+  display: flex;
+} */

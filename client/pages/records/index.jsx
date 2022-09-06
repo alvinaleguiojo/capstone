@@ -1,7 +1,7 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
-import Navbar from "../../component/Navbar";
 import Image from "next/image";
+import Navbar from "../../component/Navbar";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
@@ -12,48 +12,45 @@ import styles from "../../styles/Patients.module.css";
 import recordStyles from "../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "../../assets/image/search.svg";
-import AddIcon from "../../assets/image/plus-circle.svg";
 import axios from "axios";
-import { Button } from "@mui/material";
-import Swal from "sweetalert2";
 
 const columns = [
   {
     id: "_id",
-    label: "Medicine's ID",
+    label: "Patient's ID",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "service_type",
-    label: "Medicine Name",
+    label: "Service Type",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "lastcheck",
-    label: "Stocks",
+    label: "Last Check-up",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "name",
-    label: "Released",
+    label: "Patient's Name",
     minWidth: 170,
   },
   {
     id: "phone",
-    label: "Remaining Stocks",
+    label: "Phone Number",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "address",
-    label: "Medicine Type",
+    label: "status",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
@@ -76,34 +73,7 @@ const index = ({ patients }) => {
     const searchData = axios
       .get(`http://localhost:3001/search?firstname=${searchTerm}`)
       .then((response) => setData(response.data))
-      .catch((error) =>
-        console.log("network or server error: " + error.message)
-      );
-  };
-
-  const MedicineModal = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Add Medicine",
-      html:
-        '<input id="swal-input1" class="swal2-input" placeholder="Medicine Name">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Medicine Type">' +
-        '<input id="swal-input3" class="swal2-input" placeholder="Stocks" type="number" min="1">',
-      focusConfirm: false,
-      allowOutsideClick: false,
-      showCancelButton: true,
-      preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value,
-          document.getElementById("swal-input3").value,
-        ];
-      },
-    })
-    .then(async (result) => {
-      const res = JSON.stringify(formValues);
-      result.isConfirmed &&
-        (await Swal.fire("Success!", "Medicine has been added!", "success"));
-    }).catch(err => console.log(err.message));
+      .catch(error => console.log("network or server error: " + error.message));
   };
 
   data.map((patient) => {
@@ -113,17 +83,16 @@ const index = ({ patients }) => {
         patient.service_type,
         patient.schedule,
         patient.firstname + " " + patient.lastname,
-        patient.phone,
-        patient.address
+        patient.address,
+        patient.phone
       )
     );
   });
-
   return (
     <Box>
       <Meta
-        title="Capstone | Medicines"
-        description="add or update medicines here"
+        title="Capstone | Records"
+        description="check patients recors here"
         keywords="Capstone project, health center, baranggay"
       />
       <Navbar />
@@ -133,15 +102,15 @@ const index = ({ patients }) => {
           <Box className={styles.patients}>
             <Box className={recordStyles.search}>
               <Typography variant="h5" component="h5" color="#B82623">
-                Medicines
+                Records
               </Typography>
 
               <Box className={recordStyles.input_search}>
                 <form onSubmit={handleSubmit}>
                   <input
-                    placeholder="Search Medicines"
+                    placeholder="Search Patient"
                     type="text"
-                    name="Search Medicines"
+                    name="Search Patient"
                     onChange={(e) => setSearchTerm(e.target.value)}
                     value={searchTerm}
                   />
@@ -154,14 +123,7 @@ const index = ({ patients }) => {
                 />
               </Box>
             </Box>
-            <GridTable rows={rows} columns={columns} path="medicines" />
-            <Button
-              style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
-              onClick={MedicineModal}
-            >
-              <Image src={AddIcon} alt="add" />
-              Add Stock
-            </Button>
+            <GridTable rows={rows} columns={columns} path="records"/>
           </Box>
         </Box>
       </Box>

@@ -80,7 +80,7 @@ const index = ({ patients }) => {
             <Typography variant="h5" component="h5" color="#B82623">
               Patients for Today
             </Typography>
-            <GridTable rows={rows} columns={columns} />
+            <GridTable rows={rows} columns={columns} path="patients"/>
           </Box>
         </Box>
       </Box>

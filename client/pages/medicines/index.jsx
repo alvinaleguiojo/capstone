@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Navbar from "../../component/Navbar";
+import Image from "next/image";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
@@ -12,45 +12,49 @@ import styles from "../../styles/Patients.module.css";
 import recordStyles from "../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "../../assets/image/search.svg";
+import AddIcon from "../../assets/image/plus-circle.svg";
 import axios from "axios";
+import { Button } from "@mui/material";
+import Swal from "sweetalert2";
+import CustomModal from "../../component/CustomModal";
 
 const columns = [
   {
     id: "_id",
-    label: "Patient's ID",
+    label: "Medicine's ID",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "service_type",
-    label: "Service Type",
+    label: "Medicine Name",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "lastcheck",
-    label: "Last Check-up",
+    label: "Stocks",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "name",
-    label: "Patient's Name",
+    label: "Released",
     minWidth: 170,
   },
   {
     id: "phone",
-    label: "Phone Number",
+    label: "Remaining Stocks",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "address",
-    label: "status",
+    label: "Medicine Type",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
@@ -63,22 +67,46 @@ function createData(_id, service_type, lastcheck, name, phone, address) {
 
 const index = ({ patients }) => {
   const router = useRouter();
-  // const queryData = router.query.firstname;
   const [searchTerm, setSearchTerm] = useState("");
   const rows = [];
   const [data, setData] = useState(patients);
 
-  // useEffect(() => {
-  //  console.log(router)
-  // });
-
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push(`/records?firstname=${searchTerm}`);
+    router.push(`/medicines?firstname=${searchTerm}`);
     const searchData = axios
       .get(`http://localhost:3001/search?firstname=${searchTerm}`)
       .then((response) => setData(response.data))
-      .catch(error => console.log("network or server error: " + error.message));
+      .catch((error) =>
+        console.log("network or server error: " + error.message)
+      );
+  };
+
+  const MedicineModal = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Add Medicine",
+      html:
+        '<label>Name</label><input id="swal-input1" class="swal2-input" placeholder="Name">' +
+        '<label>Quantity</label><input id="swal-input2" class="swal2-input" placeholder="Quantity" type="number" min="1">' +
+        '<label>Date Arrived</label><input id="swal-input3" class="swal2-input" placeholder="Data Arrived" type="date">' +
+        '<label>Expiry Date</label><input id="swal-input4" class="swal2-input" placeholder="Expiry Date" type="date">',
+      focusConfirm: false,
+      allowOutsideClick: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+          document.getElementById("swal-input3").value,
+          document.getElementById("swal-input4").value,
+        ];
+      },
+    });
+    // .then(async (result) => {
+    //   const res = JSON.stringify(formValues);
+    //   result.isConfirmed &&
+    //     (await Swal.fire("Success!", "Medicine has been added!", "success"));
+    // }).catch(err => console.log(err.message));
   };
 
   data.map((patient) => {
@@ -88,16 +116,17 @@ const index = ({ patients }) => {
         patient.service_type,
         patient.schedule,
         patient.firstname + " " + patient.lastname,
-        patient.address,
-        patient.phone
+        patient.phone,
+        patient.address
       )
     );
   });
+
   return (
     <Box>
       <Meta
-        title="Capstone | Records"
-        description="check patients recors here"
+        title="Capstone | Medicines"
+        description="add or update medicines here"
         keywords="Capstone project, health center, baranggay"
       />
       <Navbar />
@@ -107,15 +136,15 @@ const index = ({ patients }) => {
           <Box className={styles.patients}>
             <Box className={recordStyles.search}>
               <Typography variant="h5" component="h5" color="#B82623">
-                Records
+                Medicines
               </Typography>
 
               <Box className={recordStyles.input_search}>
                 <form onSubmit={handleSubmit}>
                   <input
-                    placeholder="Search Patient"
+                    placeholder="Search Medicines"
                     type="text"
-                    name="Search Patient"
+                    name="Search Medicines"
                     onChange={(e) => setSearchTerm(e.target.value)}
                     value={searchTerm}
                   />
@@ -128,7 +157,14 @@ const index = ({ patients }) => {
                 />
               </Box>
             </Box>
-            <GridTable rows={rows} columns={columns} path="records"/>
+            <GridTable rows={rows} columns={columns} path="medicines" />
+            <Button
+              style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
+              onClick={MedicineModal}
+            >
+              <Image src={AddIcon} alt="add" />
+              Add Stock
+            </Button>
           </Box>
         </Box>
       </Box>
