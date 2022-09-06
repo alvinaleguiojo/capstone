@@ -8,8 +8,9 @@ import TableHead from "@mui/material/TableHead";
 import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/router";
+import Typography from "@mui/material/Typography";
 
-export default function GridTable({ rows, columns }) {
+export default function GridTable({ rows, columns , path }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const router = useRouter();
@@ -52,7 +53,7 @@ export default function GridTable({ rows, columns }) {
                         <TableCell
                           key={column.id}
                           align={column.align}
-                          onClick={() => router.push(`/patients/${row._id}`)}
+                          onClick={() => router.push(`/${path}/${row._id}`)}
                         >
                           {column.format && typeof value === "number"
                             ? column.format(value)
@@ -65,6 +66,20 @@ export default function GridTable({ rows, columns }) {
               })}
           </TableBody>
         </Table>
+        {/* return when no search results */}
+        {rows.length <= 0 && (
+          <Typography
+            variant="body1"
+            component="h5"
+            color="#b82623"
+            style={{
+              textAlign: "center",
+              padding: "10px",
+            }}
+          >
+            No data or Phrase found
+          </Typography>
+        )}
       </TableContainer>
       <TablePagination
         rowsPerPageOptions={[10, 25, 100]}

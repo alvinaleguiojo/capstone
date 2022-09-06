@@ -9,6 +9,7 @@ const Meta = ({ title, keywords, description }) => {
       <meta name="description" content={description} />
       <meta charSet="utf-8" />
       <title>{title}</title>
+      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </Head>
   );
 };
