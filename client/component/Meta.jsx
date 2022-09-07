@@ -9,15 +9,15 @@ const Meta = ({ title, keywords, description }) => {
       <meta name="description" content={description} />
       <meta charSet="utf-8" />
       <title>{title}</title>
-      <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     </Head>
   );
 };
 
-Meta.defaultProps = { 
-    title: 'Capstone Project',
-    description: 'This reseach was conducted in baranggay health center in talisay cebu',
-    keywords: 'programming, software development, IT, Capstone, Thesis project'
-}
+Meta.defaultProps = {
+  title: "Capstone Project",
+  description:
+    "This reseach was conducted in baranggay health center in talisay cebu",
+  keywords: "programming, software development, IT, Capstone, Thesis project",
+};
 
 export default Meta;

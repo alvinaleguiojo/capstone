@@ -111,3 +111,20 @@ a {
 .input-field{
   display: flex;
 } */
+
+.medicine__container{
+  display: flex!important;
+  flex-direction: column!important;
+  justify-content: flex-start!important;
+  text-align: left!important;
+}
+
+.medicine__container label {
+  margin-left: 40px;
+}
+
+.medicine__input{
+  flex: 1 !important;
+  padding: 15px!important;
+}
+

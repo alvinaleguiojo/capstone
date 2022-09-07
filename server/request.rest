@@ -4,7 +4,7 @@
 @contentType = application/json
 
 # # Retrieving or Read Data from DB
-# GET {{host}}/list_appointments
+GET {{host}}/list_appointments
 
 # # retrieving or Read Data from DB By ID
 # GET {{host}}/patients/63156f41b289c06579965e5a
@@ -48,5 +48,5 @@
 # }
 
 # search data by query string
-GET {{host}}/patients?firstname=al
+# GET {{host}}/search?firstname=al
 

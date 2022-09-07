@@ -73,7 +73,9 @@ const index = ({ patients }) => {
     const searchData = axios
       .get(`http://localhost:3001/search?firstname=${searchTerm}`)
       .then((response) => setData(response.data))
-      .catch(error => console.log("network or server error: " + error.message));
+      .catch((error) =>
+        console.log("network or server error: " + error.message)
+      );
   };
 
   data.map((patient) => {
@@ -123,7 +125,14 @@ const index = ({ patients }) => {
                 />
               </Box>
             </Box>
-            <GridTable rows={rows} columns={columns} path="records"/>
+            <GridTable
+              rows={rows}
+              columns={columns}
+              path="records"
+              maxHeight={380}
+              firstRow={10}
+              rowPerPage={[10, 25, 50]}
+            />
           </Box>
         </Box>
       </Box>

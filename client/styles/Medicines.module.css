@@ -1,0 +1,16 @@
+.active {
+  border-bottom: 5px solid #b82623;
+}
+
+.medicineTabs {
+  display: flex;
+  gap: 1rem;
+}
+
+.tab {
+  border-bottom: 2px solid #dbdff3;
+}
+
+.tab:hover, .active:hover {
+  cursor: pointer;
+}

@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
+// import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import NextProgress from "next-progress";
 import Layout from "../component/Layout";
 

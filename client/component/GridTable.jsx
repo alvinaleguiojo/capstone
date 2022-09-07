@@ -10,9 +10,9 @@ import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
 
-export default function GridTable({ rows, columns , path }) {
+export default function GridTable({ rows, columns , path , maxHeight, firstRow, rowPerPage}) {
   const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rowsPerPage, setRowsPerPage] = React.useState(firstRow);
   const router = useRouter();
 
   const handleChangePage = (event, newPage) => {
@@ -26,7 +26,7 @@ export default function GridTable({ rows, columns , path }) {
 
   return (
     <Paper sx={{ width: "100%", overflow: "hidden" }}>
-      <TableContainer sx={{ maxHeight: 440 }}>
+      <TableContainer sx={{ maxHeight: maxHeight }}>
         <Table stickyHeader aria-label="sticky table">
           <TableHead>
             <TableRow>
@@ -82,7 +82,7 @@ export default function GridTable({ rows, columns , path }) {
         )}
       </TableContainer>
       <TablePagination
-        rowsPerPageOptions={[10, 25, 100]}
+        rowsPerPageOptions={[rowPerPage]} //Array number of rows per page sample [10, 25, 50]
         component="div"
         count={rows.length}
         rowsPerPage={rowsPerPage}

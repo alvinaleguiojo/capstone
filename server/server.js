@@ -77,6 +77,7 @@ app.get("/search", (req, res) => {
   const searchField = req.query.firstname;
   Appointments.find({
     firstname: { $regex: searchField, $options: "$i" },
+    lastname: { $regex: searchField, $options: "$i" },
   }).then((data) => {
     res.json(data);
   });

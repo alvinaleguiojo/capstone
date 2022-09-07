@@ -65,7 +65,7 @@ function createData(_id, service_type, lastcheck, name, phone, address) {
   return { _id, service_type, lastcheck, name, phone, address };
 }
 
-const index = ({ patients }) => {
+const Released = ({ patients }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const rows = [];
@@ -73,7 +73,7 @@ const index = ({ patients }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    router.push(`/medicines?firstname=${searchTerm}`);
+    router.push(`/medicines/released?firstname=${searchTerm}`);
     const searchData = axios
       .get(`http://localhost:3001/search?firstname=${searchTerm}`)
       .then((response) => setData(response.data))
@@ -84,7 +84,7 @@ const index = ({ patients }) => {
 
   const MedicineModal = async () => {
     const { value: formValues } = await Swal.fire({
-      title: "Add Medicine",
+      title: "Released Medicine",
       html:
         '<div class="medicine__container"><label class="medicine__name">Name</label><input id="swal-input1" class="swal2-input" placeholder="Name"></div>' +
         '<div class="medicine__container"><label>Quantity</label><input id="swal-input2" class="swal2-input" placeholder="Quantity" type="number" min="1"></div>' +
@@ -93,9 +93,6 @@ const index = ({ patients }) => {
       focusConfirm: false,
       allowOutsideClick: false,
       showCancelButton: true,
-      inputAttributes: {
-        required: true,
-      },
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
@@ -145,7 +142,7 @@ const index = ({ patients }) => {
                       ? MedicineStyles.active
                       : MedicineStyles.tab
                   }
-                  onClick={() => router.push('/medicines')}
+                  onClick={() => router.push("/medicines")}
                 >
                   <Typography variant="h5" component="h5" color="#B82623">
                     Medicine Inventory
@@ -158,7 +155,7 @@ const index = ({ patients }) => {
                       ? MedicineStyles.active
                       : MedicineStyles.tab
                   }
-                  onClick={() => router.push('/medicines/released')}
+                  onClick={() => router.push("/medicines/released")}
                 >
                   <Typography variant="h5" component="h5" color="#B82623">
                     Released Medicine
@@ -197,7 +194,7 @@ const index = ({ patients }) => {
               onClick={MedicineModal}
             >
               <Image src={AddIcon} alt="add" />
-              Add Stock
+              Released Medicine
             </Button>
           </Box>
         </Box>
@@ -206,7 +203,7 @@ const index = ({ patients }) => {
   );
 };
 
-export default index;
+export default Released;
 
 export const getStaticProps = async () => {
   try {

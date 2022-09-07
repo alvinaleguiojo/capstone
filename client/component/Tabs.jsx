@@ -20,7 +20,7 @@ const Tabs = () => {
       </Box>
 
       <Box
-        className={router.route == "/medicines" ? styles.active : styles.tab}
+        className={router.route == "/medicines" || router.route == "/medicines/released" ? styles.active : styles.tab}
       >
         <Box className={styles.vertical__line}></Box>
         <Link href="/medicines">MEDICINES</Link>
