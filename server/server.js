@@ -8,6 +8,10 @@ require("dotenv").config();
 const Users = require("./model/user");
 const Appointments = require("./model/appointment");
 const Todos = require("./model/todo");
+const twilio = require("twilio")(
+  process.env.TWILIO_SID,
+  process.env.TWILIO_TOKEN
+);
 
 mongoose.connect(process.env.MONGODB_URL);
 const db = mongoose.connection;
@@ -76,8 +80,7 @@ app.post("/appointment", async (req, res) => {
 app.get("/search", (req, res) => {
   const searchField = req.query.firstname;
   Appointments.find({
-    firstname: { $regex: searchField, $options: "$i" },
-    lastname: { $regex: searchField, $options: "$i" },
+    firstname: { $regex: searchField, $options: "$i" }
   }).then((data) => {
     res.json(data);
   });
@@ -176,6 +179,17 @@ function paginatedResults(model) {
     }
   };
 }
+
+// twilio route for sending sms
+
+app.post("/sendMessagetoPatient", (req, res) => {
+  twilio.messages.create({
+    from: process.env.TWILIO_NUMBER,
+    to: req.body.phone,
+    body: req.body.text
+  }).then((response) => console.log("message sent"))
+    .catch((err) =>{ console.log("error: " + err.message) })
+});
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);

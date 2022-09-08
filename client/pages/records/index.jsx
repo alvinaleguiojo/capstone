@@ -67,6 +67,18 @@ const index = ({ patients }) => {
   const rows = [];
   const [data, setData] = useState(patients);
 
+  // useEffect(() => {
+  //   setSearchTerm(router.query.firstname);
+  //   router.push(`/records?firstname=${router.query.firstname}`);
+  //   router.query.firstname &&
+  //     axios
+  //       .get(`http://localhost:3001/search?firstname=${router.query.firstname}`)
+  //       .then((response) => setData(response.data))
+  //       .catch((error) =>
+  //         console.log("network or server error: " + error.message)
+  //       );
+  // }, []);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     router.push(`/records?firstname=${searchTerm}`);

@@ -7,8 +7,13 @@ import Meta from "../../component/Meta";
 import Navbar from "../../component/Navbar";
 import Image from "next/image";
 import UserIcon from "../../assets/image/User.svg";
+import MessageIcon from "../../assets/image/message-circle.svg";
 import PrintIcon from "../../assets/image/Print.svg";
 import GridTable from "../../component/GridTable";
+import Button from "@mui/material/Button";
+import Swal from "sweetalert2";
+import axios from "axios";
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -52,6 +57,8 @@ function createData(service_type, schedule) {
 }
 
 const PatientProfile = ({ patient, patients }) => {
+  const [sendMessage, setSendMessage] = useState("");
+
   // pushing patients data to array
   const rows = [];
   patients.map((patient) => {
@@ -158,6 +165,48 @@ const PatientProfile = ({ patient, patients }) => {
     });
   }, []);
 
+  // send sms to patient open modal
+  const handleMessageModal = async (phone) => {
+    console.log(phone);
+    const { value: text } = await Swal.fire({
+      input: "textarea",
+      inputLabel: "Message",
+      inputPlaceholder: "Type your message here...",
+      inputAttributes: {
+        "aria-label": "Type your message here",
+      },
+      showCancelButton: true,
+      allowOutsideClick: false,
+    });
+
+    if (text) {
+      await axios
+        .post("http://localhost:3001/sendMessagetoPatient", {
+          text,
+          phone,
+        })
+        .then((response) => {
+          Swal.fire("Success!", "Appointment has been set!", "success");
+        })
+        .catch((err) =>
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+            // footer: '<a href="">Why do I have this issue?</a>',
+          })
+        );
+    }
+    if (text=="") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        // footer: '<a href="">Why do I have this issue?</a>',
+      });
+    }
+  };
+
   return (
     <>
       {patient.map((patientData, key) => {
@@ -188,7 +237,7 @@ const PatientProfile = ({ patient, patients }) => {
                       color="#B82623"
                       style={{ textAlign: "center" }}
                     >
-                      {patientData.firstname+" "+ patientData.lastname}
+                      {patientData.firstname + " " + patientData.lastname}
                     </Typography>
                     <Box className={styles.getStartedBtn} variant="contained">
                       <Link
@@ -228,13 +277,34 @@ const PatientProfile = ({ patient, patients }) => {
                         >
                           Contact Number
                         </Typography>
-                        <Typography
-                          variant="body"
-                          component="h4"
-                          color="#B82623"
+
+                        <Box
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                          }}
                         >
-                          091222231421
-                        </Typography>
+                          <Typography
+                            variant="body"
+                            component="h4"
+                            color="#B82623"
+                          >
+                            {patientData.phone}
+                          </Typography>
+                          <Button
+                            onClick={() => {
+                              handleMessageModal(patientData.phone);
+                            }}  
+                          >
+                            <Image
+                              src={MessageIcon}
+                              alt="user profile"
+                              height={25}
+                              width={25}
+                            />
+                          </Button>
+                        </Box>
                       </Box>
                       {/* contact end here */}
 
@@ -252,7 +322,7 @@ const PatientProfile = ({ patient, patients }) => {
                           component="h4"
                           color="#B82623"
                         >
-                          ACT St. Cebu City
+                          {patientData.address}
                         </Typography>
                       </Box>
                       {/* card end here */}
@@ -263,8 +333,11 @@ const PatientProfile = ({ patient, patients }) => {
 
                 {/* right container starts here */}
                 <Box className={styles.right__container}>
-                  <Box className={styles.print__button} style={{ height:"30px", width:"100px", alignSelf:"end" }}>
-                    <Image src={PrintIcon} alt="print" height={30} width={30}/>
+                  <Box
+                    className={styles.print__button}
+                    style={{ height: "30px", width: "100px", alignSelf: "end" }}
+                  >
+                    <Image src={PrintIcon} alt="print" height={30} width={30} />
                   </Box>
                   {/* Charts starts here*/}
                   <Box className={styles.chart__cards}>
