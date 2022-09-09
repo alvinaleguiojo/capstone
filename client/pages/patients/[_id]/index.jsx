@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import Link from "next/link";
-import styles from "../../styles/Patients.module.css";
+import styles from "../../../styles/Patients.module.css";
 import Typography from "@mui/material/Typography";
-import Meta from "../../component/Meta";
-import Navbar from "../../component/Navbar";
+import Meta from "../../../component/Meta";
+import Navbar from "../../../component/Navbar";
 import Image from "next/image";
-import UserIcon from "../../assets/image/User.svg";
-import MessageIcon from "../../assets/image/message-circle.svg";
-import PrintIcon from "../../assets/image/Print.svg";
-import GridTable from "../../component/GridTable";
+import UserIcon from "../../../assets/image/User.svg";
+import MessageIcon from "../../../assets/image/message-circle.svg";
+import PrintIcon from "../../../assets/image/Print.svg";
+import GridTable from "../../../component/GridTable";
 import Button from "@mui/material/Button";
 import Swal from "sweetalert2";
 import axios from "axios";
@@ -58,6 +59,8 @@ function createData(service_type, schedule) {
 
 const PatientProfile = ({ patient, patients }) => {
   const [sendMessage, setSendMessage] = useState("");
+  const router = useRouter()
+  const { _id } = router.query
 
   // pushing patients data to array
   const rows = [];
@@ -197,7 +200,7 @@ const PatientProfile = ({ patient, patients }) => {
           })
         );
     }
-    if (text=="") {
+    if (text == "") {
       Swal.fire({
         icon: "error",
         title: "Oops...",
@@ -295,7 +298,7 @@ const PatientProfile = ({ patient, patients }) => {
                           <Button
                             onClick={() => {
                               handleMessageModal(patientData.phone);
-                            }}  
+                            }}
                           >
                             <Image
                               src={MessageIcon}
@@ -337,7 +340,9 @@ const PatientProfile = ({ patient, patients }) => {
                     className={styles.print__button}
                     style={{ height: "30px", width: "100px", alignSelf: "end" }}
                   >
+                    <Link href={`/patients/${patientData._id}/pdf`}>
                     <Image src={PrintIcon} alt="print" height={30} width={30} />
+                    </Link>
                   </Box>
                   {/* Charts starts here*/}
                   <Box className={styles.chart__cards}>

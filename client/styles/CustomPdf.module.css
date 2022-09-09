@@ -1,0 +1,13 @@
+.pdf {
+  padding: 30px;
+}
+
+.profilePicture{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 200px;
+  height: 200px;
+  padding: 20px;
+  background-color: #ebebeb;
+}
