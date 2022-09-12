@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import useAuthRedirect from "../../customhook/AuthRedirect";
 import Image from "next/image";
 import styles from "../../styles/Login.module.css";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
 import Link from "next/link";
 import Meta from "../../component/Meta";
-import GroupBanner from "../../assets/image/Group 8.png";
+import loginBanner from "../../assets/image/loginBanner.svg";
 import LoadingButton from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
@@ -22,6 +23,9 @@ const Index = () => {
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
   const [serverResponse, setServerResponse] = useState(false);
+
+  // redirect to dashboard when current user is authenticated
+  useAuthRedirect();
 
   // show modal when server response is true
   useEffect(() => {
@@ -67,9 +71,13 @@ const Index = () => {
     socket.emit("login", { ...user });
     setLoading(true);
     axios
-      .post("http://localhost:3001/login", {
-        ...user,
-      })
+      .post(
+        "http://localhost:3001/login",
+        {
+          ...user,
+        },
+        { withCredentials: true }
+      )
       .then(() => {
         const Toast = Swal.mixin({
           toast: true,
@@ -87,7 +95,7 @@ const Index = () => {
           icon: "success",
           title: "Signed in successfully",
         });
-        router.push("/dashboard")
+        router.push("/dashboard");
         setLoading(false);
       })
       .catch((err) => {
@@ -112,7 +120,7 @@ const Index = () => {
         <Box className={styles.container__left}>
           <Image
             className={styles.ImageBanner}
-            src={GroupBanner}
+            src={loginBanner}
             height={650}
             width={650}
           />
@@ -135,9 +143,12 @@ const Index = () => {
             </Typography>
             <input
               className={styles.input}
-              type="text"
+              required={true}
+              type="email"
               name="email"
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              onChange={(e) =>
+                setUser({ ...user, email: e.target.value.toLocaleLowerCase() })
+              }
               value={user.email || ""}
             />
 
@@ -146,6 +157,7 @@ const Index = () => {
             </Typography>
             <input
               className={styles.input}
+              required={true}
               type="password"
               name="password"
               onChange={(e) => setUser({ ...user, password: e.target.value })}

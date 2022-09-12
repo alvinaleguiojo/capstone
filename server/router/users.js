@@ -6,7 +6,9 @@ const getById = require("../middleware/getById");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const { createTokens, validateToken } = require("../middleware/JWT");
+
 router.use(cookieParser());
+require("dotenv").config();
 
 // get all users
 router.get("/users", paginatedResults(Users), (req, res) => {
@@ -46,17 +48,25 @@ router.patch("/update/:id", async (req, res) => {
 });
 
 // create new User
-router.post("/user", async (req, res) => {
+router.post("/register", async (req, res) => {
   const { firstname, lastname, email, password } = req.body;
   bcrypt.hash(password, 10).then(async (hash) => {
     try {
-      await Users.create({
+      const user = await Users.create({
         firstname: firstname,
         lastname: lastname,
         email: email,
         password: hash,
         role: "BNS",
         created_date: new Date().toLocaleDateString(),
+      });
+      const accessToken = createTokens(user);
+      res.cookie("access-token", accessToken, {
+        withCredentials: true,
+        httpOnly: true,
+        maxAge: 60 * 60 * 24 * 30 * 1000,
+        secure: true,
+        sameSite: "none",
       });
       res.status(200).json({ message: "user added successfully" });
     } catch (err) {
@@ -81,11 +91,19 @@ router.post("/login", async (req, res) => {
       const accessToken = createTokens(user);
       res.cookie("access-token", accessToken, {
         maxAge: 60 * 60 * 24 * 30 * 1000,
-        httpOnly: true
+        httpOnly: true,
+        withCredentials: true,
+        secure: true,
+        sameSite: "none",
       });
       res.json("Logged In");
     }
   });
+});
+
+router.get("/logout", (req, res) => {
+  res.cookie("access-token", "", { maxAge: 1 }) &&
+    res.json("You have been logged out");
 });
 
 module.exports = router;

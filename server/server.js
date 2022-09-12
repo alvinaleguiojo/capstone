@@ -7,8 +7,8 @@ const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
-const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 //import routes
@@ -30,9 +30,16 @@ db.once("open", async () => {
   console.log("DB is connected");
 });
 
+// allow credentials to send in the front end
+const corsConfig = {
+  origin: true,
+  credentials: true,
+};
+
 // use routes
-app.use(cors());
+app.use(cors(corsConfig));
 app.use(express.json());
+app.use(cookieParser());
 app.use(index);
 app.use(appointments);
 app.use(users);
@@ -47,6 +54,7 @@ const io = new Server(server, {
   cors: {
     origin: "http://localhost:3000",
     methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
+    credentials: true,
   },
 });
 
@@ -72,7 +80,7 @@ io.on("connection", (socket) => {
     console.log(data);
     const user = await Users.findOne({ email: data.email });
     if (!user)
-      return socket.emit("error", { message: "User not found", error: true, });
+      return socket.emit("error", { message: "User not found", error: true });
 
     const dbPassword = user.password;
     bcrypt.compare(data.password, dbPassword).then((match) => {

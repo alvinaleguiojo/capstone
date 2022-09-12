@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
+import useAuthRedirect from "../../customhook/AuthRedirect";
 import styles from "../../styles/Register.module.css";
 import Typography from "@mui/material/Typography";
 import Box from "@mui/material/Box";
@@ -8,7 +10,7 @@ import LoadingButton, { loadingButtonClasses } from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
-import Banner from "../../assets/image/banner_right.png";
+import registerBanner from "../../assets/image/registerBanner.svg";
 import Image from "next/image";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -16,6 +18,10 @@ import io from "socket.io-client";
 const socket = io.connect("http://localhost:3001");
 
 const Index = () => {
+  // redirect to dashboard when current user is authenticated
+  useAuthRedirect();
+
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [user, setUser] = useState({});
   const [disabled, setDisabled] = useState(true);
@@ -51,10 +57,15 @@ const Index = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+    axios.defaults.withCredentials = true;
     axios
-      .post("http://localhost:3001/user", {
-        ...user,
-      })
+      .post(
+        "http://localhost:3001/register",
+        {
+          ...user,
+        },
+        { withCredentials: true }
+      )
       .then(() => {
         Swal.fire("Success!", "Successfully Registered!", "success");
         setLoading(false);
@@ -66,6 +77,7 @@ const Index = () => {
           password: "",
           confirmPassword: "",
         });
+        router.push("/dashboard");
         setTerms(false);
         setPrivacy(false);
       })
@@ -116,7 +128,7 @@ const Index = () => {
                   }
                   type="text"
                   name="firstname"
-                  value={user.firstname}
+                  value={user.firstname || ""}
                 />
               </Box>
 
@@ -131,7 +143,7 @@ const Index = () => {
                   }
                   type="text"
                   name="lastname"
-                  value={user.lastname}
+                  value={user.lastname || ""}
                 />
               </Box>
             </Box>
@@ -147,10 +159,12 @@ const Index = () => {
             </Box>
             <input
               className={styles.input}
-              type="text"
+              type="email"
               name="email"
-              value={user.email}
-              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              value={user.email || ""}
+              onChange={(e) =>
+                setUser({ ...user, email: e.target.value.toLocaleLowerCase() })
+              }
             />
 
             {/* password field */}
@@ -169,7 +183,7 @@ const Index = () => {
                 className={styles.input}
                 type="password"
                 name="password"
-                value={user.password}
+                value={user.password || ""}
                 onChange={(e) => setUser({ ...user, password: e.target.value })}
               />
             </Box>
@@ -182,7 +196,7 @@ const Index = () => {
               className={styles.input}
               type="password"
               name="confirm password"
-              value={user.confirmPassword}
+              value={user.confirmPassword || ""}
               onChange={(e) =>
                 setUser({ ...user, confirmPassword: e.target.value })
               }
@@ -232,7 +246,7 @@ const Index = () => {
 
         <Image
           className={styles.ImageBanner}
-          src={Banner}
+          src={registerBanner}
           alt="banner"
           height={650}
           width={650}

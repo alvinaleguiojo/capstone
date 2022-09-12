@@ -30,6 +30,7 @@
 
 .ImageBanner {
   object-fit: cover;
+  pointer-events: none;
 }
 
 .input {

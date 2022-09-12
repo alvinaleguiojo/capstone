@@ -17,6 +17,7 @@ import AddIcon from "../../assets/image/plus-circle.svg";
 import axios from "axios";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+import useAuth from "../../customhook/Auth";
 
 const columns = [
   {
@@ -66,6 +67,8 @@ function createData(_id, service_type, lastcheck, name, phone, address) {
 }
 
 const index = ({ patients }) => {
+  useAuth(); // this will check if the user is authenticated else return login page
+
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const rows = [];
@@ -145,7 +148,7 @@ const index = ({ patients }) => {
                       ? MedicineStyles.active
                       : MedicineStyles.tab
                   }
-                  onClick={() => router.push('/medicines')}
+                  onClick={() => router.push("/medicines")}
                 >
                   <Typography variant="h5" component="h5" color="#B82623">
                     Medicine Inventory
@@ -158,7 +161,7 @@ const index = ({ patients }) => {
                       ? MedicineStyles.active
                       : MedicineStyles.tab
                   }
-                  onClick={() => router.push('/medicines/released')}
+                  onClick={() => router.push("/medicines/released")}
                 >
                   <Typography variant="h5" component="h5" color="#B82623">
                     Released Medicine

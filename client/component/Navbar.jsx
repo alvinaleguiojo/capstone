@@ -10,9 +10,35 @@ import Button from "@mui/material/Button";
 import Today from "../assets/image/Today.svg";
 import CustomizedSwitches from "./CustomizedSwitches";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const Navbar = () => {
+  const router = useRouter();
   const today = format(new Date(), "MMMM dd, yyyy");
+
+  const handleLogout = async () => {
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Are you sure you want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "grey",
+      confirmButtonText: "Confirm",
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios
+          .get("http://localhost:3001/logout", { withCredentials: true })
+          .then((response) => {
+            Swal.fire("Success!", "You are now in the Login Page.", "success");
+            response && router.push("/login");
+          });
+      }
+    });
+  };
 
   return (
     <Box className={styles.navbar}>
@@ -29,7 +55,7 @@ const Navbar = () => {
             </Typography>
           </Box>
 
-          <Button className={styles.btn__dropdown}>
+          <Button className={styles.btn__dropdown} onClick={handleLogout}>
             <Image src={ArrowDown} alt="drop down" heigh={15} width={15} />
           </Button>
         </Box>

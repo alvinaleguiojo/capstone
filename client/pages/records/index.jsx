@@ -13,6 +13,7 @@ import recordStyles from "../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "../../assets/image/search.svg";
 import axios from "axios";
+import useAuth from "../../customhook/Auth";
 
 const columns = [
   {
@@ -62,6 +63,9 @@ function createData(_id, service_type, lastcheck, name, phone, address) {
 }
 
 const index = ({ patients }) => {
+
+  useAuth(); // this will check if the user is authenticated else return login page
+
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const rows = [];

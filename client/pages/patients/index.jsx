@@ -12,6 +12,7 @@ import Typography from "@mui/material/Typography";
 import AddIcon from "../../assets/image/plus-circle.svg";
 import { Button } from "@mui/material";
 import Swal from "sweetalert2";
+import useAuth from "../../customhook/Auth";
 
 const columns = [
   {
@@ -69,7 +70,7 @@ const index = ({ patients }) => {
     );
   });
 
-  const MedicineModal = async() =>{
+  const MedicineModal = async () => {
     const { value: formValues } = await Swal.fire({
       title: "Add Patient",
       html:
@@ -96,43 +97,48 @@ const index = ({ patients }) => {
     const res = JSON.stringify(formValues);
     console.log(res);
     res && (await Swal.fire("Success!", "Medicine has been added!", "success"));
-  }
+  };
 
   return (
-    <Box>
-      <Meta
-        title="Capstone | Patients"
-        description="set an appointment to schedule your check-up"
-        keywords="Capstone project, health center, baranggay"
-      />
-      <Navbar />
-      <Box className={contentStyles.content}>
-        <Tabs />
-        <Box className={reusableStyle.main__content}>
-          <Box className={styles.patients}>
-            <Typography variant="h5" component="h5" color="#B82623">
-              Patients for Today
-            </Typography>
-            <GridTable
-              rows={rows}
-              columns={columns}
-              path="patients"
-              maxHeight={380}
-              firstRow={10}
-              rowPerPage={10}
-            />
+    <>
+      {/* useAuth is to check if the user is authenticated */}
+      {useAuth() && (
+        <Box>
+          <Meta
+            title="Capstone | Patients"
+            description="set an appointment to schedule your check-up"
+            keywords="Capstone project, health center, baranggay"
+          />
+          <Navbar />
+          <Box className={contentStyles.content}>
+            <Tabs />
+            <Box className={reusableStyle.main__content}>
+              <Box className={styles.patients}>
+                <Typography variant="h5" component="h5" color="#B82623">
+                  Patients for Today
+                </Typography>
+                <GridTable
+                  rows={rows}
+                  columns={columns}
+                  path="patients"
+                  maxHeight={380}
+                  firstRow={10}
+                  rowPerPage={10}
+                />
 
-            <Button
-              style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
-              onClick={MedicineModal}
-            >
-              <Image src={AddIcon} alt="add" />
-              Add Patient
-            </Button>
+                <Button
+                  style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
+                  onClick={MedicineModal}
+                >
+                  <Image src={AddIcon} alt="add" />
+                  Add Patient
+                </Button>
+              </Box>
+            </Box>
           </Box>
         </Box>
-      </Box>
-    </Box>
+      )}
+    </>
   );
 };
 
