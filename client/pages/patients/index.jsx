@@ -1,4 +1,5 @@
 import React from "react";
+import Image from "next/image";
 import Navbar from "../../component/Navbar";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
@@ -8,6 +9,9 @@ import styles from "../../styles/Patients.module.css";
 import GridTable from "../../component/GridTable";
 import Meta from "../../component/Meta";
 import Typography from "@mui/material/Typography";
+import AddIcon from "../../assets/image/plus-circle.svg";
+import { Button } from "@mui/material";
+import Swal from "sweetalert2";
 
 const columns = [
   {
@@ -65,6 +69,35 @@ const index = ({ patients }) => {
     );
   });
 
+  const MedicineModal = async() =>{
+    const { value: formValues } = await Swal.fire({
+      title: "Add Patient",
+      html:
+        '<div class="medicine__container"><label class="medicine__name">Name</label><input id="swal-input1" class="swal2-input" placeholder="Name"></div>' +
+        '<div class="medicine__container"><label>Quantity</label><input id="swal-input2" class="swal2-input" placeholder="Quantity" type="number" min="1"></div>' +
+        '<div class="medicine__container"><label>Date Arrived</label><input id="swal-input3" class="swal2-input medicine__input" placeholder="Data Arrived" type="date"></div>' +
+        '<div class="medicine__container"><label>Expiry Date</label><input id="swal-input4" class="swal2-input medicine__input" placeholder="Expiry Date" type="date"></div>',
+      focusConfirm: false,
+      allowOutsideClick: false,
+      showCancelButton: true,
+      inputAttributes: {
+        required: true,
+      },
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+          document.getElementById("swal-input3").value,
+          document.getElementById("swal-input4").value,
+        ];
+      },
+    });
+
+    const res = JSON.stringify(formValues);
+    console.log(res);
+    res && (await Swal.fire("Success!", "Medicine has been added!", "success"));
+  }
+
   return (
     <Box>
       <Meta
@@ -86,8 +119,16 @@ const index = ({ patients }) => {
               path="patients"
               maxHeight={380}
               firstRow={10}
-              rowPerPage={[10, 25, 50]}
+              rowPerPage={10}
             />
+
+            <Button
+              style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
+              onClick={MedicineModal}
+            >
+              <Image src={AddIcon} alt="add" />
+              Add Patient
+            </Button>
           </Box>
         </Box>
       </Box>
@@ -101,6 +142,9 @@ export const getStaticProps = async () => {
   try {
     const res = await fetch("http://localhost:3001/list_appointments");
     const { results } = await res.json();
+
+    // const todayPatients = results.filter((date) =>date.schedule == new Date().toLocaleDateString())
+    // console.log(todayPatients)
 
     return {
       props: {

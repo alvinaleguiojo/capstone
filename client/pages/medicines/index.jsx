@@ -190,7 +190,7 @@ const index = ({ patients }) => {
               path="medicines"
               maxHeight={340}
               firstRow={10}
-              rowPerPage={[10, 25, 50]}
+              rowPerPage={10}
             />
             <Button
               style={{ backgroundColor: "#dbdff3", color: "#b82623" }}

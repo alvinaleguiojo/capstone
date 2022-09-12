@@ -4,7 +4,7 @@
 @contentType = application/json
 
 # # Retrieving or Read Data from DB
-GET {{host}}/list_appointments
+# GET {{host}}/users
 
 # # retrieving or Read Data from DB By ID
 # GET {{host}}/patients/63156f41b289c06579965e5a
@@ -25,21 +25,26 @@ GET {{host}}/list_appointments
 #       "vaccine": true,
 #       "immunization": true,
 #       "prenatal": true,
-#       "schedule": "2022-09-04T16:00:00.000Z"
+#       "schedule": "2022-09-04T16:00:00.000Z",
+#       "pass"
 # }
 
 
 # Update Data from DB By ID
-# PATCH {{host}}/update/631097c122f9c0887c3e6d89 HTTP/1.1
+# PATCH {{host}}/patients/6315ddf5646fda91821715bd HTTP/1.1
 # content-type: application/json
 
 # {
 #     "title": " new todo app",
-#     "selected": true
+#     "selected": true,
+#     "phone":"639289824607"
 # }
 
+# 
+# 
+
 # Delete Data By Id from DB
-# DELETE  {{host}}/delete/631097c122f9c0887c3e6d89 HTTP/1.1
+# DELETE  {{host}}/user/delete/631d56a4295a3cb13814dc7f HTTP/1.1
 # content-type: application/json
 
 # {

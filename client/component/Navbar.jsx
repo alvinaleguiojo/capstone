@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import styles from "../styles/Navbar.module.css";
 import Box from "@mui/material/Box";
@@ -9,8 +9,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Today from "../assets/image/Today.svg";
 import CustomizedSwitches from "./CustomizedSwitches";
+import { format } from "date-fns";
 
 const Navbar = () => {
+  const today = format(new Date(), "MMMM dd, yyyy");
+
   return (
     <Box className={styles.navbar}>
       <Box className={styles.logo}></Box>
@@ -40,7 +43,7 @@ const Navbar = () => {
             </Typography>
 
             <Typography variant="caption" component="h5" color="#b82623">
-              MM - DD - YYYY
+              {today}
             </Typography>
           </Box>
 

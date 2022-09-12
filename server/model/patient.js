@@ -9,18 +9,13 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  Age: {
+    type: Number,
+    required: true,
+  },
   email: {
     type: String,
-    required: true,
-  },
-
-  password: {
-    type: String,
-    required: true,
-  },
-  role: {
-    type: String,
-    required: true,
+    required: false,
   },
   gender: {
     type: String,
@@ -28,11 +23,7 @@ const userSchema = new mongoose.Schema({
   },
   address: {
     type: String,
-    required: false,
-  },
-  license: {
-    type: String,
-    required: false,
+    required: true,
   },
   image: {
     type: String,
@@ -44,4 +35,4 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Patient", userSchema);

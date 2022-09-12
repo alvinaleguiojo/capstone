@@ -245,7 +245,7 @@ const PatientProfile = ({ patient, patients }) => {
                     <Box className={styles.getStartedBtn} variant="contained">
                       <Link
                         className={styles.getStartedLink}
-                        href="/appointments"
+                        href={`/patients/${patientData._id}/appointment`}
                       >
                         Add New Appointment
                       </Link>

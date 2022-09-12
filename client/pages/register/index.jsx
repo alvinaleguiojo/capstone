@@ -11,6 +11,9 @@ import Checkbox from "@mui/material/Checkbox";
 import Banner from "../../assets/image/banner_right.png";
 import Image from "next/image";
 import axios from "axios";
+import Swal from "sweetalert2";
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:3001");
 
 const Index = () => {
   const [loading, setLoading] = useState(false);
@@ -18,7 +21,21 @@ const Index = () => {
   const [disabled, setDisabled] = useState(true);
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
+  const [serverResponse, setServerResponse] = useState("");
 
+  // received a response from the server telling the email is not valid or not exist
+  useEffect(() => {
+    socket.on("error", (data) => {
+      setServerResponse(data.message);
+    });
+  }, [socket]);
+
+  // sending and checking the input email if it is exist
+  useEffect(() => {
+    socket.emit("email", user.email);
+  }, [user.email]);
+
+  // to check if the input field is not empty and turn on the button if meets the requirements
   useEffect(() => {
     let userInput = Object.values(user).includes("");
     !userInput &&
@@ -30,6 +47,7 @@ const Index = () => {
       : setDisabled(true);
   }, [user, terms, privacy]);
 
+  // send a request for registration to the server
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
@@ -38,6 +56,7 @@ const Index = () => {
         ...user,
       })
       .then(() => {
+        Swal.fire("Success!", "Successfully Registered!", "success");
         setLoading(false);
         setUser({
           ...user,
@@ -51,7 +70,16 @@ const Index = () => {
         setPrivacy(false);
       })
       .catch((err) => console.log("Error" + err));
-    setUser({ ...user, firstname: "" });
+    setUser({
+      ...user,
+      firstname: "",
+      lastname: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+    });
+    setTerms(false);
+    setPrivacy(false);
   };
 
   return (
@@ -109,9 +137,14 @@ const Index = () => {
             </Box>
 
             {/* email address field*/}
-            <Typography variant="body2" component="h4" color="#585858">
-              EMAIL ADDRESS
-            </Typography>
+            <Box className={styles.email}>
+              <Typography variant="body2" component="h4" color="#585858">
+                EMAIL ADDRESS
+              </Typography>
+              <Typography variant="caption" component="h5" color="#B82623">
+                {serverResponse}
+              </Typography>
+            </Box>
             <input
               className={styles.input}
               type="text"

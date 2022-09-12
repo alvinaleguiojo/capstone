@@ -9,8 +9,16 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
+import { Button } from "@mui/material";
 
-export default function GridTable({ rows, columns , path , maxHeight, firstRow, rowPerPage}) {
+export default function GridTable({
+  rows,
+  columns,
+  path,
+  maxHeight,
+  firstRow,
+  rowPerPage,
+}) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(firstRow);
   const router = useRouter();

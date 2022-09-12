@@ -1,195 +1,45 @@
+"use strict";
+
+//import libraries
 const express = require("express");
 const app = express();
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
 const mongoose = require("mongoose");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 require("dotenv").config();
-const Users = require("./model/user");
-const Appointments = require("./model/appointment");
-const Todos = require("./model/todo");
-const twilio = require("twilio")(
-  process.env.TWILIO_SID,
-  process.env.TWILIO_TOKEN
-);
 
+//import routes
+const index = require("./router/index");
+const appointments = require("./router/appointments");
+const users = require("./router/users");
+const search = require("./router/search");
+const crud = require("./router/crud");
+const patients = require("./router/patients");
+const twilio = require("./router/twilio");
+
+// import model
+const Users = require("./model/user");
+
+//db initialization
 mongoose.connect(process.env.MONGODB_URL);
 const db = mongoose.connection;
 db.once("open", async () => {
   console.log("DB is connected");
 });
+
+// use routes
 app.use(cors());
 app.use(express.json());
-
-app.get("/", (req, res) => {
-  res.send({ name: "Welcome", message: "hello world!" });
-});
-
-app.get("/users", paginatedResults(Users), (req, res) => {
-  res.json(res.paginatedResults);
-});
-
-// create new User
-app.post("/user", async (req, res) => {
-  try {
-    await Users.create({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      email: req.body.email,
-      password: req.body.password,
-      confirmPassword: req.body.confirmPassword,
-    });
-    console.log("user added successfully");
-    res.status(200).json({ message: "user added successfully" });
-  } catch (err) {
-    res.status(400).json({ message: "Invalid data entry" });
-  }
-});
-
-app.get("/patients/:id", getById(Appointments), (req, res) => {
-  res.json(res);
-});
-
-app.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
-  res.json(res.paginatedResults);
-});
-
-// create new Appointment
-app.post("/appointment", async (req, res) => {
-  try {
-    await Appointments.create({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      address: req.body.address,
-      phone: req.body.phone,
-      note: req.body.note,
-      vaccine: req.body.vaccine,
-      immunization: req.body.immunization,
-      prenatal: req.body.prenatal,
-      schedule: req.body.schedule,
-      service_type: req.body.service_type,
-    });
-    console.log("appointment added successfully");
-    res.status(200).json({ message: "appointment added successfully" });
-  } catch (err) {
-    res.status(400).json({ message: "Invalid data entry" });
-  }
-});
-
-//search patients API
-app.get("/search", (req, res) => {
-  const searchField = req.query.firstname;
-  Appointments.find({
-    firstname: { $regex: searchField, $options: "$i" }
-  }).then((data) => {
-    res.json(data);
-  });
-});
-
-app.get("/todos", paginatedResults(Todos), (req, res) => {
-  res.json(res.paginatedResults);
-});
-
-app.get("/todos/:id", getById(Todos), (req, res) => {
-  res.json(res);
-});
-
-app.patch("/update/:id", async (req, res) => {
-  try {
-    await Todos.findById(req.body.id)
-      .then((updatedTodo) => {
-        updatedTodo.title = req.body.title;
-        updatedTodo.save();
-        res.send("successfully updated");
-        console.log("successfully updated");
-        res.status(200).json({ message: "data has been updated successfully" });
-      })
-      .catch((err) => {
-        res.status(400).json({ message: "field is required" });
-      });
-  } catch (err) {
-    console.log(err);
-  }
-});
-
-app.delete("/delete/:id", async (req, res) => {
-  const id = req.params.id;
-  await Todos.findByIdAndRemove(id).exec();
-  res.send("successfully deleted");
-  console.log("successfully deleted");
-});
-
-app.get("/users/:id", getById(Users), (req, res) => {
-  res.json(res);
-});
-
-app.post("/todos", paginatedResults(Todos), async (req, res) => {
-  try {
-    await Todos.create({ title: req.body.title, selected: req.body.selected });
-    console.log("todo added successfully");
-    res.status(200).json({ message: "todo added successfully" });
-  } catch (err) {
-    res.status(400).json({ message: "Invalid data entry" });
-  }
-});
-
-// Middleware for retrieving data from collection by ID by passing model as argument
-function getById(model) {
-  return async (req, res) => {
-    try {
-      await model.find({ _id: req.params.id }).then((data) => {
-        res.json(data);
-      });
-    } catch (err) {
-      res.status(403).json({ message: "Please use valid id" });
-    }
-  };
-}
-
-// this function is to paginate data from collection by just passing an arguments as model
-function paginatedResults(model) {
-  return async (req, res, next) => {
-    const page = parseInt(req.query.page);
-    const limit = parseInt(req.query.limit);
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const results = {};
-
-    if (endIndex < (await model.countDocuments().exec())) {
-      results.next = {
-        page: page + 1,
-        limit: limit,
-      };
-    }
-
-    if (startIndex > 0) {
-      results.previous = {
-        page: page - 1,
-        limit: limit,
-      };
-    }
-    try {
-      results.results = await model.find().limit(limit).skip(startIndex).exec();
-      res.paginatedResults = results;
-      next();
-    } catch (e) {
-      res.json(500).json({ message: e.message });
-    }
-  };
-}
-
-// twilio route for sending sms
-
-app.post("/sendMessagetoPatient", (req, res) => {
-  twilio.messages.create({
-    from: process.env.TWILIO_NUMBER,
-    to: req.body.phone,
-    body: req.body.text
-  }).then((response) => console.log("message sent"))
-    .catch((err) =>{ console.log("error: " + err.message) })
-});
+app.use(index);
+app.use(appointments);
+app.use(users);
+app.use(search);
+app.use(crud);
+app.use(patients);
+app.use(twilio);
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);
@@ -198,6 +48,42 @@ const io = new Server(server, {
     origin: "http://localhost:3000",
     methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE"],
   },
+});
+
+io.on("connection", (socket) => {
+  console.log("users is connected", socket.id);
+
+  socket.on("submit", (data) => {
+    socket.broadcast.emit("received", data);
+  });
+
+  socket.on("email", (data) => {
+    Users.findOne({ email: data }).then((data) => {
+      data
+        ? socket.emit("error", {
+            message: "*Email already exist!",
+            email: data,
+          })
+        : socket.emit("error", { message: "" });
+    });
+  });
+
+  socket.on("login", async (data) => {
+    console.log(data);
+    const user = await Users.findOne({ email: data.email });
+    if (!user)
+      return socket.emit("error", { message: "User not found", error: true, });
+
+    const dbPassword = user.password;
+    bcrypt.compare(data.password, dbPassword).then((match) => {
+      if (!match) {
+        socket.emit("error", {
+          message: "Email or Password is incorrect",
+          error: true,
+        });
+      }
+    });
+  });
 });
 
 // entry point of the app

@@ -9,7 +9,9 @@ const Tabs = () => {
 
   return (
     <Box className={styles.tabs}>
-      <Box className={router.route == "/dashboard" ? styles.active : styles.tab}>
+      <Box
+        className={router.route == "/dashboard" ? styles.active : styles.tab}
+      >
         <Box className={styles.vertical__line}></Box>
         <Link href="/dashboard">Dashboard</Link>
       </Box>
@@ -35,12 +37,12 @@ const Tabs = () => {
         <Link href="/medicines">MEDICINES</Link>
       </Box>
 
-      <Box
+      {/* <Box
         className={router.route == "/appointments" ? styles.active : styles.tab}
       >
         <Box className={styles.vertical__line_appointment}></Box>
         <Link href="/appointments">SET APPOINTMENTS</Link>
-      </Box>
+      </Box> */}
     </Box>
   );
 };

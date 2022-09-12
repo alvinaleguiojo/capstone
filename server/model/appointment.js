@@ -1,43 +1,26 @@
 const mongoose = require("mongoose");
 
 const appointmentSchema = new mongoose.Schema({
-  firstname: {
+  patient_id: {
     type: String,
     required: true,
   },
-  lastname: {
+  user_id: {
     type: String,
-    required: true,
-  },
-  address: {
-    type: String,
-    required: true,
-  },
-
-  phone: {
-    type: String,
-    required: true,
+    required: false,
   },
   note: {
     type: String,
-  },
-  vaccine: {
-    type: Boolean,
-    required: false,
-  },
-  immunization: {
-    type: Boolean,
-    required: false,
-  },
-  prenatal: {
-    type: Boolean,
-    required: false,
   },
   schedule: {
     type: Date,
     required: true,
   },
-  service_type:{
+  service_type: {
+    type: String,
+    required: true,
+  },
+  status:{
     type: String,
     required: true,
   }

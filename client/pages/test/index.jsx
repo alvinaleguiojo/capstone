@@ -6,7 +6,7 @@ const index = () => {
 
   useEffect(async () => {
     async function fethData() {
-      const app = new Realm.App({ id: process.env.REALM_APP_ID });
+      const app = new Realm.App({ id: "application-0-hgucy" });
       const credentials = Realm.Credentials.anonymous();
       try {
         const user = await app.logIn(credentials);

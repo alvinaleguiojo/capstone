@@ -140,10 +140,10 @@ const index = ({ patients }) => {
             <GridTable
               rows={rows}
               columns={columns}
-              path="records"
+              path="patients"
               maxHeight={380}
               firstRow={10}
-              rowPerPage={[10, 25, 50]}
+              rowPerPage={10}
             />
           </Box>
         </Box>

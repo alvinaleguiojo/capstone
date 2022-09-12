@@ -21,6 +21,11 @@
   text-align: center;
 }
 
+.email{
+  display: flex;
+  gap: 5px;
+}
+
 .input {
   padding: 10px;
   outline: none;
@@ -57,7 +62,7 @@
   flex: 1;
 }
 
-.password {
+.password { 
   display: flex;
   align-items: center;
   gap: 5px;

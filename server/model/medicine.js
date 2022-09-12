@@ -1,43 +1,32 @@
 const mongoose = require("mongoose");
 
 const medicineSchema = new mongoose.Schema({
-  firstname: {
+  patient_id: {
     type: String,
     required: true,
   },
-  lastname: {
+  medicine_name: {
     type: String,
     required: true,
   },
-  address: {
-    type: String,
+  quantity: {
+    type: Number,
     required: true,
   },
-
-  phone: {
-    type: String,
-    required: true,
-  },
-  note: {
-    type: String,
-  },
-  vaccine: {
-    type: Boolean,
-    required: false,
-  },
-  immunization: {
-    type: Boolean,
-    required: false,
-  },
-  prenatal: {
-    type: Boolean,
-    required: false,
-  },
-  schedule: {
+  expiry_date: {
     type: Date,
     required: true,
   },
-  service_type:{
+
+  entry_date: {
+    type: Date,
+    required: true,
+  },
+  stocks: {
+    type: Number,
+    required: true,
+  },
+  status:{
     type: String,
     required: true,
   }

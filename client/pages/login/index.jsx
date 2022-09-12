@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import styles from "../../styles/Login.module.css";
 import Typography from "@mui/material/Typography";
@@ -10,9 +11,95 @@ import LoadingButton from "@mui/lab/LoadingButton";
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
+import axios from "axios";
+import Swal from "sweetalert2";
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:3001");
 
 const Index = () => {
+  const router = useRouter();
+  const [user, setUser] = useState({});
   const [loading, setLoading] = useState(false);
+  const [disabled, setDisabled] = useState(true);
+  const [serverResponse, setServerResponse] = useState(false);
+
+  // show modal when server response is true
+  useEffect(() => {
+    if (serverResponse) {
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
+      });
+
+      Toast.fire({
+        icon: "error",
+        title: "Please check you email and password.",
+      });
+      setLoading(false);
+      setServerResponse(false);
+    }
+  }, [serverResponse]);
+
+  // set error modal to true when server response sends error
+  useEffect(() => {
+    socket.on("error", (data) => {
+      data.error && setServerResponse(true);
+    });
+  }, [socket]);
+
+  // to check if the input fields are not empty then turn on the button if meets the requirements
+  useEffect(() => {
+    let userInput = Object.values(user).includes("");
+    !userInput && Object.keys(user).length >= 2
+      ? setDisabled(false)
+      : setDisabled(true);
+  }, [user]);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    socket.emit("login", { ...user });
+    setLoading(true);
+    axios
+      .post("http://localhost:3001/login", {
+        ...user,
+      })
+      .then(() => {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Signed in successfully",
+        });
+        router.push("/dashboard")
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+
+    setUser({
+      ...user,
+      email: "",
+      password: "",
+    });
+  };
 
   return (
     <>
@@ -46,7 +133,13 @@ const Index = () => {
             <Typography variant="body2" component="h4" color="#585858">
               EMAIL ADDRESS
             </Typography>
-            <input className={styles.input} type="text" name="email" />
+            <input
+              className={styles.input}
+              type="text"
+              name="email"
+              onChange={(e) => setUser({ ...user, email: e.target.value })}
+              value={user.email || ""}
+            />
 
             <Typography variant="body2" component="h4" color="#585858">
               PASSWORD
@@ -55,6 +148,8 @@ const Index = () => {
               className={styles.input}
               type="password"
               name="password"
+              onChange={(e) => setUser({ ...user, password: e.target.value })}
+              value={user.password || ""}
             />
 
             <Box className={styles.remember__me}>
@@ -65,8 +160,9 @@ const Index = () => {
             </Box>
 
             <LoadingButton
-              onClick={() => setLoading(true)}
+              onClick={handleSubmit}
               loading={loading}
+              disabled={disabled}
               variant="contained"
               className={styles.loginBtn}
             >
