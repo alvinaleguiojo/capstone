@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useRouter } from "next/router";
 
@@ -8,9 +8,11 @@ export default async function useAuth() {
   useEffect(() => {
     axios
       .get("http://localhost:3001", { withCredentials: true })
-      .then(() => {})
+      .then((response) => {
+        return response.data.id;
+      })
       .catch(() => {
-        router.push("/login")
+        router.push("/login");
       });
   }, [router]);
 }

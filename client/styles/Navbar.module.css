@@ -1,3 +1,14 @@
+.avatar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 40px;
+  background-color: #b82623;
+  border-radius: 999px;
+  color: #fff;
+}
+
 .btn__dropdown {
   border-radius: 999px;
   width: 20px;
@@ -8,7 +19,6 @@
   display: flex;
   justify-content: space-around;
 }
-
 
 .navbar {
   display: flex;
@@ -48,4 +58,3 @@
   align-items: center;
   width: 330px;
 }
-

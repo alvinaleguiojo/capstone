@@ -13,7 +13,7 @@ export default async function useAuthRedirect() {
           router.push("/dashboard");
         })
         .catch((error) => {
-          console.log(error.response.data);
+          console.log(error);
         });
     }
     dashboard();

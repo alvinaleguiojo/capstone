@@ -1,5 +1,4 @@
-import React, { useState } from "react";
-import Link from "next/link";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/Navbar.module.css";
 import Box from "@mui/material/Box";
 import Image from "next/image";
@@ -8,7 +7,6 @@ import ArrowDown from "../assets/image/arrow-down.svg";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Today from "../assets/image/Today.svg";
-import CustomizedSwitches from "./CustomizedSwitches";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
 import axios from "axios";
@@ -17,11 +15,23 @@ import Swal from "sweetalert2";
 const Navbar = () => {
   const router = useRouter();
   const today = format(new Date(), "MMMM dd, yyyy");
+  const [userData, setUserData] = useState([]);
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001", { withCredentials: true })
+      .then((response) => {
+        return setUserData([...userData, response.data]);
+      })
+      .catch(() => {
+        router.push("/login");
+      });
+  }, []);
 
   const handleLogout = async () => {
     await Swal.fire({
       title: "Are you sure?",
-      text: "Are you sure you want to log out?",
+      text: "You want to log out?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -41,42 +51,58 @@ const Navbar = () => {
   };
 
   return (
-    <Box className={styles.navbar}>
-      <Box className={styles.logo}></Box>
-      <Box className={styles.navbar__right}>
-        <Box className={styles.user}>
-          <Image src={UserIcon} alt="user avatar" heigh={40} width={40} />
-          <Box className={styles.user__name}>
-            <Typography variant="h5" component="h5" color="#b82623">
-              User
-            </Typography>
-            <Typography variant="caption" component="h5" color="#b82623">
-              Barangay Health Worker
-            </Typography>
+    <>
+      {userData.map((user, key) => {
+        return (
+          <Box className={styles.navbar} key={key}>
+            <Box className={styles.logo}></Box>
+            <Box className={styles.navbar__right}>
+              <Box className={styles.user}>
+                {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
+                <Box className={styles.avatar}>
+                  <Typography variant="h5" component="h5">
+                    {user.userData.email.substring(0, 1).toUpperCase()}
+                  </Typography>
+                </Box>
+                <Box className={styles.user__name}>
+                  <Typography variant="h5" component="h5" color="#b82623">
+                    {user.userData.email.substring(0, 10)}
+                  </Typography>
+                  <Typography variant="caption" component="h5" color="#b82623">
+                    Barangay Health Worker
+                  </Typography>
+                </Box>
+
+                <Button className={styles.btn__dropdown} onClick={handleLogout}>
+                  <Image
+                    src={ArrowDown}
+                    alt="drop down"
+                    heigh={15}
+                    width={15}
+                  />
+                </Button>
+              </Box>
+              <Box className={styles.line}></Box>
+
+              <Box className={styles.date}>
+                <Image src={Today} alt="drop down" heigh={40} width={40} />
+                <Box className={styles.date__display}>
+                  <Typography variant="h5" component="h5" color="#b82623">
+                    Today
+                  </Typography>
+
+                  <Typography variant="caption" component="h5" color="#b82623">
+                    {today}
+                  </Typography>
+                </Box>
+
+                {/* <CustomizedSwitches /> */}
+              </Box>
+            </Box>
           </Box>
-
-          <Button className={styles.btn__dropdown} onClick={handleLogout}>
-            <Image src={ArrowDown} alt="drop down" heigh={15} width={15} />
-          </Button>
-        </Box>
-        <Box className={styles.line}></Box>
-
-        <Box className={styles.date}>
-          <Image src={Today} alt="drop down" heigh={40} width={40} />
-          <Box className={styles.date__display}>
-            <Typography variant="h5" component="h5" color="#b82623">
-              Today
-            </Typography>
-
-            <Typography variant="caption" component="h5" color="#b82623">
-              {today}
-            </Typography>
-          </Box>
-
-          {/* <CustomizedSwitches /> */}
-        </Box>
-      </Box>
-    </Box>
+        );
+      })}
+    </>
   );
 };
 

@@ -43,6 +43,10 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  verified:{
+   type: Boolean,
+   required: true,
+  }
 });
 
 module.exports = mongoose.model("User", userSchema);

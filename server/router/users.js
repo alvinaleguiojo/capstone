@@ -16,12 +16,12 @@ router.get("/users", paginatedResults(Users), (req, res) => {
 });
 
 // get user by id
-router.get("/users/:id", getById(Users), (req, res) => {
+router.get("/user/:id", getById(Users), (req, res) => {
   res.json(res);
 });
 
 // Remove user from the list
-router.delete("/user/delete/:id", async (req, res) => {
+router.delete("/user/delete/:id", validateToken, async (req, res) => {
   const id = req.params.id;
   await Users.findByIdAndRemove(id).exec();
   res.send("User has been deleted");
@@ -29,17 +29,17 @@ router.delete("/user/delete/:id", async (req, res) => {
 });
 
 // update user's data
-router.patch("/update/:id", async (req, res) => {
+router.patch("/user/update/:id", validateToken, async (req, res) => {
   try {
-    await Users.findById(req.body.id)
+    await Users.findById(req.params.id || req.body.id)
       .then((userData) => {
-        userData.firstname = req.body.firstname;
+        userData.verified = req.body.verified;
         userData.save();
         res.send("successfully updated");
         console.log("successfully updated");
         res.status(200).json({ message: "data has been updated successfully" });
       })
-      .catch((err) => {
+      .catch(() => {
         res.status(400).json({ message: "field is required" });
       });
   } catch (err) {
@@ -61,7 +61,7 @@ router.post("/register", async (req, res) => {
         created_date: new Date().toLocaleDateString(),
       });
       const accessToken = createTokens(user);
-      res.cookie("access-token", accessToken, {
+      res.cookie("access_token", accessToken, {
         withCredentials: true,
         httpOnly: true,
         maxAge: 60 * 60 * 24 * 30 * 1000,
@@ -89,7 +89,7 @@ router.post("/login", async (req, res) => {
         .json({ message: "Email or Password is incorrect" });
     if (match) {
       const accessToken = createTokens(user);
-      res.cookie("access-token", accessToken, {
+      res.cookie("access_token", accessToken, {
         maxAge: 60 * 60 * 24 * 30 * 1000,
         httpOnly: true,
         withCredentials: true,
@@ -101,9 +101,11 @@ router.post("/login", async (req, res) => {
   });
 });
 
-router.get("/logout", (req, res) => {
-  res.cookie("access-token", "", { maxAge: 1 }) &&
-    res.json("You have been logged out");
+router.get("/logout", validateToken, (req, res) => {
+  return res
+    .clearCookie("access_token")
+    .status(200)
+    .json({ message: "Successfully logged out 😏 🍀" });
 });
 
 module.exports = router;
