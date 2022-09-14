@@ -1,0 +1,25 @@
+.cards {
+  display: flex;
+  flex-direction: column;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #dbdff3;
+  height: 50px;
+  border-radius: 5px;
+  padding-left: 15px;
+}
+
+.card__cell {
+  width: 150px;
+}
+
+.status {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 150px;
+}

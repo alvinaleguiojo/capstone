@@ -1,5 +1,4 @@
 import React from "react";
-import Box from "@mui/material/Box";
 import { Table, Thead, Tbody, Tr, Th, Td } from "react-super-responsive-table";
 import styles from "../styles/CustomGrid.module.css";
 

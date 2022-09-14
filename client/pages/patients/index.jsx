@@ -72,31 +72,37 @@ const index = ({ patients }) => {
 
   const MedicineModal = async () => {
     const { value: formValues } = await Swal.fire({
-      title: "Add Patient",
+      title: "Registration",
       html:
-        '<div class="medicine__container"><label class="medicine__name">Name</label><input id="swal-input1" class="swal2-input" placeholder="Name"></div>' +
-        '<div class="medicine__container"><label>Quantity</label><input id="swal-input2" class="swal2-input" placeholder="Quantity" type="number" min="1"></div>' +
-        '<div class="medicine__container"><label>Date Arrived</label><input id="swal-input3" class="swal2-input medicine__input" placeholder="Data Arrived" type="date"></div>' +
-        '<div class="medicine__container"><label>Expiry Date</label><input id="swal-input4" class="swal2-input medicine__input" placeholder="Expiry Date" type="date"></div>',
+        '<div class="medicine__container"><label class="medicine__name">First Name</label><input id="swal-input1" class="swal2-input" placeholder="First Name" required></div>' +
+        '<div class="medicine__container"><label class="medicine__name">Last Name</label><input id="swal-input2" class="swal2-input" placeholder="Last Name"></div>' +
+        '<div class="medicine__container"><label>Address</label><input id="swal-input3" class="swal2-input" placeholder="Address" type="text"></div>' +
+        '<div class="medicine__container"><label>Phone</label><input id="swal-input4" class="swal2-input" placeholder="+63..." type="phone"></div>' +
+        '<div class="medicine__container"><label>Select Service</label><select id="swal-input5" class="swal2-input medicine__input" placeholder="Select Service" type="select"><option value="Immunization">Immunization</option><option value="Vaccine">Vaccine</option><option value="Prenatal">Prenatal</option></select></div>' +
+        '<div class="medicine__container"><label>Schedule</label><input id="swal-input6" class="swal2-input medicine__input" placeholder="Schedule" type="date" min="2000-01-02"></div>',
       focusConfirm: false,
       allowOutsideClick: false,
       showCancelButton: true,
-      inputAttributes: {
-        required: true,
-      },
       preConfirm: () => {
         return [
           document.getElementById("swal-input1").value,
           document.getElementById("swal-input2").value,
           document.getElementById("swal-input3").value,
           document.getElementById("swal-input4").value,
+          document.getElementById("swal-input5").value,
+          document.getElementById("swal-input5").value,
         ];
       },
     });
 
     const res = JSON.stringify(formValues);
     console.log(res);
-    res && (await Swal.fire("Success!", "Medicine has been added!", "success"));
+    res &&
+      (await Swal.fire(
+        "Success!",
+        `Medicine has been added! + ${res}`,
+        "success"
+      ));
   };
 
   return (

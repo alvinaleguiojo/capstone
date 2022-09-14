@@ -11,6 +11,7 @@ import { format } from "date-fns";
 import { useRouter } from "next/router";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { IconButton } from "@mui/material";
 
 const Navbar = () => {
   const router = useRouter();
@@ -73,14 +74,14 @@ const Navbar = () => {
                   </Typography>
                 </Box>
 
-                <Button className={styles.btn__dropdown} onClick={handleLogout}>
+                <IconButton onClick={handleLogout}>
                   <Image
                     src={ArrowDown}
                     alt="drop down"
-                    heigh={15}
-                    width={15}
+                    height={10}
+                    width={10}
                   />
-                </Button>
+                </IconButton>
               </Box>
               <Box className={styles.line}></Box>
 

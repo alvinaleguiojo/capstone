@@ -1,7 +1,76 @@
-.dashboard{
-    display: flex;
-    flex-direction: column;
-    background-color: #D9D9D9;
-    height: 100vh;
+.banner {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  background-color: #fff;
+  height: 120px;
+  border-radius: 10px;
+  z-index: 1;
+  box-sizing: border-box;
+  box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
 }
 
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  background-color: #d9d9d9;
+  height: 100vh;
+}
+
+.header {
+  padding-left: 15px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.header__cell {
+  width: 150px;
+}
+
+.left__content {
+  width: 100%;
+  padding-right: 10px;
+}
+
+.right__content {
+  display: flex;
+  flex-direction: column;
+  /* gap: 1rem; */
+  /* border: 1px solid black; */
+  width: 100%;
+}
+
+.monthly__reports {
+  display: flex;
+  justify-content: space-between;
+}
+
+.monthly__filter {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.report__cards {
+  display: flex;
+  justify-content: space-between;
+}
+
+.report__card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #dbdff3;
+  width: 120px;
+  height: 150px;
+  border-radius: 10px;
+}
