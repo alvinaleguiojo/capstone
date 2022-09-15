@@ -37,6 +37,18 @@ const userSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  diagnosis: {
+    type: String,
+    required: false,
+  },
+  service_type: {
+    type: String,
+    required: false,
+  },
+  last_visited: {
+    type: Date,
+    required: true,
+  }
 });
 
 module.exports = mongoose.model("Patient", userSchema);

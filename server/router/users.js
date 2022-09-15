@@ -33,6 +33,7 @@ router.patch("/user/update/:id", async (req, res) => {
   try {
     await Users.findById(req.params.id || req.body.id)
       .then((userData) => {
+        userData.role = req.body.role;
         userData.verified = req.body.verified;
         userData.save();
         console.log("successfully updated");

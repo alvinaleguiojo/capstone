@@ -16,7 +16,7 @@ router.get("/medicines", paginatedResults(Medicine), (req, res) => {
 });
 
 // create new medicines
-router.post("/medicine/add", async (req, res) => {
+router.post("/medicine/create", async (req, res) => {
   const { patient_id, medicine_name, quantity, expiry_date, stocks, status } =
     req.body;
   try {
@@ -51,6 +51,20 @@ router.patch("/medicine/update/:id", async (req, res) => {
     }
   } catch (err) {
     console.log(err);
+    res.status(400).json({ message: "Invalid Data Entry" });
+  }
+});
+
+// Delete medicine
+router.delete("/medicine/delete/:id",  async (req, res) => {
+  try{
+    const id = req.params.id;
+  const response = await Medicine.findByIdAndRemove(id).exec();
+  response && res.status(200).json({ message: "Medicine has been deleted" });
+  console.log("Medicine has been deleted");
+  }
+  catch (err){
+    res.status(400).json({ message: "Invalid ID" });
   }
 });
 
