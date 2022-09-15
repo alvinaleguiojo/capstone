@@ -4,7 +4,7 @@
 @contentType = application/json
 
 # # Retrieving or Read Data from DB
-GET {{host}}/patients
+# GET {{host}}/medicines
 
 # # retrieving or Read Data from DB By ID
 # GET {{host}}/patients/63156f41b289c06579965e5a
@@ -13,20 +13,33 @@ GET {{host}}/patients
 # GET {{host}}/todos?page=1&limit=10
 
 # # Create a new Data
-# POST {{host}}/appointment HTTP/1.1
-# content-type: application/json
+POST {{host}}/users HTTP/1.1
+content-type: application/json
 
-#  {
-#       "firstname": "alvs5",
-#       "lastname": "test5",
-#       "address": "aleguiojo5",
-#       "phone": "0923232",
-#       "note": "test note",
-#       "vaccine": true,
-#       "immunization": true,
-#       "prenatal": true,
-#       "schedule": "2022-09-04T16:00:00.000Z",
-#       "pass"
+##### FOR Medicine
+{
+      "firstname": "alvs5",
+      "lastname": "test5",
+      "address": "aleguiojo5",
+      "phone": "0923232",
+      "note": "test note",
+      "vaccine": true,
+      "immunization": true,
+      "prenatal": true,
+      "schedule": "2022-09-04T16:00:00.000Z",
+      "pass"
+}
+
+##### FOR Medicine
+
+# {
+#        "patient_id": "63234d510f06343c3906a458",
+#        "medicine_name": "Ambrox",
+#        "quantity": 15,
+#        "expiry_date": "2023-11-08T16:00:00.000Z",
+#        "entry_date": "2022-11-08T16:00:00.000Z",
+#        "stocks": 10,
+#        "status": "Waiting"
 # }
 
 
@@ -44,7 +57,7 @@ GET {{host}}/patients
 # 
 
 # Delete Data By Id from DB
-# DELETE  {{host}}/user/delete/631d56a4295a3cb13814dc7f HTTP/1.1
+# DELETE  {{host}}/user/delete/6320c751f1b8d3c7fc020e11 HTTP/1.1
 # content-type: application/json
 
 # {

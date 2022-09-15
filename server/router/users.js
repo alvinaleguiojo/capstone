@@ -21,7 +21,7 @@ router.get("/user/:id", getById(Users), (req, res) => {
 });
 
 // Remove user from the list
-router.delete("/user/delete/:id", validateToken, async (req, res) => {
+router.delete("/user/delete/:id",  async (req, res) => {
   const id = req.params.id;
   await Users.findByIdAndRemove(id).exec();
   res.send("User has been deleted");
@@ -29,13 +29,12 @@ router.delete("/user/delete/:id", validateToken, async (req, res) => {
 });
 
 // update user's data
-router.patch("/user/update/:id", validateToken, async (req, res) => {
+router.patch("/user/update/:id", async (req, res) => {
   try {
     await Users.findById(req.params.id || req.body.id)
       .then((userData) => {
         userData.verified = req.body.verified;
         userData.save();
-        res.send("successfully updated");
         console.log("successfully updated");
         res.status(200).json({ message: "data has been updated successfully" });
       })
@@ -59,6 +58,7 @@ router.post("/register", async (req, res) => {
         password: hash,
         role: "BHW",
         created_date: new Date().toLocaleDateString(),
+        verified: false
       });
       const accessToken = createTokens(user);
       res.cookie("access_token", accessToken, {
