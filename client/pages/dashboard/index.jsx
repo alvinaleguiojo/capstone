@@ -99,17 +99,6 @@ const index = ({ user }) => {
     });
   }, []);
 
-  useEffect(() => {
-    axios
-      .get("http://localhost:3001", { withCredentials: true })
-      .then((response) => {
-        return setUserData(response.data.id);
-      })
-      .catch(() => {
-        router.push("/login");
-      });
-  }, [router]);
-
   return (
     <>
       <Meta
@@ -117,7 +106,7 @@ const index = ({ user }) => {
         description="User Dashboard"
         keywords="Capstone project, health center, baranggay"
       />
-      {useAuth() && (
+      {useAuth() ? (
         <Box className={styles.dashboard}>
           <Navbar />
           <Box className={contentStyles.content}>
@@ -246,7 +235,7 @@ const index = ({ user }) => {
                       component="h6"
                       color="#5A5959"
                     >
-                      Total Patients
+                      Patients
                     </Typography>
 
                     <Typography
@@ -263,13 +252,13 @@ const index = ({ user }) => {
                     </Typography>
                   </Box>
                   <Box className={styles.report__card}>
-                    <Image src={userIcon} title="icon" />
+                    <Image src={userIcon} title="icon" height={50} width={50} />
                     <Typography
                       variant="caption"
                       component="h6"
                       color="#5A5959"
                     >
-                      Total Patients
+                      Appointments
                     </Typography>
 
                     <Typography
@@ -290,7 +279,7 @@ const index = ({ user }) => {
                       component="h6"
                       color="#5A5959"
                     >
-                      Total Patients
+                      Completed
                     </Typography>
 
                     <Typography
@@ -311,7 +300,7 @@ const index = ({ user }) => {
                       component="h6"
                       color="#5A5959"
                     >
-                      Total Patients
+                      Cancelled
                     </Typography>
 
                     <Typography
@@ -370,6 +359,8 @@ const index = ({ user }) => {
             </Box>
           </Box>
         </Box>
+      ) : (
+        router.push("/forbidden")
       )}
     </>
   );

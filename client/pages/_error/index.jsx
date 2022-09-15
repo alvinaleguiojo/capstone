@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ErrorBanner from "../../assets/image/errorBanner.svg";
 import ErrorIcon from "../../assets/image/404.svg";
@@ -22,7 +22,7 @@ const index = () => {
           Something went wrong. Please try again
         </Typography>
         <Box className={styles.loginBtn}>
-          <Link href="/patients">Go Back</Link>
+          <Link href="/dashboard">Go Back</Link>
         </Box>
       </Box>
     </Box>

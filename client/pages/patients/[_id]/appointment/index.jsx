@@ -44,20 +44,20 @@ const Index = ({ patient }) => {
       .then(() => {
         Swal.fire("Success!", "Appointment has been set!", "success");
         setLoading(false);
-        setAppointment({
-          ...appointment,
-          firstname: "",
-          lastname: "",
-          address: "",
-          phone: "",
-          note: "",
-          vaccine: false,
-          immunization: false,
-          prenatal: false,
-          service_type: "",
-        });
       })
       .catch((err) => console.log("Error" + err));
+    setAppointment({
+      ...appointment,
+      firstname: "",
+      lastname: "",
+      address: "",
+      phone: "",
+      note: "",
+      vaccine: false,
+      immunization: false,
+      prenatal: false,
+      service_type: "",
+    });
   };
 
   return (

@@ -1,15 +1,20 @@
 const express = require("express");
 const router = express.Router();
-const Appointments = require("../model/appointment");
+const Users = require("../model/user");
 
 //search patients API
 router.get("/search", (req, res) => {
-  const searchField = req.query.firstname;
-  Appointments.find({
-    firstname: { $regex: searchField, $options: "$i" },
-  }).then((data) => {
-    res.json(data);
-  });
+  const firstname = req.query.firstname;
+
+  Users.find({
+    firstname: { $regex: firstname, $options: "$i" },
+  })
+    .then((data) => {
+      res.json(data);
+    })
+    .catch((error) => {
+      console.log(error);
+    });
 });
 
 module.exports = router;

@@ -4,7 +4,7 @@
 @contentType = application/json
 
 # # Retrieving or Read Data from DB
-# GET {{host}}/users
+GET {{host}}/patients
 
 # # retrieving or Read Data from DB By ID
 # GET {{host}}/patients/63156f41b289c06579965e5a

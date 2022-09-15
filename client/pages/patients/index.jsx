@@ -9,9 +9,6 @@ import styles from "../../styles/Patients.module.css";
 import GridTable from "../../component/GridTable";
 import Meta from "../../component/Meta";
 import Typography from "@mui/material/Typography";
-import AddIcon from "../../assets/image/plus-circle.svg";
-import { Button } from "@mui/material";
-import Swal from "sweetalert2";
 import useAuth from "../../customhook/Auth";
 
 const columns = [
@@ -23,23 +20,25 @@ const columns = [
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "service_type",
-    label: "Service Type",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "schedule",
-    label: "Schedule",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
     id: "name",
     label: "Name",
     minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "age",
+    label: "Age",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "gender",
+    label: "Gender",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
   },
   { id: "address", label: "Address", minWidth: 100 },
   {
@@ -49,10 +48,17 @@ const columns = [
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
+  {
+    id: "last_visited",
+    label: "Last Visited",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
 ];
 
-function createData(_id, service_type, schedule, name, address, phone) {
-  return { _id, service_type, schedule, name, address, phone };
+function createData(_id, name, age, gender, address, phone, last_visited) {
+  return { _id, name, gender, age, address, phone , last_visited};
 }
 
 const index = ({ patients }) => {
@@ -61,49 +67,14 @@ const index = ({ patients }) => {
     return rows.push(
       createData(
         patient._id,
-        patient.service_type,
-        patient.schedule,
         patient.firstname + " " + patient.lastname,
+        patient.age,
+        patient.gender,
         patient.address,
         patient.phone
       )
     );
   });
-
-  const MedicineModal = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Registration",
-      html:
-        '<div class="medicine__container"><label class="medicine__name">First Name</label><input id="swal-input1" class="swal2-input" placeholder="First Name" required></div>' +
-        '<div class="medicine__container"><label class="medicine__name">Last Name</label><input id="swal-input2" class="swal2-input" placeholder="Last Name"></div>' +
-        '<div class="medicine__container"><label>Address</label><input id="swal-input3" class="swal2-input" placeholder="Address" type="text"></div>' +
-        '<div class="medicine__container"><label>Phone</label><input id="swal-input4" class="swal2-input" placeholder="+63..." type="phone"></div>' +
-        '<div class="medicine__container"><label>Select Service</label><select id="swal-input5" class="swal2-input medicine__input" placeholder="Select Service" type="select"><option value="Immunization">Immunization</option><option value="Vaccine">Vaccine</option><option value="Prenatal">Prenatal</option></select></div>' +
-        '<div class="medicine__container"><label>Schedule</label><input id="swal-input6" class="swal2-input medicine__input" placeholder="Schedule" type="date" min="2000-01-02"></div>',
-      focusConfirm: false,
-      allowOutsideClick: false,
-      showCancelButton: true,
-      preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value,
-          document.getElementById("swal-input3").value,
-          document.getElementById("swal-input4").value,
-          document.getElementById("swal-input5").value,
-          document.getElementById("swal-input5").value,
-        ];
-      },
-    });
-
-    const res = JSON.stringify(formValues);
-    console.log(res);
-    res &&
-      (await Swal.fire(
-        "Success!",
-        `Medicine has been added! + ${res}`,
-        "success"
-      ));
-  };
 
   return (
     <>
@@ -121,7 +92,7 @@ const index = ({ patients }) => {
             <Box className={reusableStyle.main__content}>
               <Box className={styles.patients}>
                 <Typography variant="h5" component="h5" color="#B82623">
-                  Patients for Today
+                  All Patients
                 </Typography>
                 <GridTable
                   rows={rows}
@@ -132,13 +103,7 @@ const index = ({ patients }) => {
                   rowPerPage={10}
                 />
 
-                <Button
-                  style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
-                  onClick={MedicineModal}
-                >
-                  <Image src={AddIcon} alt="add" />
-                  Add Patient
-                </Button>
+              
               </Box>
             </Box>
           </Box>
@@ -152,7 +117,7 @@ export default index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch("http://localhost:3001/list_appointments");
+    const res = await fetch("http://localhost:3001/patients");
     const { results } = await res.json();
 
     // const todayPatients = results.filter((date) =>date.schedule == new Date().toLocaleDateString())

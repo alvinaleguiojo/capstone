@@ -14,56 +14,54 @@ import Typography from "@mui/material/Typography";
 import SearchIcon from "../../assets/image/search.svg";
 import axios from "axios";
 import useAuth from "../../customhook/Auth";
+import { Button } from "@mui/material";
+import AddIcon from "../../assets/image/plus-circle.svg";
+import Swal from "sweetalert2";
 
 const columns = [
   {
     id: "_id",
     label: "Patient's ID",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "service_type",
-    label: "Service Type",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "lastcheck",
-    label: "Last Check-up",
-    minWidth: 170,
+    minWidth: 200,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
     id: "name",
-    label: "Patient's Name",
-    minWidth: 170,
-  },
-  {
-    id: "phone",
-    label: "Phone Number",
-    minWidth: 170,
+    label: "Name",
+    minWidth: 250,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "address",
-    label: "status",
-    minWidth: 170,
+    id: "age",
+    label: "Age",
+    minWidth: 100,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "gender",
+    label: "Gender",
+    minWidth: 100,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  { id: "address", label: "Address", minWidth: 250 },
+  {
+    id: "phone",
+    label: "Phone Number",
+    minWidth: 200,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
 ];
 
-function createData(_id, service_type, lastcheck, name, phone, address) {
-  return { _id, service_type, lastcheck, name, phone, address };
+function createData(_id, name, age, gender, address, phone) {
+  return { _id, name, age, gender, address, phone };
 }
 
 const index = ({ patients }) => {
-
   useAuth(); // this will check if the user is authenticated else return login page
 
   const router = useRouter();
@@ -98,14 +96,59 @@ const index = ({ patients }) => {
     return rows.push(
       createData(
         patient._id,
-        patient.service_type,
-        patient.schedule,
         patient.firstname + " " + patient.lastname,
+        patient.age,
+        patient.gender,
         patient.address,
         patient.phone
       )
     );
   });
+
+  // modal
+  const openModal = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Registration",
+      html:
+        '<div class="medicine__container"><label class="medicine__name">First Name</label><input id="swal-input1" class="swal2-input" placeholder="First Name" required type="text"></div>' +
+        '<div class="medicine__container"><label class="medicine__name">Last Name</label><input id="swal-input2" class="swal2-input" placeholder="Last Name" required type="text"></div>' +
+        '<div class="medicine__container"><label class="medicine__name">Age</label><input id="swal-input3" class="swal2-input" placeholder="Age" required type="number"></div>' +
+        '<div class="medicine__container"><label>Address</label><input id="swal-input4" class="swal2-input" placeholder="Address" required type="text"></div>' +
+        '<div class="medicine__container"><label>Phone</label><input id="swal-input5" class="swal2-input" placeholder="+63..." required type="tel"></div>' +
+        '<div class="medicine__container"><label>Gender</label><select id="swal-input6" class="swal2-input medicine__input" placeholder="Gender" type="select"><option value="Male">Male</option><option value="Female">Female</option></select></div>',
+      // '<div class="medicine__container"><label>Select Service</label><select id="swal-input7" class="swal2-input medicine__input" placeholder="Select Service" type="select"><option value="Immunization">Immunization</option><option value="Vaccine">Vaccine</option><option value="Prenatal">Prenatal</option></select></div>' +
+      // '<div class="medicine__container"><label>Schedule</label><input id="swal-input8" class="swal2-input medicine__input" placeholder="Schedule" type="date" min="2000-01-02"></div>',
+      focusConfirm: false,
+      allowOutsideClick: false,
+      showCancelButton: true,
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+          document.getElementById("swal-input3").value,
+          document.getElementById("swal-input4").value,
+          document.getElementById("swal-input5").value,
+          document.getElementById("swal-input6").value,
+          // document.getElementById("swal-input5").value,
+          // document.getElementById("swal-input5").value,
+        ];
+      },
+    });
+
+    // const res = JSON.stringify(formValues);
+    formValues &&
+      axios
+        .post("http://localhost:3001/patient/register", {
+          ...formValues,
+        })
+        .then(() => {
+          Swal.fire("Success!", `Patient has been added!`, "success");
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+
   return (
     <Box>
       <Meta
@@ -149,6 +192,13 @@ const index = ({ patients }) => {
               firstRow={10}
               rowPerPage={10}
             />
+            <Button
+              style={{ backgroundColor: "#dbdff3", color: "#b82623" }}
+              onClick={openModal}
+            >
+              <Image src={AddIcon} alt="add" />
+              <span> Register Patient</span>
+            </Button>
           </Box>
         </Box>
       </Box>

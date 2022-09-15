@@ -53,11 +53,11 @@ router.post("/register", async (req, res) => {
   bcrypt.hash(password, 10).then(async (hash) => {
     try {
       const user = await Users.create({
-        firstname: firstname,
-        lastname: lastname,
-        email: email,
+        firstname,
+        lastname,
+        email,
         password: hash,
-        role: "BNS",
+        role: "BHW",
         created_date: new Date().toLocaleDateString(),
       });
       const accessToken = createTokens(user);

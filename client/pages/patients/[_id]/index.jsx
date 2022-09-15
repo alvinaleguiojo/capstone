@@ -396,7 +396,7 @@ export default PatientProfile;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/list_appointments");
+    const res = await fetch("http://localhost:3001/patients");
     const { results } = await res.json();
 
     return {
@@ -415,7 +415,7 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`http://localhost:3001/patients/${params._id}`);
     const patient = await res.json();
 
-    const Allres = await fetch("http://localhost:3001/list_appointments");
+    const Allres = await fetch("http://localhost:3001/patients");
     const { results } = await Allres.json();
 
     return {

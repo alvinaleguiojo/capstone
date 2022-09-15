@@ -7,15 +7,20 @@ export default async function useAuthRedirect() {
 
   useEffect(() => {
     async function dashboard() {
-      await axios
-        .get("http://localhost:3001", { withCredentials: true })
-        .then(() => {
-          router.push("/dashboard");
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      try {
+        await axios
+          .get("http://localhost:3001", { withCredentials: true })
+          .then((response) => {
+            router.push("/dashboard");
+            return response;
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      } catch (error) {
+        console.log(error);
+      }
     }
     dashboard();
-  }, [router]);
+  }, []);
 }

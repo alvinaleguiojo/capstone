@@ -8,7 +8,7 @@ display: block;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
+    background-color: #dbdff3;;
     display: flex;
     left: 0,
     right: 0;
