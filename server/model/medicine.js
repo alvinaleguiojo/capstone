@@ -26,10 +26,10 @@ const medicineSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  status:{
+  status: {
     type: String,
     required: true,
-  }
+  },
 });
 
 module.exports = mongoose.model("Medicine", medicineSchema);

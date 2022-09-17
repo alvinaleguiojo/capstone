@@ -6,10 +6,12 @@ const app = express();
 const http = require("http");
 const cors = require("cors");
 const { Server } = require("socket.io");
-const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+
+//import MYSQL DB connection
+const connection = require("./db/connection");
 
 //import routes
 const index = require("./router/index");
@@ -19,16 +21,15 @@ const search = require("./router/search");
 const crud = require("./router/crud");
 const patients = require("./router/patients");
 const Medicines = require("./router/medicine");
-// const twilio = require("./router/twilio");
+const twilio = require("./router/twilio");
 
-// import model
+// import User Model
 const Users = require("./model/user");
 
-//db initialization
-mongoose.connect(process.env.MONGODB_URL);
-const db = mongoose.connection;
-db.once("open", async () => {
-  console.log("DB is connected");
+// TESTING MYSQL Connection
+connection.connect((err) => {
+  if (err) return console.log("Connection failed ", err);
+  console.log("MYSQL DB is Connected");
 });
 
 // allow credentials to send in the front end
@@ -48,7 +49,7 @@ app.use(search);
 app.use(crud);
 app.use(patients);
 app.use(Medicines);
-// app.use(twilio);
+app.use(twilio);
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);

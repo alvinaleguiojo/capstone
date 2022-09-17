@@ -5,63 +5,80 @@ const paginatedResults = require("../middleware/paginatedResults");
 const getById = require("../middleware/getById");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
+
+// import for AsyncAwait Functions
 const { createTokens, validateToken } = require("../middleware/JWT");
+const GetAllUsersPromise = require("../AsyncAwait/Users/Users");
+const GetUsersPromiseByID = require("../AsyncAwait/Users/UserById");
+const DeleteUsersPromiseByID = require("../AsyncAwait/Users/DeleteUserById");
+const CreateUserPromise = require("../AsyncAwait/Users/CreateUser");
+const UpdateUserPromiseByID = require("../AsyncAwait/Users/UpdateUserById");
 
 router.use(cookieParser());
 require("dotenv").config();
 
-// get all users
-router.get("/users", paginatedResults(Users), (req, res) => {
-  res.json(res.paginatedResults);
+// Get All Users
+router.get("/users", async (req, res) => {
+  try {
+    const resultElements = await GetAllUsersPromise();
+    res.status(200).json({ Users: resultElements }); //
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 });
 
-// get user by id
-router.get("/user/:id", getById(Users), (req, res) => {
-  res.json(res);
+// Get User by ID
+router.get("/user/:id", async (req, res) => {
+  const ID = req.params.id;
+  try {
+    const resultElements = await GetUsersPromiseByID(ID);
+    res.status(200).json({ result: resultElements });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid Id" });
+  }
 });
 
 // Remove user from the list
-router.delete("/user/delete/:id",  async (req, res) => {
-  const id = req.params.id;
-  await Users.findByIdAndRemove(id).exec();
-  res.send("User has been deleted");
-  console.log("User has been deleted");
+router.delete("/user/delete/:id", async (req, res) => {
+  try {
+    await DeleteUsersPromiseByID(req.params.id);
+    res
+      .status(200)
+      .json({ message: `User ID: ${req.params.id} has been deleted` });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid Id or Id is not exist" });
+  }
 });
 
-// update user's data
+// Update User By ID
 router.patch("/user/update/:id", async (req, res) => {
+  const { Address, Phone, Role } = req.body;
+  const ID = req.params.id;
   try {
-    await Users.findById(req.params.id || req.body.id)
-      .then((userData) => {
-        userData.role = req.body.role;
-        userData.verified = req.body.verified;
-        userData.save();
-        console.log("successfully updated");
-        res.status(200).json({ message: "data has been updated successfully" });
-      })
-      .catch(() => {
-        res.status(400).json({ message: "field is required" });
-      });
+    await UpdateUserPromiseByID(ID, Address, Phone, Role);
+    res.status(200).json({ message: "Data has been updated successfully" });
   } catch (err) {
-    console.log(err);
+    res.status(400).json({ message: "field is required" });
   }
 });
 
 // create new User
 router.post("/register", async (req, res) => {
-  const { firstname, lastname, email, password } = req.body;
-  bcrypt.hash(password, 10).then(async (hash) => {
+  const { LastName, FirstName, Email, Password } = req.body;
+  bcrypt.hash(Password, 10).then(async (hash) => {
     try {
-      const user = await Users.create({
-        firstname,
-        lastname,
-        email,
-        password: hash,
-        role: "BHW",
-        created_date: new Date().toLocaleDateString(),
-        verified: false
+      const newUser = await CreateUserPromise({
+        LastName,
+        FirstName,
+        Address,
+        Email,
+        Password: hash,
+        Role: "BHW",
+        Created_Date: new Date(),
+        Verified: false,
       });
-      const accessToken = createTokens(user);
+      const accessToken = createTokens(newUser);
       res.cookie("access_token", accessToken, {
         withCredentials: true,
         httpOnly: true,
@@ -69,9 +86,9 @@ router.post("/register", async (req, res) => {
         secure: true,
         sameSite: "none",
       });
-      res.status(200).json({ message: "user added successfully" });
+      res.status(200).json({ message: "User added successfully" });
     } catch (err) {
-      res.status(400).json({ message: "Invalid data entry" });
+      res.status(400).json({ message: "Invalid data entry", err });
     }
   });
 });

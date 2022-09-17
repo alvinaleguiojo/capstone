@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 
 const Tabs = () => {
   const router = useRouter();
+  console.log(router)
 
   return (
     <Box className={styles.tabs}>
