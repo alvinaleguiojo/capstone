@@ -19,7 +19,9 @@ const Tabs = () => {
       <Box
         className={
           router.route == "/patients" ||
-          router.route == "/patients/[_id]/appointment"
+          router.route == "/patients/[_id]/appointment" ||
+          router.route == "/patients/register" ||
+          router.route == "/patients/register/history"
             ? styles.active
             : styles.tab
         }

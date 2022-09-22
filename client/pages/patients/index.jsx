@@ -1,4 +1,5 @@
 import React from "react";
+import { useRouter } from "next/router";
 import Image from "next/image";
 import Navbar from "../../component/Navbar";
 import Tabs from "../../component/Tabs";
@@ -10,6 +11,7 @@ import GridTable from "../../component/GridTable";
 import Meta from "../../component/Meta";
 import Typography from "@mui/material/Typography";
 import useAuth from "../../customhook/Auth";
+import { Button } from "@mui/material";
 
 const columns = [
   {
@@ -55,6 +57,7 @@ function createData(PatientID, Name, Age, Gender, Address, Phone) {
 }
 
 const index = ({ patients }) => {
+  const router = useRouter();
   const rows = [];
   patients.map((patient) => {
     return rows.push(
@@ -84,9 +87,14 @@ const index = ({ patients }) => {
             <Tabs />
             <Box className={reusableStyle.main__content}>
               <Box className={styles.patients}>
-                <Typography variant="h5" component="h5" color="#B82623">
-                  All Patients
-                </Typography>
+                <Box className={styles.content__header}>
+                  <Typography variant="h5" component="h5" color="#B82623">
+                    All Patients
+                  </Typography>
+                  <Button className={styles.addPatient} onClick={() => router.push("/patients/register")}>
+                    Add New Patient
+                  </Button>
+                </Box>
                 <GridTable
                   rows={rows}
                   columns={columns}

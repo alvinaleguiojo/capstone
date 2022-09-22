@@ -9,6 +9,10 @@ body {
   width: 100vw;
 }
 
+input:focus{
+  outline: #B82623 solid 1px;
+}
+
 h1 {
   color: #b82623;
   font-weight: 600;

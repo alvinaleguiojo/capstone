@@ -35,30 +35,47 @@ const Index = ({ patient, Services }) => {
 
   useEffect(() => {
     let appointmentInput = Object.values(appointment).includes("");
-    !appointmentInput && Object.keys(appointment).length >= 5 && calendar
+    !appointmentInput && Object.keys(appointment).length >= 4 && calendar
       ? setDisabled(false)
       : setDisabled(true);
   }, [appointment, calendar]);
 
+  // set calendar and patientid to state value
   useEffect(() => {
-    setAppointment({ ...appointment, schedule: calendar });
+    const date = `${calendar.getFullYear()}-${calendar.getMonth()}-${calendar.getDate()}`;
+    setAppointment({
+      ...appointment,
+      Schedule: date,
+      PatientID: parseInt(routeID),
+      Status: "Pending",
+    });
   }, [calendar]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
     axios
-      .post("http://localhost:3001/appointment", {
+      .post("http://localhost:3001/appointment/create", {
         ...appointment,
       })
       .then(() => {
         Swal.fire("Success!", "Appointment has been set!", "success");
         setLoading(false);
       })
-      .catch((err) => console.log("Error" + err));
+      .catch(() => {
+        Swal.fire(
+          "Error!",
+          "Please select a schedule and service type",
+          "error"
+        );
+      });
+
     setAppointment({
       ...appointment,
-      // ServiceType: service.ServiceType,
+      Notes: "",
+      Schedule: "", 
+      enabled: false,
+      ServiceID: 0,
     });
   };
 
@@ -180,9 +197,9 @@ const Index = ({ patient, Services }) => {
                     maxLength={250}
                     type="text"
                     name="purpose"
-                    value={appointment.note}
+                    value={appointment.Notes}
                     onChange={(e) =>
-                      setAppointment({ ...appointment, note: e.target.value })
+                      setAppointment({ ...appointment, Notes: e.target.value })
                     }
                   />
                 </Box>
@@ -212,14 +229,15 @@ const Index = ({ patient, Services }) => {
                         key={service.ServiceID}
                         control={
                           <Checkbox
-                            value={appointment[service.ServiceType]}
-                            onChange={(e) =>
+                            value={appointment.enabled}
+                            onChange={() => {
                               setAppointment({
-                                // ...appointment,
-                                [service.ServiceType]: e.target.checked,
-                                service_type: `${service.ServiceType}`,
-                              })
-                            }
+                                ...appointment,
+                                ServiceID: service.ServiceID,
+                                // enabled: e.target.checked,
+                                // ServiceType: service.ServiceType,
+                              });
+                            }}
                           />
                         }
                         label={service.ServiceType}

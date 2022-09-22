@@ -38,34 +38,41 @@ ChartJS.register(
 // get all records from patient ID
 const columns = [
   {
-    id: "service_type",
+    id: "ServiceType",
     label: "Service Type",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "schedule",
+    id: "Schedule",
     label: "Schedule",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "Status",
+    label: "Status",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
 ];
 
-function createData(service_type, schedule) {
-  return { service_type, schedule };
+function createData(ServiceType, Schedule, Status) {
+  return { ServiceType, Schedule, Status };
 }
 
-const PatientProfile = ({ patient, patients }) => {
+const PatientProfile = ({ patient, Appointments }) => {
   const [sendMessage, setSendMessage] = useState("");
   const router = useRouter();
   const id = router.query._id;
 
   // pushing patients data to array
   const rows = [];
-  patients.map((patient) => {
-    return rows.push(createData(patient.ServiceType, patient.Schedule));
+  Appointments.map((appointment) => {
+    return rows.push(createData(appointment.ServiceType, appointment.Schedule));
   });
 
   // All appointments state
@@ -220,7 +227,10 @@ const PatientProfile = ({ patient, patients }) => {
               keywords="Capstone project, health center, baranggay"
             />
             <Navbar />
-            <Box className={styles.patientProfile}>
+            <Box
+              className={styles.patientProfile}
+              style={{ backgroundColor: "#dbdff3" }}
+            >
               <Box className={styles.container}>
                 {/* left container starts here */}
                 <Box className={styles.left__main}>
@@ -424,13 +434,13 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
 
-    const Allres = await fetch("http://localhost:3001/patients");
-    const { Patients } = await Allres.json();
+    const Allres = await fetch("http://localhost:3001/appointments");
+    const { Appointments } = await Allres.json();
 
     return {
       props: {
         patient,
-        patients: Patients,
+        Appointments,
       },
     };
   } catch (err) {

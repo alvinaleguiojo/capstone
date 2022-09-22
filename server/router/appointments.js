@@ -15,7 +15,7 @@ const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppoint
 router.get("/appointments", async (req, res) => {
   try {
     const resultElements = await GetAllAppointmentsPromise();
-    res.status(200).json({ Patients: resultElements });
+    res.status(200).json({ Appointments: resultElements });
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -34,13 +34,15 @@ router.delete("/delete/:id", async (req, res) => {
 router.post("/appointment/create", async (req, res) => {
   const today = new Date();
   const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  const { PatientID, Schedule, ServiceID, Status } = req.body;
+  const { PatientID, Schedule, ServiceID, Status, Notes } = req.body;
+  console.log("test", PatientID, Schedule, ServiceID);
   try {
     await CreateAppointmentsPromise({
       PatientID,
       Schedule,
       ServiceID,
       Status,
+      Notes,
       CreatedDate: date,
     });
     res.status(200).json({ message: "Appointment added successfully" });
