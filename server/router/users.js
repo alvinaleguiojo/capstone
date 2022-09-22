@@ -13,6 +13,7 @@ const GetUsersPromiseByID = require("../AsyncAwait/Users/UserById");
 const DeleteUsersPromiseByID = require("../AsyncAwait/Users/DeleteUserById");
 const CreateUserPromise = require("../AsyncAwait/Users/CreateUser");
 const UpdateUserPromiseByID = require("../AsyncAwait/Users/UpdateUserById");
+const UserCredentialPromise = require("../AsyncAwait/Users/UserLogin");
 
 router.use(cookieParser());
 require("dotenv").config();
@@ -41,8 +42,11 @@ router.get("/user/:id", async (req, res) => {
 
 // Remove user from the list
 router.delete("/user/delete/:id", async (req, res) => {
+  const ID = req.params.id;
   try {
-    await DeleteUsersPromiseByID(req.params.id);
+    const user = await GetAllUsersPromise();
+    const id = await user.filter((id) => id.StaffID == ID);
+    await DeleteUsersPromiseByID({ id: id[0].StaffID });
     res
       .status(200)
       .json({ message: `User ID: ${req.params.id} has been deleted` });
@@ -53,10 +57,10 @@ router.delete("/user/delete/:id", async (req, res) => {
 
 // Update User By ID
 router.patch("/user/update/:id", async (req, res) => {
-  const { Address, Phone, Role } = req.body;
+  const { Role, Verified } = req.body;
   const ID = req.params.id;
   try {
-    await UpdateUserPromiseByID(ID, Address, Phone, Role);
+    await UpdateUserPromiseByID(ID, Role, Verified);
     res.status(200).json({ message: "Data has been updated successfully" });
   } catch (err) {
     res.status(400).json({ message: "field is required" });
@@ -65,46 +69,53 @@ router.patch("/user/update/:id", async (req, res) => {
 
 // create new User
 router.post("/register", async (req, res) => {
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const { LastName, FirstName, Email, Password } = req.body;
-  bcrypt.hash(Password, 10).then(async (hash) => {
-    try {
-      const newUser = await CreateUserPromise({
-        LastName,
-        FirstName,
-        Address,
-        Email,
-        Password: hash,
-        Role: "BHW",
-        Created_Date: new Date(),
-        Verified: false,
-      });
-      const accessToken = createTokens(newUser);
-      res.cookie("access_token", accessToken, {
-        withCredentials: true,
-        httpOnly: true,
-        maxAge: 60 * 60 * 24 * 30 * 1000,
-        secure: true,
-        sameSite: "none",
-      });
-      res.status(200).json({ message: "User added successfully" });
-    } catch (err) {
-      res.status(400).json({ message: "Invalid data entry", err });
-    }
-  });
+  const EmailExist = await UserCredentialPromise(Email);
+
+  EmailExist.length > 0 &&
+    EmailExist[0].Email === Email &&
+    res.status(400).json({ message: "Email is already exist" });
+
+  EmailExist.length <= 0 &&
+    bcrypt.hash(Password, 10).then(async (hash) => {
+      try {
+        const newUser = await CreateUserPromise({
+          LastName,
+          FirstName,
+          Email,
+          Password: hash,
+          Role: "BHW",
+          Verified: false,
+          CreatedDate: date,
+        });
+        const accessToken = createTokens(newUser);
+        res.cookie("access_token", accessToken, {
+          withCredentials: true,
+          httpOnly: true,
+          maxAge: 60 * 60 * 24 * 30 * 1000,
+          secure: true,
+          sameSite: "none",
+        });
+        res.status(200).json({ message: "User added successfully" });
+      } catch (err) {
+        res.status(400).json({ message: "Invalid data entry" });
+      }
+    });
 });
 
 router.post("/login", async (req, res) => {
-  const { email, password } = req.body;
+  const { Email, Password } = req.body;
+  try {
+    const user = await UserCredentialPromise(Email);
+    const dbPassword = await user[0].Password;
+    const match = await bcrypt.compare(Password, dbPassword);
 
-  const user = await Users.findOne({ email: email });
-  if (!user) return res.status(400).json({ message: "User not found" });
+    !user ||
+      (!match &&
+        res.status(400).json({ message: "Email or Password is incorrect" }));
 
-  const dbPassword = user.password;
-  bcrypt.compare(password, dbPassword).then((match) => {
-    if (!match)
-      return res
-        .status(400)
-        .json({ message: "Email or Password is incorrect" });
     if (match) {
       const accessToken = createTokens(user);
       res.cookie("access_token", accessToken, {
@@ -116,7 +127,9 @@ router.post("/login", async (req, res) => {
       });
       res.json("Logged In");
     }
-  });
+  } catch (error) {
+    res.status(400).json({ message: "Email or Password is incorrect" });
+  }
 });
 
 router.get("/logout", validateToken, (req, res) => {

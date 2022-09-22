@@ -59,13 +59,13 @@ function createData(service_type, schedule) {
 
 const PatientProfile = ({ patient, patients }) => {
   const [sendMessage, setSendMessage] = useState("");
-  const router = useRouter()
-  const { _id } = router.query
+  const router = useRouter();
+  const id = router.query._id;
 
   // pushing patients data to array
   const rows = [];
   patients.map((patient) => {
-    return rows.push(createData(patient.service_type, patient.schedule));
+    return rows.push(createData(patient.ServiceType, patient.Schedule));
   });
 
   // All appointments state
@@ -170,7 +170,6 @@ const PatientProfile = ({ patient, patients }) => {
 
   // send sms to patient open modal
   const handleMessageModal = async (phone) => {
-    console.log(phone);
     const { value: text } = await Swal.fire({
       input: "textarea",
       inputLabel: "Message",
@@ -214,7 +213,7 @@ const PatientProfile = ({ patient, patients }) => {
     <>
       {patient.map((patientData, key) => {
         return (
-          <Box key={patientData._id}>
+          <Box key={patientData.PatientID}>
             <Meta
               title="Capstone | Patient"
               description="add or update medicines here"
@@ -226,7 +225,12 @@ const PatientProfile = ({ patient, patients }) => {
                 {/* left container starts here */}
                 <Box className={styles.left__main}>
                   <Box className={styles.backButton}>
-                    <Link href="/patients">Back to Patients/</Link>
+                    <span
+                      onClick={() => router.push("/patients")}
+                      style={{ cursor: "pointer" }}
+                    >
+                      Back to Patients {">"}
+                    </span>
                     <span style={{ color: "grey" }}>Profile</span>
                   </Box>
                   <Box className={styles.content}>
@@ -240,12 +244,12 @@ const PatientProfile = ({ patient, patients }) => {
                       color="#B82623"
                       style={{ textAlign: "center" }}
                     >
-                      {patientData.firstname + " " + patientData.lastname}
+                      {patientData.FirstName + " " + patientData.LastName}
                     </Typography>
                     <Box className={styles.getStartedBtn} variant="contained">
                       <Link
                         className={styles.getStartedLink}
-                        href={`/patients/${patientData._id}/appointment`}
+                        href={`/patients/${patientData.PatientID}/appointment`}
                       >
                         Add New Appointment
                       </Link>
@@ -293,11 +297,11 @@ const PatientProfile = ({ patient, patients }) => {
                             component="h4"
                             color="#B82623"
                           >
-                            {patientData.phone}
+                            {patientData.Phone}
                           </Typography>
                           <Button
                             onClick={() => {
-                              handleMessageModal(patientData.phone);
+                              handleMessageModal(patientData.Phone);
                             }}
                           >
                             <Image
@@ -325,7 +329,7 @@ const PatientProfile = ({ patient, patients }) => {
                           component="h4"
                           color="#B82623"
                         >
-                          {patientData.address}
+                          {patientData.Address}
                         </Typography>
                       </Box>
                       {/* card end here */}
@@ -340,8 +344,13 @@ const PatientProfile = ({ patient, patients }) => {
                     className={styles.print__button}
                     style={{ height: "30px", width: "100px", alignSelf: "end" }}
                   >
-                    <Link href={`/patients/${patientData._id}/pdf`}>
-                    <Image src={PrintIcon} alt="print" height={30} width={30} />
+                    <Link href={`/patients/${patientData.PatientID}/pdf`}>
+                      <Image
+                        src={PrintIcon}
+                        alt="print"
+                        height={30}
+                        width={30}
+                      />
                     </Link>
                   </Box>
                   {/* Charts starts here*/}
@@ -397,11 +406,11 @@ export default PatientProfile;
 export async function getStaticPaths() {
   try {
     const res = await fetch("http://localhost:3001/patients");
-    const { results } = await res.json();
+    const { Patients } = await res.json();
 
     return {
-      paths: results.map((patient) => {
-        return { params: { _id: patient._id } };
+      paths: Patients.map((patient) => {
+        return { params: { _id: patient.PatientID.toString() } };
       }),
       fallback: false,
     };
@@ -412,16 +421,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const res = await fetch(`http://localhost:3001/patients/${params._id}`);
+    const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
 
     const Allres = await fetch("http://localhost:3001/patients");
-    const { results } = await Allres.json();
+    const { Patients } = await Allres.json();
 
     return {
       props: {
         patient,
-        patients: results,
+        patients: Patients,
       },
     };
   } catch (err) {

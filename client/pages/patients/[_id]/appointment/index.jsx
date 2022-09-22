@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Navbar from "../../../../component/Navbar";
 import Tabs from "../../../../component/Tabs";
 import Box from "@mui/material/Box";
@@ -16,12 +17,21 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import Meta from "../../../../component/Meta";
 import { format } from "date-fns";
+import { useRouter } from "next/router";
 
-const Index = ({ patient }) => {
+const Index = ({ patient, Services }) => {
   const [appointment, setAppointment] = useState({});
   const [calendar, setCalendar] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
+
+  // router
+  const router = useRouter();
+  const routeID = router.query._id;
+
+  useEffect(() => {
+    console.log(appointment);
+  }, [appointment]);
 
   useEffect(() => {
     let appointmentInput = Object.values(appointment).includes("");
@@ -48,15 +58,7 @@ const Index = ({ patient }) => {
       .catch((err) => console.log("Error" + err));
     setAppointment({
       ...appointment,
-      firstname: "",
-      lastname: "",
-      address: "",
-      phone: "",
-      note: "",
-      vaccine: false,
-      immunization: false,
-      prenatal: false,
-      service_type: "",
+      // ServiceType: service.ServiceType,
     });
   };
 
@@ -76,6 +78,23 @@ const Index = ({ patient }) => {
               <Box className={reusableStyle.main__content}>
                 {/* left content starts here */}
                 <Box className={styles.content__left}>
+                  <Box className={styles.backButton}>
+                    <span
+                      onClick={() => router.push(`/patients`)}
+                      style={{ fontSize: "14px", cursor: "pointer" }}
+                    >
+                      Back to Patients {">"}
+                    </span>
+                    <span
+                      onClick={() => router.push(`/patients/${routeID}`)}
+                      style={{ fontSize: "14px", cursor: "pointer" }}
+                    >
+                      Profile {">"}
+                    </span>
+                    <span style={{ color: "grey", fontSize: "14px" }}>
+                      Appointment
+                    </span>
+                  </Box>
                   <Typography variant="body2" component="h4" color="#585858">
                     First Name
                   </Typography>
@@ -84,7 +103,7 @@ const Index = ({ patient }) => {
                     className={reusableStyle.input}
                     type="text"
                     name="firstname"
-                    value={appointment.firstname || patientData.firstname}
+                    value={appointment.firstname || patientData.FirstName}
                     maxLength={50}
                     onChange={(e) =>
                       setAppointment({
@@ -102,7 +121,7 @@ const Index = ({ patient }) => {
                     className={reusableStyle.input}
                     type="text"
                     name="lastname"
-                    value={appointment.lastname || patientData.lastname}
+                    value={appointment.Lastname || patientData.LastName}
                     maxLength={50}
                     onChange={(e) =>
                       setAppointment({
@@ -120,7 +139,7 @@ const Index = ({ patient }) => {
                     className={reusableStyle.input}
                     type="text"
                     name="address"
-                    value={appointment.address || patientData.address}
+                    value={appointment.address || patientData.Address}
                     maxLength={250}
                     onChange={(e) =>
                       setAppointment({
@@ -141,7 +160,7 @@ const Index = ({ patient }) => {
                     pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}"
                     maxLength={11}
                     min={0}
-                    value={appointment.phone || patientData.phone}
+                    value={appointment.phone || patientData.Phone}
                     onChange={(e) =>
                       setAppointment({ ...appointment, phone: e.target.value })
                     }
@@ -188,53 +207,24 @@ const Index = ({ patient }) => {
                       Type of Service:
                     </Typography>
 
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          value={appointment.vaccine}
-                          onChange={(e) =>
-                            setAppointment({
-                              ...appointment,
-                              vaccine: e.target.checked,
-                              service_type: "Vaccine",
-                            })
-                          }
-                        />
-                      }
-                      label="Vaccine"
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          value={appointment.immunization}
-                          onChange={(e) =>
-                            setAppointment({
-                              ...appointment,
-                              immunization: e.target.checked,
-                              service_type: "Immunization",
-                            })
-                          }
-                        />
-                      }
-                      label="Immunization"
-                    />
-
-                    <FormControlLabel
-                      control={
-                        <Checkbox
-                          value={appointment.prenatal}
-                          onChange={(e) =>
-                            setAppointment({
-                              ...appointment,
-                              prenatal: e.target.checked,
-                              service_type: "Prenatal",
-                            })
-                          }
-                        />
-                      }
-                      label="Prenatal"
-                    />
+                    {Services.map((service) => (
+                      <FormControlLabel
+                        key={service.ServiceID}
+                        control={
+                          <Checkbox
+                            value={appointment[service.ServiceType]}
+                            onChange={(e) =>
+                              setAppointment({
+                                // ...appointment,
+                                [service.ServiceType]: e.target.checked,
+                                service_type: `${service.ServiceType}`,
+                              })
+                            }
+                          />
+                        }
+                        label={service.ServiceType}
+                      />
+                    ))}
 
                     <LoadingButton
                       onClick={handleSubmit}
@@ -262,11 +252,11 @@ export default Index;
 export async function getStaticPaths() {
   try {
     const res = await fetch("http://localhost:3001/patients");
-    const { results } = await res.json();
+    const { Patients } = await res.json();
 
     return {
-      paths: results.map((patient) => {
-        return { params: { _id: patient._id } };
+      paths: Patients.map((patient) => {
+        return { params: { _id: patient.PatientID.toString() } };
       }),
       fallback: false,
     };
@@ -277,12 +267,16 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const res = await fetch(`http://localhost:3001/patients/${params._id}`);
+    const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
+
+    const serviceResponse = await fetch(`http://localhost:3001/services`);
+    const { Services } = await serviceResponse.json();
 
     return {
       props: {
         patient,
+        Services,
       },
     };
   } catch (err) {

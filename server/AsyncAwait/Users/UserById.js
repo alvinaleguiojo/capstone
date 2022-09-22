@@ -5,7 +5,7 @@ const connection = require("../../db/connection");
 const GetUsersPromiseByID = (id) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM Users where ID = ${id}`,
+      `SELECT * FROM Staff where StaffID = ${id}`,
       (error, UsersByID) => {
         error && reject(error);
         return resolve(UsersByID);

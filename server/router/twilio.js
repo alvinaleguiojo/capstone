@@ -14,7 +14,7 @@ router.post("/sendMessagetoPatient", (req, res) => {
       to: req.body.phone,
       body: req.body.text,
     })
-    .then((response) => console.log("message sent"))
+    .then(() => console.log("message sent"))
     .catch((err) => {
       console.log("error: " + err.message);
     });

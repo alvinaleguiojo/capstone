@@ -104,8 +104,8 @@ const Index = () => {
 
     setUser({
       ...user,
-      email: "",
-      password: "",
+      Email: "",
+      Password: "",
     });
   };
 
@@ -147,9 +147,9 @@ const Index = () => {
               type="email"
               name="email"
               onChange={(e) =>
-                setUser({ ...user, email: e.target.value.toLocaleLowerCase() })
+                setUser({ ...user, Email: e.target.value.toLocaleLowerCase() })
               }
-              value={user.email || ""}
+              value={user.Email || ""}
             />
 
             <Typography variant="body2" component="h4" color="#585858">
@@ -160,8 +160,8 @@ const Index = () => {
               required={true}
               type="password"
               name="password"
-              onChange={(e) => setUser({ ...user, password: e.target.value })}
-              value={user.password || ""}
+              onChange={(e) => setUser({ ...user, Password: e.target.value })}
+              value={user.Password || ""}
             />
 
             <Box className={styles.remember__me}>

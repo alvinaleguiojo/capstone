@@ -20,11 +20,13 @@ const users = require("./router/users");
 const search = require("./router/search");
 const crud = require("./router/crud");
 const patients = require("./router/patients");
+const Services = require("./router/services");
 const Medicines = require("./router/medicine");
 const twilio = require("./router/twilio");
 
 // import User Model
 const Users = require("./model/user");
+const UserCredentialPromise = require("./AsyncAwait/Users/UserLogin");
 
 // TESTING MYSQL Connection
 connection.connect((err) => {
@@ -50,6 +52,7 @@ app.use(crud);
 app.use(patients);
 app.use(Medicines);
 app.use(twilio);
+app.use(Services);
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);
@@ -68,32 +71,30 @@ io.on("connection", (socket) => {
     socket.broadcast.emit("received", data);
   });
 
-  socket.on("email", (data) => {
-    Users.findOne({ email: data }).then((data) => {
-      data
-        ? socket.emit("error", {
-            message: "*Email already exist!",
-            email: data,
-          })
-        : socket.emit("error", { message: "" });
-    });
+  socket.on("email", async (data) => {
+    try {
+      const user = await UserCredentialPromise(data);
+      users.length > 0 &&
+        user[0].Email === data &&
+        socket.emit("error", { message: "*Email already exist!", email: data });
+    } catch (error) {
+      socket.emit("error", { message: "" });
+    }
   });
 
   socket.on("login", async (data) => {
-    console.log(data);
-    const user = await Users.findOne({ email: data.email });
-    if (!user)
-      return socket.emit("error", { message: "User not found", error: true });
-
-    const dbPassword = user.password;
-    bcrypt.compare(data.password, dbPassword).then((match) => {
-      if (!match) {
+    try {
+      const user = await UserCredentialPromise(data.Email);
+      const dbPassword = user[0].Password;
+      const match = await bcrypt.compare(data.Password, dbPassword);
+      !match &&
         socket.emit("error", {
           message: "Email or Password is incorrect",
           error: true,
         });
-      }
-    });
+    } catch (error) {
+      socket.emit("error", { message: "User not found", error: true });
+    }
   });
 });
 

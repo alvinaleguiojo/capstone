@@ -13,52 +13,45 @@ import useAuth from "../../customhook/Auth";
 
 const columns = [
   {
-    id: "_id",
+    id: "PatientID",
     label: "Patient's ID",
-    minWidth: 170,
+    minWidth: 50,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "name",
+    id: "Name",
     label: "Name",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "age",
+    id: "Age",
     label: "Age",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "gender",
+    id: "Gender",
     label: "Gender",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
-  { id: "address", label: "Address", minWidth: 100 },
+  { id: "Address", label: "Address", minWidth: 300 },
   {
-    id: "phone",
+    id: "Phone",
     label: "Phone Number",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "last_visited",
-    label: "Last Visited",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
 ];
 
-function createData(_id, name, age, gender, address, phone, last_visited) {
-  return { _id, name, gender, age, address, phone , last_visited};
+function createData(PatientID, Name, Age, Gender, Address, Phone) {
+  return { PatientID, Name, Age, Gender, Address, Phone };
 }
 
 const index = ({ patients }) => {
@@ -66,12 +59,12 @@ const index = ({ patients }) => {
   patients.map((patient) => {
     return rows.push(
       createData(
-        patient._id,
-        patient.firstname + " " + patient.lastname,
-        patient.age,
-        patient.gender,
-        patient.address,
-        patient.phone
+        patient.PatientID,
+        patient.FirstName + " " + patient.LastName,
+        patient.Age,
+        patient.Gender,
+        patient.Address,
+        patient.Phone
       )
     );
   });
@@ -102,8 +95,6 @@ const index = ({ patients }) => {
                   firstRow={10}
                   rowPerPage={10}
                 />
-
-              
               </Box>
             </Box>
           </Box>
@@ -118,14 +109,11 @@ export default index;
 export const getStaticProps = async () => {
   try {
     const res = await fetch("http://localhost:3001/patients");
-    const { results } = await res.json();
-
-    // const todayPatients = results.filter((date) =>date.schedule == new Date().toLocaleDateString())
-    // console.log(todayPatients)
+    const { Patients } = await res.json();
 
     return {
       props: {
-        patients: results,
+        patients: Patients,
       },
     };
   } catch (error) {

@@ -60,7 +60,7 @@ export default function GridTable({
                         <TableCell
                           key={column.id}
                           align={column.align}
-                          onClick={() => router.push(`/${path}/${row._id}`)}
+                          onClick={() => router.push(`/${path}/${row.PatientID}`)}
                         >
                           {column.format && typeof value === "number"
                             ? column.format(value)

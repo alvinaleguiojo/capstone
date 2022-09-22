@@ -3,9 +3,23 @@ const router = express.Router();
 const Appointments = require("../model/appointment");
 const paginatedResults = require("../middleware/paginatedResults");
 
+// import for AsyncAwait Functions
+const CreateAppointmentsPromise = require("../AsyncAwait/Appointments/AddAppointment");
+const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppointments");
+
 //get all appointments
-router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
-  res.json(res.paginatedResults);
+// router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
+//   res.json(res.paginatedResults);
+// });
+
+router.get("/appointments", async (req, res) => {
+  try {
+    const resultElements = await GetAllAppointmentsPromise();
+    res.status(200).json({ Patients: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
 });
 
 // Remove appointment from the list
@@ -17,22 +31,19 @@ router.delete("/delete/:id", async (req, res) => {
 });
 
 // create new Appointment
-router.post("/appointment", async (req, res) => {
+router.post("/appointment/create", async (req, res) => {
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  const { PatientID, Schedule, ServiceID, Status } = req.body;
   try {
-    await Appointments.create({
-      firstname: req.body.firstname,
-      lastname: req.body.lastname,
-      address: req.body.address,
-      phone: req.body.phone,
-      note: req.body.note,
-      vaccine: req.body.vaccine,
-      immunization: req.body.immunization,
-      prenatal: req.body.prenatal,
-      schedule: req.body.schedule,
-      service_type: req.body.service_type,
+    await CreateAppointmentsPromise({
+      PatientID,
+      Schedule,
+      ServiceID,
+      Status,
+      CreatedDate: date,
     });
-    console.log("appointment added successfully");
-    res.status(200).json({ message: "appointment added successfully" });
+    res.status(200).json({ message: "Appointment added successfully" });
   } catch (err) {
     res.status(400).json({ message: "Invalid data entry" });
   }

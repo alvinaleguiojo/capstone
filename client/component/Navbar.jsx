@@ -62,12 +62,12 @@ const Navbar = () => {
                 {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
                 <Box className={styles.avatar}>
                   <Typography variant="h5" component="h5">
-                    {user.userData.email.substring(0, 1).toUpperCase()}
+                    {/* {user.userData.Email.substring(0, 1).toUpperCase()} */}
                   </Typography>
                 </Box>
                 <Box className={styles.user__name}>
                   <Typography variant="h5" component="h5" color="#b82623">
-                    {user.userData.email.substring(0, 10)}
+                    {/* {user.userData.Email.substring(0, 10)} */}
                   </Typography>
                   <Typography variant="caption" component="h5" color="#b82623">
                     Barangay Health Worker

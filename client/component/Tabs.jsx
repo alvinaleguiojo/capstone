@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 
 const Tabs = () => {
   const router = useRouter();
-  console.log(router)
 
   return (
     <Box className={styles.tabs}>
@@ -17,7 +16,14 @@ const Tabs = () => {
         <Link href="/dashboard">Dashboard</Link>
       </Box>
 
-      <Box className={router.route == "/patients" ? styles.active : styles.tab}>
+      <Box
+        className={
+          router.route == "/patients" ||
+          router.route == "/patients/[_id]/appointment"
+            ? styles.active
+            : styles.tab
+        }
+      >
         <Box className={styles.vertical__line}></Box>
         <Link href="/patients">PATIENTS</Link>
       </Box>

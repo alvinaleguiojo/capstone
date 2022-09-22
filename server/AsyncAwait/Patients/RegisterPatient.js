@@ -2,22 +2,22 @@
 const connection = require("../../db/connection");
 
 // Create User || Register User
-const CreateUserPromise = ({
+const RegisterPatientPromise = ({
   LastName,
   FirstName,
-  Email,
-  Password,
-  Role,
-  Verified,
+  Age,
+  Gender,
+  Address,
+  Phone,
   CreatedDate,
 }) => {
-  const newUser = `INSERT INTO Staff (LastName, FirstName, Email, Password, Role, Verified , CreatedDate ) VALUES ('${LastName}', '${FirstName}','${Email}', '${Password}', '${Role}', ${Verified}, '${CreatedDate}')`;
+  const newUser = `INSERT INTO Patients (LastName, FirstName, Age, Gender, Address, Phone , CreatedDate ) VALUES ('${LastName}', '${FirstName}','${Age}', '${Gender}', '${Address}', ${Phone}, '${CreatedDate}')`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, newCreatedUser) => {
       error && reject(error);
       return resolve(newCreatedUser);
-    });
+    }); 
   });
 };
 
-module.exports = CreateUserPromise;
+module.exports = RegisterPatientPromise;

@@ -2,9 +2,9 @@
 const connection = require("../../db/connection");
 
 // Update Users Promise By ID
-const UpdateUsersPromiseByID = (ID, Role, Verified) => {
+const UpdatePatientsPromiseByID = ({ PatientID, Address, Phone }) => {
   return new Promise((resolve, reject) => {
-    const updateData = `UPDATE Staff SET Role = '${Role}', Verified=${Verified} WHERE StaffID = ${ID}`;
+    const updateData = `UPDATE Patients SET Address = '${Address}', Phone='${Phone}' WHERE PatientID = ${PatientID}`;
     connection.query(updateData, (error, UsersByID) => {
       error && reject(error);
       return resolve(UsersByID);
@@ -12,4 +12,4 @@ const UpdateUsersPromiseByID = (ID, Role, Verified) => {
   });
 };
 
-module.exports = UpdateUsersPromiseByID;
+module.exports = UpdatePatientsPromiseByID;
