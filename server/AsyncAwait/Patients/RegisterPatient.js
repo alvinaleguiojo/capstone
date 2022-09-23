@@ -5,13 +5,17 @@ const connection = require("../../db/connection");
 const RegisterPatientPromise = ({
   LastName,
   FirstName,
-  Age,
-  Gender,
-  Address,
+  MiddleName,
+  Suffix,
   Phone,
+  BirthDate,
+  Gender,
+  Street,
+  Baranggay,
+  City,
   CreatedDate,
 }) => {
-  const newUser = `INSERT INTO Patients (LastName, FirstName, Age, Gender, Address, Phone , CreatedDate ) VALUES ('${LastName}', '${FirstName}','${Age}', '${Gender}', '${Address}', ${Phone}, '${CreatedDate}')`;
+  const newUser = `INSERT INTO Patients (LastName, FirstName, MiddleName, Suffix, Phone , BirthDate, Gender, Street, Baranggay, City, CreatedDate ) VALUES ('${LastName}', '${FirstName}', '${ MiddleName}', '${Suffix}', '${Phone}', '${BirthDate}', '${Gender}', '${Street}', '${Baranggay}', '${City}', '${CreatedDate}')`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, newCreatedUser) => {
       error && reject(error);

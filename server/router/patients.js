@@ -11,6 +11,7 @@ const GetAllPatientsPromise = require("../AsyncAwait/Patients/Patients");
 const GetPatientsByIDPromise = require("../AsyncAwait/Patients/PatientsByID");
 const DeletePatientsByIDPromise = require("../AsyncAwait/Patients/DeletePatient");
 const UpdatePatientsPromiseByID = require("../AsyncAwait/Patients/UpdatePatient");
+const AddPatientHistoryPromise = require("../AsyncAwait/PatientHistory/AddHistory");
 
 router.use(express.json());
 
@@ -21,7 +22,7 @@ router.use(express.json());
 router.get("/patients", async (req, res) => {
   try {
     const resultElements = await GetAllPatientsPromise();
-    res.status(200).json({ Patients: resultElements }); 
+    res.status(200).json({ Patients: resultElements });
   } catch (error) {
     console.log(error);
     res.sendStatus(500);
@@ -63,22 +64,48 @@ router.get("/profile", validateToken, (req, res) => {
 router.post("/patient/register", async (req, res) => {
   const today = new Date();
   const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  const FirstName = req.body[0] || req.body.FirstName;
-  const LastName = req.body[1] || req.body.LastName;
-  const Age = req.body[2] || req.body.Age;
-  const Address = req.body[3] || req.body.Address;
-  const Phone = req.body[4] || req.body.Phone;
-  const Gender = req.body[5] || req.body.Gender;
+  const {
+    LastName,
+    FirstName,
+    MiddleName,
+    Suffix,
+    Phone,
+    BirthDate,
+    Gender,
+    Street,
+    Baranggay,
+    City,
+    MedicineIntake,
+    Allergies,
+    Measles,
+    Immunization,
+    Tuberculosis,
+    ImageID,
+  } = req.body;
 
   try {
-    await RegisterPatientPromise({
+    const newPatient = await RegisterPatientPromise({
       LastName,
       FirstName,
-      Age,
-      Gender,
-      Address,
+      MiddleName,
+      Suffix,
       Phone,
+      BirthDate,
+      Gender,
+      Street,
+      Baranggay,
+      City,
+      ImageID,
       CreatedDate: date,
+    });
+    const PatientID = await newPatient.insertId;
+    await AddPatientHistoryPromise({
+      PatientID,
+      MedicineIntake,
+      Allergies,
+      Measles,
+      Immunization,
+      Tuberculosis,
     });
     res.status(200).json({ message: "Patient added successfully" });
   } catch (err) {

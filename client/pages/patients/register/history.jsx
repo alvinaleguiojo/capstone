@@ -1,24 +1,111 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Image from "next/image";
 import Navbar from "../../../component/Navbar";
 import Tabs from "../../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../../styles/Content.module.css";
 import reusableStyle from "../../../styles/Reusable.module.css";
 import styles from "../../../styles/Patients.module.css";
-import GridTable from "../../../component/GridTable";
 import Meta from "../../../component/Meta";
 import Typography from "@mui/material/Typography";
 import useAuth from "../../../customhook/Auth";
 import { Button } from "@mui/material";
 import { motion } from "framer-motion";
+import axios from "axios";
+import Swal from "sweetalert2";
 
 const index = ({ patients }) => {
   const router = useRouter();
+  const [disabled, setDisabled] = useState(true);
+  const [history, setHistory] = useState({
+    MedicineIntake: null,
+    Allergies: null,
+    Measles: false,
+    Immunization: false,
+    Tuberculosis: false,
+  });
+  const {
+    LastName,
+    FirstName,
+    MiddleName,
+    Suffix,
+    Phone,
+    BirthDate,
+    Gender,
+    Street,
+    Baranggay,
+    City,
+    ImageID,
+  } = router.query;
 
-  const handleNext = () => {
-    router.push("/patients/register");
+  const handleBack = () => {
+    router.push(
+      `/patients/register?qFirstName=${FirstName}&qLastName=${LastName}&qMiddleName=${MiddleName}&qSuffix=${Suffix}&qStreet=${Street}&qBaranggay=${Baranggay}&qCity=${City}&qBirthDate=${BirthDate}&qGender=${Gender}&qPhone=${Phone}&qImageID=${ImageID}`
+    );
+  };
+
+  useEffect(() => {
+    history.MedicineIntake !== null &&
+    history.MedicineIntake !== "" &&
+    history.Allergies !== null &&
+    history.Allergies !== "" &&
+    history.Measles !== null &&
+    history.Measles !== "" &&
+    history.Immunization !== null &&
+    history.Immunization !== "" &&
+    history.Tuberculosis !== null &&
+    history.Tuberculosis !== ""
+      ? setDisabled(false)
+      : setDisabled(true);
+  }, [history]);
+
+  const handleSubmit = async () => {
+    setDisabled(true);
+    await Swal.fire({
+      title: "Are you sure?",
+      text: "Would you like to proceed?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "grey",
+      confirmButtonText: "Confirm",
+      allowOutsideClick: false,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await axios.post("http://localhost:3001/patient/register", {
+            LastName,
+            FirstName,
+            MiddleName,
+            Suffix,
+            Phone,
+            BirthDate,
+            Gender,
+            Street,
+            Baranggay,
+            City,
+            ImageID,
+            ...history,
+          });
+          Swal.fire("Success!", "You clicked the button!", "success").then(
+            () => {
+              router.push("/patients");
+            }
+          );
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Please fill the  required fields ",
+          }).then(() => {
+            router.push(
+              `/patients/register?qFirstName=${FirstName}&qLastName=${LastName}&qMiddleName=${MiddleName}&qSuffix=${Suffix}&qStreet=${Street}&qBaranggay=${Baranggay}&qCity=${City}&qBirthDate=${BirthDate}&qGender=${Gender}&qPhone=${Phone}`
+            );
+          });
+        }
+      }
+      setDisabled(false);
+    });
   };
 
   return (
@@ -46,7 +133,7 @@ const index = ({ patients }) => {
                   className={styles.register__container}
                   initial={{ x: "50vw" }}
                   animate={{ x: 0 }}
-                  transition={{ type: "spring", stiffness: 120 }}
+                  transition={{ type: "spring", stiffness: 70 }}
                 >
                   <Typography variant="h5" component="h5" color="#B82623">
                     Medical History
@@ -58,12 +145,15 @@ const index = ({ patients }) => {
                     </Typography>
                     <input
                       className={styles.input__register}
-                      //   onChange={(e) =>
-                      //     setUser({ ...user, firstname: e.target.value })
-                      //   }
+                      onChange={(e) =>
+                        setHistory({
+                          ...history,
+                          MedicineIntake: e.target.value,
+                        })
+                      }
                       type="text"
-                      name="firstname"
-                      //   value={user.firstname || ""}
+                      name="TakingMedicine"
+                      value={history.MedicineIntake || ""}
                     />
                   </Box>
 
@@ -73,16 +163,16 @@ const index = ({ patients }) => {
                     </Typography>
                     <input
                       className={styles.input__register}
-                      //   onChange={(e) =>
-                      //     setUser({ ...user, firstname: e.target.value })
-                      //   }
+                      onChange={(e) =>
+                        setHistory({ ...history, Allergies: e.target.value })
+                      }
                       type="text"
-                      name="firstname"
-                      //   value={user.firstname || ""}
+                      name="Allergies"
+                      value={history.Allergies || ""}
                     />
                   </Box>
 
-                  <Box style={{ width: "100%" }}>
+                  {/* <Box style={{ width: "100%" }}>
                     <Typography variant="body1" component="h5" color="#B82623">
                       Do you use or history of using tobacco?
                     </Typography>
@@ -95,7 +185,7 @@ const index = ({ patients }) => {
                       name="firstname"
                       //   value={user.firstname || ""}
                     />
-                  </Box>
+                  </Box> */}
 
                   <Box className={styles.history__options}>
                     <Box style={{ width: "100%" }}>
@@ -106,9 +196,17 @@ const index = ({ patients }) => {
                       >
                         Measles
                       </Typography>
-                      <select className={styles.input__register}>
-                        <option value="volvo">Yes</option>
-                        <option value="saab">No</option>
+                      <select
+                        className={styles.input__register}
+                        onChange={(e) =>
+                          setHistory({
+                            ...history,
+                            Measles: e.target.value,
+                          })
+                        }
+                      >
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
                       </select>
                     </Box>
                     <Box style={{ width: "100%" }}>
@@ -119,9 +217,17 @@ const index = ({ patients }) => {
                       >
                         Immunization
                       </Typography>
-                      <select className={styles.input__register}>
-                        <option value="volvo">Yes</option>
-                        <option value="saab">No</option>
+                      <select
+                        className={styles.input__register}
+                        onChange={(e) =>
+                          setHistory({
+                            ...history,
+                            Immunization: e.target.value,
+                          })
+                        }
+                      >
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
                       </select>
                     </Box>
                     <Box style={{ width: "100%" }}>
@@ -132,18 +238,32 @@ const index = ({ patients }) => {
                       >
                         Tuberculosis
                       </Typography>
-                      <select className={styles.input__register}>
-                        <option value="volvo">Yes</option>
-                        <option value="saab">No</option>
+                      <select
+                        className={styles.input__register}
+                        onChange={(e) =>
+                          setHistory({
+                            ...history,
+                            Tuberculosis: e.target.value,
+                          })
+                        }
+                      >
+                        <option value={true}>Yes</option>
+                        <option value={false}>No</option>
                       </select>
                     </Box>
                   </Box>
                 </motion.div>
                 <Box className={styles.buttonRegister}>
-                  <Button style={{ color: "#b82623" }} onClick={handleNext}>
+                  <Button style={{ color: "#b82623" }} onClick={handleBack}>
                     Back
                   </Button>
-                  <Button onClick={handleNext} disabled={true}>
+                  <Button
+                    onClick={handleSubmit}
+                    disabled={disabled}
+                    className={
+                      disabled ? styles.proceedBtnDisabled : styles.proceedBtn
+                    }
+                  >
                     Submit
                   </Button>
                 </Box>

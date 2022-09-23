@@ -7,7 +7,7 @@
   color: #b82623;
 }
 
-.buttonRegister{
+.buttonRegister {
   display: flex;
 }
 
@@ -31,13 +31,13 @@
   display: flex;
   background-color: #fff;
   gap: 1rem;
-  width: 100vw;
   border-radius: 10px;
   box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   z-index: 1;
   padding: 30px;
+  width: 100%;
 }
 
 .content {
@@ -62,6 +62,7 @@
 .patients {
   display: flex;
   flex-direction: column;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -204,11 +205,29 @@
   border: #b82623 2px solid;
 }
 
+.proceedBtn {
+  color: #fff;
+  background-color: #b82623;
+}
+
+.proceedBtn:hover {
+  background-color: #e22a27;
+  color: white;
+}
+
+.proceedBtnDisabled {
+  background-color: #ebebeb;
+}
+
+.profilePicture {
+  border-radius: 999px;
+}
+
 .input__capture[type="file"] {
   opacity: 0; /* make transparent */
 }
 
-.history__options{
+.history__options {
   display: flex;
   gap: 1rem;
 }

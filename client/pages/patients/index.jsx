@@ -28,20 +28,6 @@ const columns = [
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
-  {
-    id: "Age",
-    label: "Age",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "Gender",
-    label: "Gender",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
   { id: "Address", label: "Address", minWidth: 300 },
   {
     id: "Phone",
@@ -52,8 +38,8 @@ const columns = [
   },
 ];
 
-function createData(PatientID, Name, Age, Gender, Address, Phone) {
-  return { PatientID, Name, Age, Gender, Address, Phone };
+function createData(PatientID, Name, Address, Phone) {
+  return { PatientID, Name,Address, Phone };
 }
 
 const index = ({ patients }) => {
@@ -64,9 +50,7 @@ const index = ({ patients }) => {
       createData(
         patient.PatientID,
         patient.FirstName + " " + patient.LastName,
-        patient.Age,
-        patient.Gender,
-        patient.Address,
+        patient.Street + ", " + patient.Baranggay + ", " + patient.City,
         patient.Phone
       )
     );
@@ -99,7 +83,7 @@ const index = ({ patients }) => {
                   rows={rows}
                   columns={columns}
                   path="patients"
-                  maxHeight={380}
+                  maxHeight={360}
                   firstRow={10}
                   rowPerPage={10}
                 />

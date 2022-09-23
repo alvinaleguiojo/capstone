@@ -25,6 +25,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import CustomWebcam from "../../../component/CustomWebcam";
 
 ChartJS.register(
   CategoryScale,
@@ -248,6 +249,7 @@ const PatientProfile = ({ patient, Appointments }) => {
                     Patient&apos;s Profile
                   </Typography> */}
                     <Image src={UserIcon} alt="user profile" />
+                    {/* <CustomWebcam/> */}
                     <Typography
                       variant="h5"
                       component="h5"

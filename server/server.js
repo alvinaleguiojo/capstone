@@ -22,6 +22,7 @@ const crud = require("./router/crud");
 const patients = require("./router/patients");
 const Services = require("./router/services");
 const Medicines = require("./router/medicine");
+const UploadImage = require("./router/uploadImage");
 const twilio = require("./router/twilio");
 
 // import User Model
@@ -53,6 +54,7 @@ app.use(patients);
 app.use(Medicines);
 app.use(twilio);
 app.use(Services);
+app.use(UploadImage);
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);
