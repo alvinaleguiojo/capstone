@@ -35,6 +35,7 @@ const style = {
 
 const index = () => {
   const router = useRouter();
+
   const webRef = useRef(null);
   const [disabled, setDisabled] = useState(true);
   const [imageURL, setImageURL] = useState(null);
@@ -59,75 +60,6 @@ const index = () => {
     ImageID: null,
   });
 
-  const {
-    qLastName,
-    qFirstName,
-    qMiddleName,
-    qSuffix,
-    qPhone,
-    qBirthDate,
-    qGender,
-    qStreet,
-    qBaranggay,
-    qCity,
-  } = router.query;
-
-  useEffect(() => {
-    qLastName !== null &&
-      qLastName !== "undefined" &&
-      qLastName !== undefined &&
-      qLastName !== "" &&
-      qFirstName !== null &&
-      qFirstName !== "" &&
-      qFirstName !== "undefined" &&
-      qFirstName !== undefined &&
-      qMiddleName !== null &&
-      qMiddleName !== "" &&
-      qMiddleName !== "undefined" &&
-      qMiddleName !== undefined &&
-      qSuffix !== null &&
-      qSuffix !== "" &&
-      qSuffix !== "undefined" &&
-      qSuffix !== undefined &&
-      qPhone !== null &&
-      qPhone !== "" &&
-      qPhone !== "undefined" &&
-      qPhone !== undefined &&
-      qBirthDate !== null &&
-      qBirthDate !== "" &&
-      qBirthDate !== "undefined" &&
-      qBirthDate !== undefined &&
-      qGender !== null &&
-      qGender !== "" &&
-      qGender !== "undefined" &&
-      qGender !== undefined &&
-      qStreet !== null &&
-      qStreet !== "" &&
-      qStreet !== "undefined" &&
-      qStreet !== undefined &&
-      qBaranggay !== null &&
-      qBaranggay !== "" &&
-      qBaranggay !== "undefined" &&
-      qBaranggay !== undefined &&
-      qCity !== null &&
-      qCity !== "" &&
-      qCity !== "undefined" &&
-      qCity !== undefined &&
-      setPatient({
-        ...patient,
-        LastName: qLastName,
-        FirstName: qFirstName,
-        MiddleName: qMiddleName,
-        Suffix: qSuffix,
-        Phone: qPhone,
-        BirthDate: qBirthDate,
-        Gender: qGender,
-        Street: qStreet,
-        Baranggay: qBaranggay,
-        City: qCity,
-      });
-  }, [router]);
-
   useEffect(() => {
     patient.LastName !== null &&
     patient.LastName !== "" &&
@@ -147,15 +79,11 @@ const index = () => {
       : setDisabled(true);
   }, [patient]);
 
-  useEffect(() => {
-    console.log(patient);
-  }, [patient]);
-
   const handleProceed = async (e) => {
+    console.log(patient)
+    localStorage.setItem("patient", JSON.stringify(patient));
     setDisabled(true);
-    router.push(
-      `/patients/register/history?FirstName=${patient.FirstName}&LastName=${patient.LastName}&MiddleName=${patient.MiddleName}&Suffix=${patient.Suffix}&Street=${patient.Street}&Baranggay=${patient.Baranggay}&City=${patient.City}&BirthDate=${patient.BirthDate}&Gender=${patient.Gender}&Phone=${patient.Phone}&ImageID=${patient.ImageID}`
-    );
+    router.push(`/patients/register/history`);
   };
 
   // going back to patient page list
@@ -163,27 +91,53 @@ const index = () => {
     router.push("/patients");
   };
 
+  // Webcam
+
   const videoConstraints = {
     width: 1280,
     height: 720,
     facingMode: "user" || { exact: "environment" },
   };
 
+  // capturing image
   const handleCapture = useCallback(() => {
     const imageSrc = webRef.current.getScreenshot();
     setImageURL(imageSrc);
   }, [webRef]);
 
+  //retrieving from local storage
+  useEffect(() => {
+    const patient = JSON.parse(localStorage.getItem("patient"));
+    const profilePicture = JSON.parse(localStorage.getItem("image"));
+    patient && setPatient(patient);
+    profilePicture && setImageURL(profilePicture);
+  }, []);
+
+  // saving image to local storage
   const handleSave = () => {
     axios
       .post("http://localhost:3001/image/upload", {
         imageURL,
       })
-      .then((response) => {
+      .then(async (response) => {
         setPatient({ ...patient, ImageID: response.data.ImageID });
-        Swal.fire("Success!", "Image has been uploaded!", "success");
+        await Swal.fire("Success!", "Image has been uploaded!", "success").then(
+          () => {
+            localStorage.setItem("image", JSON.stringify(imageURL));
+          }
+        );
+      })
+      .catch((error) => {
+        Swal.fire("Error!", "Paduol sa camera mam sir hahaha", "error");
+        setImageURL(null);
       });
     setOpen(false);
+  };
+
+  // removing image from local storage
+  const handleRetake = () => {
+    setImageURL(null);
+    localStorage.removeItem("image");
   };
 
   return (
@@ -221,24 +175,27 @@ const index = () => {
                     }}
                   >
                     <Box className={styles.photo}>
-                      {imageURL ? (
+                      {imageURL && (
                         <Image
-                          src={imageURL}
+                          src={imageURL || ""}
                           alt="photo"
                           width={200}
                           height={200}
                           className={styles.profilePicture}
                         />
-                      ) : (
-                        <IconButton onClick={handleOpen}>
-                          <Image
-                            src={CameraIcon}
-                            alt="photo"
-                            width={50}
-                            height={50}
-                          />
-                        </IconButton>
                       )}
+
+                      <IconButton
+                        onClick={handleOpen}
+                        style={{ position: "absolute" }}
+                      >
+                        <Image
+                          src={CameraIcon}
+                          alt="photo"
+                          width={50}
+                          height={50}
+                        />
+                      </IconButton>
 
                       {/* <input
                         className={styles.input__capture}
@@ -278,9 +235,7 @@ const index = () => {
                         {!imageURL ? (
                           <Button onClick={handleCapture}>Capture</Button>
                         ) : (
-                          <Button onClick={() => setImageURL(null)}>
-                            Retake
-                          </Button>
+                          <Button onClick={handleRetake}>Retake</Button>
                         )}
                         {imageURL && <Button onClick={handleSave}>Save</Button>}
                       </Box>
@@ -542,18 +497,3 @@ const index = () => {
 };
 
 export default index;
-
-// export const getStaticProps = async () => {
-//   try {
-//     const res = await fetch("http://localhost:3001/patients");
-//     const { Patients } = await res.json();
-
-//     return {
-//       props: {
-//         patients: Patients,
-//       },
-//     };
-//   } catch (error) {
-//     console.log("please check your internet connection", error);
-//   }
-// };

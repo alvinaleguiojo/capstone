@@ -45,6 +45,7 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.use(express.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(index);
 app.use(appointments);
 app.use(users);

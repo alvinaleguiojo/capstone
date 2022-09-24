@@ -56,6 +56,13 @@ const index = ({ patients }) => {
     );
   });
 
+
+  const AddPatient = () =>{
+    localStorage.removeItem("image");
+    localStorage.removeItem("patient");
+    router.push("/patients/register")
+  }
+
   return (
     <>
       {/* useAuth is to check if the user is authenticated */}
@@ -75,7 +82,7 @@ const index = ({ patients }) => {
                   <Typography variant="h5" component="h5" color="#B82623">
                     All Patients
                   </Typography>
-                  <Button className={styles.addPatient} onClick={() => router.push("/patients/register")}>
+                  <Button className={styles.addPatient} onClick={AddPatient}>
                     Add New Patient
                   </Button>
                 </Box>

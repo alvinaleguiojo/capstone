@@ -47,7 +47,7 @@ ChartJS.register(
   Legend
 );
 
-const index = ({ user }) => {
+const index = ({ Appointments }) => {
   // All appointments state
   const [chartData, setChartData] = useState({
     datasets: [],
@@ -129,7 +129,6 @@ const index = ({ user }) => {
                     alt="banner"
                   />
                 </Box>
-
                 <Typography
                   variant="h6"
                   component="h6"
@@ -138,7 +137,6 @@ const index = ({ user }) => {
                 >
                   My Appointments
                 </Typography>
-
                 <Box className={styles.header}>
                   <Typography
                     variant="body2"
@@ -152,14 +150,14 @@ const index = ({ user }) => {
                     component="h6"
                     className={styles.header__cell}
                   >
-                    Date
+                    Service
                   </Typography>
                   <Typography
                     variant="body2"
                     component="h6"
                     className={styles.header__cell}
                   >
-                    Time
+                    ID Number
                   </Typography>
                   <Typography
                     variant="body2"
@@ -169,37 +167,22 @@ const index = ({ user }) => {
                     Status
                   </Typography>
                 </Box>
-
+                {/* List of Appointments  */}
                 <Box className={styles.cards}>
-                  <CustomCard
-                    name="Maria Dela Cruz"
-                    date="October 4, 2022"
-                    time="10:00 AM"
-                    icon={waitingIcon}
-                    status="Waiting"
-                  />
-                  <CustomCard
-                    name="Maria Dela Cruz"
-                    date="October 4, 2022"
-                    time="10:00 AM"
-                    icon={clockIcon}
-                    status="Ongoing"
-                  />
-                  <CustomCard
-                    name="Maria Dela Cruz"
-                    date="October 4, 2022"
-                    time="10:00 AM"
-                    icon={checkIcon}
-                    status="Done"
-                  />
-                  <CustomCard
-                    name="Maria Dela Cruz"
-                    date="October 4, 2022"
-                    time="10:00 AM"
-                    icon={waitingIcon}
-                    status="Waiting"
-                  />
-                </Box>
+                  {Appointments.map((appointment) => {
+                    return (
+                      <CustomCard
+                        name={appointment.LastName} 
+                        date={appointment.ServiceType}
+                        AppointmentID={appointment.AppointmentID}
+                        icon={waitingIcon}
+                        status={appointment.Status} 
+                      />
+                    );
+                  })}
+                </Box>  
+
+                {/* List of Appointments  */}
               </Box>
 
               <Box className={styles.right__content}>
@@ -248,7 +231,7 @@ const index = ({ user }) => {
                         color: "white",
                       }}
                     >
-                      123
+                      {Appointments.length}
                     </Typography>
                   </Box>
                   <Box className={styles.report__card}>
@@ -269,7 +252,7 @@ const index = ({ user }) => {
                         color: "#B82623",
                       }}
                     >
-                      123
+                       {Appointments.length}
                     </Typography>
                   </Box>
                   <Box className={styles.report__card}>
@@ -368,19 +351,17 @@ const index = ({ user }) => {
 
 export default index;
 
-// export const getStaticProps = async () => {
-//   try {
-//     const res = await fetch(
-//       `http://localhost:3001/user/631da8f3b25de833b38ae762`
-//     );
-//     const results = await res.json();
+export const getStaticProps = async () => {
+  try {
+    const res = await fetch(`http://localhost:3001/appointments/today`);
+    const { Appointments } = await res.json();
 
-//     return {
-//       props: {
-//         user: results,
-//       },
-//     };
-//   } catch (error) {
-//     console.log("please check your internet connection", error);
-//   }
-// };
+    return {
+      props: {
+        Appointments,
+      },
+    };
+  } catch (error) {
+    console.log("please check your internet connection", error);
+  }
+};

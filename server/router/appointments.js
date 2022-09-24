@@ -6,15 +6,28 @@ const paginatedResults = require("../middleware/paginatedResults");
 // import for AsyncAwait Functions
 const CreateAppointmentsPromise = require("../AsyncAwait/Appointments/AddAppointment");
 const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppointments");
+const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboardAppointments");
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
 //   res.json(res.paginatedResults);
 // });
 
+// Get All Appointments
 router.get("/appointments", async (req, res) => {
   try {
     const resultElements = await GetAllAppointmentsPromise();
+    res.status(200).json({ Appointments: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get All Appointments for Today in the Dashboard Page
+router.get("/appointments/today", async (req, res) => {
+  try {
+    const resultElements = await DashboardAppointmentsPromise();
     res.status(200).json({ Appointments: resultElements });
   } catch (error) {
     console.log(error);
@@ -35,7 +48,6 @@ router.post("/appointment/create", async (req, res) => {
   const today = new Date();
   const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const { PatientID, Schedule, ServiceID, Status, Notes } = req.body;
-  console.log("test", PatientID, Schedule, ServiceID);
   try {
     await CreateAppointmentsPromise({
       PatientID,

@@ -47,7 +47,7 @@ const Index = ({ patient, Services }) => {
       ...appointment,
       Schedule: date,
       PatientID: parseInt(routeID),
-      Status: "Pending",
+      Status: "Waiting",
     });
   }, [calendar]);
 
@@ -59,8 +59,19 @@ const Index = ({ patient, Services }) => {
         ...appointment,
       })
       .then(() => {
-        Swal.fire("Success!", "Appointment has been set!", "success");
-        setLoading(false);
+        Swal.fire("Success!", "Appointment has been set!", "success").then(
+          () => {
+            setLoading(false);
+            setAppointment({
+              ...appointment,
+              Notes: "",
+              Schedule: "",
+              enabled: false,
+              ServiceID: 0,
+            });
+            router.push(`/patients/${routeID}`);
+          }
+        );
       })
       .catch(() => {
         Swal.fire(
@@ -73,7 +84,7 @@ const Index = ({ patient, Services }) => {
     setAppointment({
       ...appointment,
       Notes: "",
-      Schedule: "", 
+      Schedule: "",
       enabled: false,
       ServiceID: 0,
     });
@@ -156,7 +167,14 @@ const Index = ({ patient, Services }) => {
                     className={reusableStyle.input}
                     type="text"
                     name="address"
-                    value={appointment.address || patientData.Address}
+                    value={
+                      appointment.Street ||
+                      patientData.Street +
+                        " " +
+                        patientData.Baranggay +
+                        " " +
+                        patientData.City
+                    }
                     maxLength={250}
                     onChange={(e) =>
                       setAppointment({

@@ -11,6 +11,7 @@ const GetAllPatientsPromise = require("../AsyncAwait/Patients/Patients");
 const GetPatientsByIDPromise = require("../AsyncAwait/Patients/PatientsByID");
 const DeletePatientsByIDPromise = require("../AsyncAwait/Patients/DeletePatient");
 const UpdatePatientsPromiseByID = require("../AsyncAwait/Patients/UpdatePatient");
+const PatientProfileRecordsPromise = require("../AsyncAwait/Patients/PatientProfileRecords");
 const AddPatientHistoryPromise = require("../AsyncAwait/PatientHistory/AddHistory");
 
 router.use(express.json());
@@ -32,11 +33,23 @@ router.get("/patients", async (req, res) => {
 // router.get("/patients/:id", getById(Patients), (req, res) => {
 //   res.json(res);
 // });
+
 // GET Patient By ID
 router.get("/patient/:id", async (req, res) => {
   const PatientID = req.params.id;
   try {
     const patient = await GetPatientsByIDPromise(PatientID);
+    res.json(patient);
+  } catch (error) {
+    res.status(400).json({ message: "Invalid PatientID" });
+  }
+});
+
+// GET Patient Profile Records By ID
+router.get("/patient/profile/records/:id", async (req, res) => {
+  const PatientID = req.params.id;
+  try {
+    const patient = await PatientProfileRecordsPromise(PatientID);
     res.json(patient);
   } catch (error) {
     res.status(400).json({ message: "Invalid PatientID" });

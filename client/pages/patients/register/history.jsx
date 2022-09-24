@@ -17,6 +17,7 @@ import Swal from "sweetalert2";
 const index = ({ patients }) => {
   const router = useRouter();
   const [disabled, setDisabled] = useState(true);
+  const [patient, setPatient] = useState({});
   const [history, setHistory] = useState({
     MedicineIntake: null,
     Allergies: null,
@@ -24,25 +25,6 @@ const index = ({ patients }) => {
     Immunization: false,
     Tuberculosis: false,
   });
-  const {
-    LastName,
-    FirstName,
-    MiddleName,
-    Suffix,
-    Phone,
-    BirthDate,
-    Gender,
-    Street,
-    Baranggay,
-    City,
-    ImageID,
-  } = router.query;
-
-  const handleBack = () => {
-    router.push(
-      `/patients/register?qFirstName=${FirstName}&qLastName=${LastName}&qMiddleName=${MiddleName}&qSuffix=${Suffix}&qStreet=${Street}&qBaranggay=${Baranggay}&qCity=${City}&qBirthDate=${BirthDate}&qGender=${Gender}&qPhone=${Phone}&qImageID=${ImageID}`
-    );
-  };
 
   useEffect(() => {
     history.MedicineIntake !== null &&
@@ -59,6 +41,17 @@ const index = ({ patients }) => {
       : setDisabled(true);
   }, [history]);
 
+  //retrieving from local storage
+  useEffect(() => {
+    const patient = JSON.parse(localStorage.getItem("patient"));
+    patient && setPatient(patient);
+    console.log(patient);
+  }, []);
+
+  const handleBack = () => {
+    router.push(`/patients/register`);
+  };
+
   const handleSubmit = async () => {
     setDisabled(true);
     await Swal.fire({
@@ -72,35 +65,28 @@ const index = ({ patients }) => {
       allowOutsideClick: false,
     }).then(async (result) => {
       if (result.isConfirmed) {
+        setDisabled(true);
         try {
           await axios.post("http://localhost:3001/patient/register", {
-            LastName,
-            FirstName,
-            MiddleName,
-            Suffix,
-            Phone,
-            BirthDate,
-            Gender,
-            Street,
-            Baranggay,
-            City,
-            ImageID,
+            ...patient,
             ...history,
           });
-          Swal.fire("Success!", "You clicked the button!", "success").then(
-            () => {
-              router.push("/patients");
-            }
-          );
+          await Swal.fire(
+            "Success!",
+            "Patient successfully registered!",
+            "success"
+          ).then(() => {
+            localStorage.removeItem("image");
+            localStorage.removeItem("patient");
+            router.push("/patients");
+          });
         } catch (error) {
           Swal.fire({
             icon: "error",
             title: "Oops...",
             text: "Please fill the  required fields ",
           }).then(() => {
-            router.push(
-              `/patients/register?qFirstName=${FirstName}&qLastName=${LastName}&qMiddleName=${MiddleName}&qSuffix=${Suffix}&qStreet=${Street}&qBaranggay=${Baranggay}&qCity=${City}&qBirthDate=${BirthDate}&qGender=${Gender}&qPhone=${Phone}`
-            );
+            router.push(`/patients/register`);
           });
         }
       }

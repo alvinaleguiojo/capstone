@@ -65,15 +65,19 @@ function createData(ServiceType, Schedule, Status) {
   return { ServiceType, Schedule, Status };
 }
 
-const PatientProfile = ({ patient, Appointments }) => {
+const PatientProfile = ({ patient, Appointments, records }) => {
   const [sendMessage, setSendMessage] = useState("");
   const router = useRouter();
   const id = router.query._id;
 
   // pushing patients data to array
   const rows = [];
-  Appointments.map((appointment) => {
-    return rows.push(createData(appointment.ServiceType, appointment.Schedule));
+  records.filter((record) => {
+   const date =  new Date(record.Schedule).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+    return (
+      record.PatientID == id &&
+      rows.push(createData(record.ServiceType, date, record.Status))
+    );
   });
 
   // All appointments state
@@ -341,7 +345,11 @@ const PatientProfile = ({ patient, Appointments }) => {
                           component="h4"
                           color="#B82623"
                         >
-                          {patientData.Address}
+                          {patientData.Street +
+                            " " +
+                            patientData.Baranggay +
+                            " " +
+                            patientData.City}
                         </Typography>
                       </Box>
                       {/* card end here */}
@@ -436,6 +444,12 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
 
+    // Patient Records
+    const patientRecords = await fetch(
+      `http://localhost:3001/patient/profile/records/${params._id}`
+    );
+    const records = await patientRecords.json();
+
     const Allres = await fetch("http://localhost:3001/appointments");
     const { Appointments } = await Allres.json();
 
@@ -443,6 +457,7 @@ export async function getStaticProps({ params }) {
       props: {
         patient,
         Appointments,
+        records,
       },
     };
   } catch (err) {

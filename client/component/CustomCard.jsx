@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import styles from "../styles/CustomCard.module.css";
 import Image from "next/image";
 
-const CustomCard = ({ icon, name, date, time, status }) => {
+const CustomCard = ({ icon, name, date, AppointmentID, status }) => {
   return (
     <Box className={styles.card}>
       <Typography variant="body2" component="h6" className={styles.card__cell}>
@@ -14,7 +14,7 @@ const CustomCard = ({ icon, name, date, time, status }) => {
         {date}
       </Typography>
       <Typography variant="body2" component="h6" className={styles.card__cell}>
-        {time}
+        {AppointmentID}
       </Typography>
       <Box className={styles.status}>
         <Image src={icon} title="icon" />

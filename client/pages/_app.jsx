@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import "../styles/globals.css";
-// import 'react-super-responsive-table/dist/SuperResponsiveTableStyle.css'
 import NextProgress from "next-progress";
 import Layout from "../component/Layout";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
+import { CookiesProvider } from "react-cookie";
 
 import userApiReducer from "../features/Users";
 
@@ -26,13 +26,15 @@ function MyApp({ Component, pageProps }) {
   return (
     <Layout>
       <Provider store={store}>
-        <NextProgress
-          color="red"
-          delay={300}
-          height="5px"
-          options={{ showSpinner: false }}
-        />
-        <Component {...pageProps} />
+        <CookiesProvider>
+          <NextProgress
+            color="red"
+            delay={300}
+            height="5px"
+            options={{ showSpinner: false }}
+          />
+          <Component {...pageProps} />
+        </CookiesProvider>
       </Provider>
     </Layout>
   );
