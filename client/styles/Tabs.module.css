@@ -14,7 +14,28 @@
   border-radius: 10px 10px 0 0;
 }
 
+.active__Dark {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 15%;
+  height: 40px;
+  background-color: rgb(5, 5, 5);
+  color: #b82623;
+  box-sizing: border-box;
+  box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
+  z-index: 1;
+  border-radius: 10px 10px 0 0;
+}
+
 .active a {
+  width: 100%;
+  text-align: center;
+}
+
+.active__Dark a {
   width: 100%;
   text-align: center;
 }

@@ -65,7 +65,7 @@ function createData(ServiceType, Schedule, Status) {
   return { ServiceType, Schedule, Status };
 }
 
-const PatientProfile = ({ patient, Appointments, records }) => {
+const PatientProfile = ({ patient, records, patientImage }) => {
   const [sendMessage, setSendMessage] = useState("");
   const router = useRouter();
   const id = router.query._id;
@@ -73,7 +73,12 @@ const PatientProfile = ({ patient, Appointments, records }) => {
   // pushing patients data to array
   const rows = [];
   records.filter((record) => {
-   const date =  new Date(record.Schedule).toLocaleDateString('en-us', { weekday:"long", year:"numeric", month:"short", day:"numeric"})
+    const date = new Date(record.Schedule).toLocaleDateString("en-us", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
     return (
       record.PatientID == id &&
       rows.push(createData(record.ServiceType, date, record.Status))
@@ -252,7 +257,20 @@ const PatientProfile = ({ patient, Appointments, records }) => {
                     {/* <Typography variant="h5" component="h5" color="#B82623">
                     Patient&apos;s Profile
                   </Typography> */}
-                    <Image src={UserIcon} alt="user profile" />
+                    <Box className={styles.ProfileImageContainer}>
+                      {patientImage !== null ? (
+                        <Image
+                          src={patientImage}
+                          alt="user profile"
+                          width={80}
+                          height={80}
+                          className={styles.patientImage}
+                        />
+                      ) : (
+                        <Image src={UserIcon} alt="user profile" />
+                      )}
+                    </Box>
+
                     {/* <CustomWebcam/> */}
                     <Typography
                       variant="h5"
@@ -262,14 +280,6 @@ const PatientProfile = ({ patient, Appointments, records }) => {
                     >
                       {patientData.FirstName + " " + patientData.LastName}
                     </Typography>
-                    <Box className={styles.getStartedBtn} variant="contained">
-                      <Link
-                        className={styles.getStartedLink}
-                        href={`/patients/${patientData.PatientID}/appointment`}
-                      >
-                        Add New Appointment
-                      </Link>
-                    </Box>
 
                     <Box className={styles.cards}>
                       {/* gender here */}
@@ -360,19 +370,43 @@ const PatientProfile = ({ patient, Appointments, records }) => {
 
                 {/* right container starts here */}
                 <Box className={styles.right__container}>
-                  <Box
-                    className={styles.print__button}
-                    style={{ height: "30px", width: "100px", alignSelf: "end" }}
-                  >
-                    <Link href={`/patients/${patientData.PatientID}/pdf`}>
-                      <Image
-                        src={PrintIcon}
-                        alt="print"
-                        height={30}
-                        width={30}
-                      />
-                    </Link>
+                  {/* right container header  */}
+                  <Box className={styles.right__container__header}>
+                    <Box className={styles.getStartedBtn} variant="contained">
+                      <Link
+                        className={styles.getStartedLink}
+                        href={`/patients/${patientData.PatientID}/appointment`}
+                      >
+                        Add New Appointment
+                      </Link>
+                    </Box>
+                    <Box className={styles.getStartedBtn} variant="contained">
+                      <Link
+                        className={styles.getStartedLink}
+                        href={`/patients/${patientData.PatientID}/appointment`}
+                      >
+                        Request Medicine
+                      </Link>
+                    </Box>
+                    <Box
+                      className={styles.print__button}
+                      style={{
+                        height: "30px",
+                        width: "100px",
+                      }}
+                    >
+                      <Link href={`/patients/${patientData.PatientID}/pdf`}>
+                        <Image
+                          src={PrintIcon}
+                          alt="print"
+                          height={30}
+                          width={30}
+                        />
+                      </Link>
+                    </Box>
                   </Box>
+                  {/* right container header end here */}
+
                   {/* Charts starts here*/}
                   <Box className={styles.chart__cards}>
                     <Box className={styles.chart__card}>
@@ -425,7 +459,7 @@ export default PatientProfile;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/patients");
+    const res = await fetch("http://localhost:3001/all_patients");
     const { Patients } = await res.json();
 
     return {
@@ -450,17 +484,25 @@ export async function getStaticProps({ params }) {
     );
     const records = await patientRecords.json();
 
-    const Allres = await fetch("http://localhost:3001/appointments");
-    const { Appointments } = await Allres.json();
+    // feth patient Image
+    const patientImageID = await patient[0].ImageID.toString();
+    const imageRes = await fetch(
+      `http://localhost:3001/image/${patientImageID}`
+    );
+    const patientProfilePic = await imageRes.json();
+    const patientImage = (await patientProfilePic[0].Image) || null;
 
     return {
       props: {
         patient,
-        Appointments,
         records,
+        patientImage,
       },
     };
   } catch (err) {
-    console.log("Fetching data error or please your internet connection", err);
+    console.log(
+      "Fetching data error or please check your internet connection",
+      err
+    );
   }
 }

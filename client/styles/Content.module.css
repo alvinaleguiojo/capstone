@@ -7,3 +7,21 @@
   background-color: #dbdff3;
   padding-top: 80px;
 }
+
+/* @media (prefers-color-scheme: light) {
+  .content {
+    background-color: white;
+    color: black;
+  }
+} */
+
+.DarkMode {
+  display: flex;
+  height: 100vh;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: black;
+  padding-top: 80px;
+  color: grey;
+}

@@ -9,6 +9,8 @@ import TablePagination from "@mui/material/TablePagination";
 import TableRow from "@mui/material/TableRow";
 import { useRouter } from "next/router";
 import Typography from "@mui/material/Typography";
+import Image from "next/image";
+import ArrowDown from "../assets/image/arrow-down.svg";
 
 export default function GridTable({
   rows,
@@ -61,7 +63,7 @@ export default function GridTable({
                           key={column.id}
                           align={column.align}
                           onClick={() => router.push(`/${path}/${row.PatientID}`)}
-                        >
+                        > 
                           {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}

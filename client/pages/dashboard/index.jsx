@@ -48,6 +48,14 @@ ChartJS.register(
 );
 
 const index = ({ Appointments }) => {
+  const [theme, setTheme] = useState(false);
+
+  useEffect(() => {
+    // fetch color scheme from local storage
+    const enabled = JSON.parse(localStorage.getItem("theme"));
+    setTheme(enabled);
+  }, []);
+
   // All appointments state
   const [chartData, setChartData] = useState({
     datasets: [],
@@ -109,12 +117,20 @@ const index = ({ Appointments }) => {
       {useAuth() ? (
         <Box className={styles.dashboard}>
           <Navbar />
-          <Box className={contentStyles.content}>
+          <Box
+            className={theme ? contentStyles.DarkMode : contentStyles.content}
+          >
             <Tabs />
-            <Box className={reusableStyle.main__content}>
+            <Box
+              className={
+                theme
+                  ? reusableStyle.main__content_dark
+                  : reusableStyle.main__content
+              }
+            >
               {/* Left content starts here */}
               <Box className={styles.left__content}>
-                <Box className={styles.banner}>
+                <Box className={theme ? styles.banner__dark : styles.banner}>
                   <Box>
                     <Typography variant="h6" component="h6" color="#B82623">
                       Good Morning <span>Dr.Dela Cruz</span>
@@ -172,15 +188,15 @@ const index = ({ Appointments }) => {
                   {Appointments.map((appointment) => {
                     return (
                       <CustomCard
-                        name={appointment.LastName} 
+                        name={appointment.LastName}
                         date={appointment.ServiceType}
                         AppointmentID={appointment.AppointmentID}
                         icon={waitingIcon}
-                        status={appointment.Status} 
+                        status={appointment.Status}
                       />
                     );
                   })}
-                </Box>  
+                </Box>
 
                 {/* List of Appointments  */}
               </Box>
@@ -211,7 +227,11 @@ const index = ({ Appointments }) => {
                   </Box>
                 </Box>
                 <Box className={styles.report__cards}>
-                  <Box className={styles.report__card}>
+                  <Box
+                    className={
+                      theme ? styles.report__card__dark : styles.report__card
+                    }
+                  >
                     <Image src={treatmentIcon} title="icon" />
                     <Typography
                       variant="caption"
@@ -234,7 +254,11 @@ const index = ({ Appointments }) => {
                       {Appointments.length}
                     </Typography>
                   </Box>
-                  <Box className={styles.report__card}>
+                  <Box
+                    className={
+                      theme ? styles.report__card__dark : styles.report__card
+                    }
+                  >
                     <Image src={userIcon} title="icon" height={50} width={50} />
                     <Typography
                       variant="caption"
@@ -252,10 +276,14 @@ const index = ({ Appointments }) => {
                         color: "#B82623",
                       }}
                     >
-                       {Appointments.length}
+                      {Appointments.length}
                     </Typography>
                   </Box>
-                  <Box className={styles.report__card}>
+                  <Box
+                    className={
+                      theme ? styles.report__card__dark : styles.report__card
+                    }
+                  >
                     <Image src={completedIcon} title="icon" />
                     <Typography
                       variant="caption"
@@ -276,7 +304,11 @@ const index = ({ Appointments }) => {
                       123
                     </Typography>
                   </Box>
-                  <Box className={styles.report__card}>
+                  <Box
+                    className={
+                      theme ? styles.report__card__dark : styles.report__card
+                    }
+                  >
                     <Image src={cancelIcon} title="icon" />
                     <Typography
                       variant="caption"

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import Navbar from "../../component/Navbar";
@@ -22,51 +21,73 @@ import useAuth from "../../customhook/Auth";
 
 const columns = [
   {
-    id: "_id",
-    label: "Medicine's ID",
-    minWidth: 200,
+    id: "MedicineID",
+    label: "ID",
+    minWidth: 50,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "service_type",
+    id: "Name",
     label: "Medicine Name",
-    minWidth: 250,
+    minWidth: 150,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "lastcheck",
+    id: "Stocks",
     label: "Stocks",
-    minWidth: 200,
+    minWidth: 50,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
   {
-    id: "name",
-    label: "Released",
-    minWidth: 200,
+    id: "Type",
+    label: "Type",
+    minWidth: 50,
   },
   {
-    id: "address",
-    label: "Medicine Type",
-    minWidth: 200,
+    id: "Size",
+    label: "Size",
+    minWidth: 50,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "DateEntry",
+    label: "Date Entry",
+    minWidth: 150,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "ExpiryDate",
+    label: "Expiry Date",
+    minWidth: 150,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
 ];
 
-function createData(_id, service_type, lastcheck, name, phone, address) {
-  return { _id, service_type, lastcheck, name, phone, address };
+function createData(
+  MedicineID,
+  Name,
+  Stocks,
+  Type,
+  Size,
+  DateEntry,
+  ExpiryDate
+) {
+  return { MedicineID, Name, Stocks, Type, Size, DateEntry, ExpiryDate };
 }
 
-const index = ({ patients }) => {
+const index = ({ Medicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
 
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const rows = [];
-  const [data, setData] = useState(patients);
+  const [data, setData] = useState(Medicines);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -108,15 +129,25 @@ const index = ({ patients }) => {
     res && (await Swal.fire("Success!", "Medicine has been added!", "success"));
   };
 
-  data.map((patient) => {
+  data.map((medicine) => {
+    const DateEntry = new Date(medicine.DateEntry).toLocaleDateString("en-us", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    const ExpiryDate = new Date(medicine.ExpiryDate).toLocaleDateString(
+      "en-us",
+      { year: "numeric", month: "short", day: "numeric" }
+    );
     return rows.push(
       createData(
-        patient._id,
-        patient.service_type,
-        patient.schedule,
-        patient.firstname + " " + patient.lastname,
-        patient.phone,
-        patient.address
+        medicine.MedicineID,
+        medicine.Name,
+        medicine.Stocks,
+        medicine.Type,
+        medicine.Size,
+        DateEntry,
+        ExpiryDate
       )
     );
   });
@@ -184,7 +215,7 @@ const index = ({ patients }) => {
             <GridTable
               rows={rows}
               columns={columns}
-              path="medicines"
+              path="/medicines/released"
               maxHeight={340}
               firstRow={10}
               rowPerPage={10}
@@ -207,12 +238,12 @@ export default index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch(`http://localhost:3001/search?firstname=`);
-    const results = await res.json();
+    const res = await fetch(`http://localhost:3001/medicines`);
+    const { Medicines } = await res.json();
 
     return {
       props: {
-        patients: results,
+        Medicines,
       },
     };
   } catch (error) {

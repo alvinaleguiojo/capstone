@@ -287,7 +287,7 @@ export default Index;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/patients");
+    const res = await fetch("http://localhost:3001/all_patients");
     const { Patients } = await res.json();
 
     return {

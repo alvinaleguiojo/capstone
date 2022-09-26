@@ -9,8 +9,8 @@ body {
   width: 100vw;
 }
 
-input:focus{
-  outline: #B82623 solid 1px;
+input:focus {
+  outline: #b82623 solid 1px;
 }
 
 h1 {
@@ -32,8 +32,11 @@ a {
     color-scheme: dark;
   }
   body {
-    color: white;
+    color: grey;
     background: black;
+  }
+  input {
+    color: grey;
   }
 }
 
@@ -41,8 +44,8 @@ a {
   border: none !important;
   background-color: #dbdff3 !important;
   border-radius: 10px !important;
-  width: 100%!important;
-  height: 90%!important;
+  width: 100% !important;
+  height: 90% !important;
 }
 
 .react-calendar__navigation button {
@@ -51,28 +54,28 @@ a {
 
 .react-calendar__navigation button:enabled:hover,
 .react-calendar__navigation button:enabled:focus {
-  background-color: #B82623!important;
-  color: #fff!important;
+  background-color: #b82623 !important;
+  color: #fff !important;
 }
 
 /* current date active */
 .react-calendar__tile--now {
-  background: #e0bbba!important;
+  background: #e0bbba !important;
 }
 
 /* active calendar cell */
 .react-calendar__tile--active {
-  background: #B82623!important;
+  background: #b82623 !important;
   color: white;
 }
 
 /* modal sweetalert2 */
 .swal2-styled.swal2-confirm {
   border: 0;
-  border-radius: .25em;
+  border-radius: 0.25em;
   background: initial;
-    background-color: initial;
-  background-color: #B82623 !important;
+  background-color: initial;
+  background-color: #b82623 !important;
   color: #fff;
   font-size: 1em;
 }
@@ -116,19 +119,18 @@ a {
   display: flex;
 } */
 
-.medicine__container{
-  display: flex!important;
-  flex-direction: column!important;
-  justify-content: flex-start!important;
-  text-align: left!important;
+.medicine__container {
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: flex-start !important;
+  text-align: left !important;
 }
 
 .medicine__container label {
   margin-left: 40px;
 }
 
-.medicine__input{
+.medicine__input {
   flex: 1 !important;
-  padding: 15px!important;
+  padding: 15px !important;
 }
-

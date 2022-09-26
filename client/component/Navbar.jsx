@@ -12,11 +12,20 @@ import { useRouter } from "next/router";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { IconButton } from "@mui/material";
+import CustomizedSwitches from "./CustomizedSwitches";
 
 const Navbar = () => {
   const router = useRouter();
   const today = format(new Date(), "MMMM dd, yyyy");
   const [userData, setUserData] = useState([]);
+
+  const [theme, setTheme] = useState(false);
+
+  useEffect(() => {
+    // fetch color scheme from local storage
+    const enabled = JSON.parse(localStorage.getItem("theme"));
+    setTheme(enabled);
+  }, []);
 
   useEffect(() => {
     axios
@@ -55,7 +64,7 @@ const Navbar = () => {
     <>
       {userData.map((user, key) => {
         return (
-          <Box className={styles.navbar} key={key}>
+          <Box className={theme ? styles.DarkMode: styles.navbar} key={key}>
             <Box className={styles.logo}></Box>
             <Box className={styles.navbar__right}>
               <Box className={styles.user}>
@@ -97,7 +106,7 @@ const Navbar = () => {
                   </Typography>
                 </Box>
 
-                {/* <CustomizedSwitches /> */}
+                <CustomizedSwitches />
               </Box>
             </Box>
           </Box>

@@ -13,6 +13,20 @@
   padding-left: 15px;
 }
 
+.card__dark {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: black;
+  height: 50px;
+  border-radius: 5px;
+  padding-left: 15px;
+  color: grey;
+  box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
+  -moz-box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
+}
+
 .card__cell {
   width: 150px;
 }

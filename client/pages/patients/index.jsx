@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import Navbar from "../../component/Navbar";
@@ -7,61 +7,75 @@ import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
 import styles from "../../styles/Patients.module.css";
-import GridTable from "../../component/GridTable";
 import Meta from "../../component/Meta";
 import Typography from "@mui/material/Typography";
 import useAuth from "../../customhook/Auth";
 import { Button } from "@mui/material";
-
-const columns = [
-  {
-    id: "PatientID",
-    label: "Patient's ID",
-    minWidth: 50,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  {
-    id: "Name",
-    label: "Name",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-  { id: "Address", label: "Address", minWidth: 300 },
-  {
-    id: "Phone",
-    label: "Phone Number",
-    minWidth: 170,
-    align: "left",
-    format: (value) => value.toLocaleString("en-US"),
-  },
-];
-
-function createData(PatientID, Name, Address, Phone) {
-  return { PatientID, Name,Address, Phone };
-}
+import CardTemplate from "../../component/CardTemplate";
+import SearchIcon from "../../assets/image/search.svg";
+import axios from "axios";
 
 const index = ({ patients }) => {
   const router = useRouter();
-  const rows = [];
-  patients.map((patient) => {
-    return rows.push(
-      createData(
-        patient.PatientID,
-        patient.FirstName + " " + patient.LastName,
-        patient.Street + ", " + patient.Baranggay + ", " + patient.City,
-        patient.Phone
+  const [patientData, setPatientData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [previousPage, setPreviousPage] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const [theme, setTheme] = useState(false);
+
+  useEffect(() => {
+    // fetch color scheme from local storage
+    const enabled = JSON.parse(localStorage.getItem("theme"));
+    setTheme(enabled);
+  }, []);
+
+  // fetch patient Data
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:3001/patients?page=${currentPage}&limit=3&LIKE=${searchTerm}`
       )
-    );
-  });
+      .then((response) => {
+        setPreviousPage(response.data.previous);
+        setPageNumber(response.data.next);
+        setPatientData(response.data.results);
+      })
+      .then(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      });
+  }, [currentPage, searchTerm]);
 
+  // go back to previous page
+  const PreviousPage = () => {
+    setLoading(true);
+    setCurrentPage(previousPage.page);
+  };
 
-  const AddPatient = () =>{
+  // to trigger the next page
+  const NextPage = () => {
+    setLoading(true);
+    setCurrentPage(pageNumber.page);
+  };
+
+  // hamdling search terms
+  const handleSearch = (e) => {
+    setCurrentPage(1);
+    setLoading(true);
+    setSearchTerm(e.target.value);
+  };
+
+  // Remove Patient from the local storage
+  const AddPatient = () => {
     localStorage.removeItem("image");
     localStorage.removeItem("patient");
-    router.push("/patients/register")
-  }
+    router.push("/patients/register");
+  };
 
   return (
     <>
@@ -74,9 +88,17 @@ const index = ({ patients }) => {
             keywords="Capstone project, health center, baranggay"
           />
           <Navbar />
-          <Box className={contentStyles.content}>
+          <Box
+            className={theme ? contentStyles.DarkMode : contentStyles.content}
+          >
             <Tabs />
-            <Box className={reusableStyle.main__content}>
+            <Box
+              className={
+                theme
+                  ? reusableStyle.main__content_dark
+                  : reusableStyle.main__content
+              }
+            >
               <Box className={styles.patients}>
                 <Box className={styles.content__header}>
                   <Typography variant="h5" component="h5" color="#B82623">
@@ -86,14 +108,67 @@ const index = ({ patients }) => {
                     Add New Patient
                   </Button>
                 </Box>
-                <GridTable
-                  rows={rows}
-                  columns={columns}
-                  path="patients"
-                  maxHeight={360}
-                  firstRow={10}
-                  rowPerPage={10}
-                />
+
+                <Box className={theme ? styles.search__dark : styles.search}>
+                  {/* Advance Search */}
+                  <input
+                    type="text"
+                    placeholder="Search for First Name, Last Name , Street, Barrangay and City"
+                    className={
+                      theme ? styles.search__input__dark : styles.search__input
+                    }
+                    onChange={handleSearch}
+                  />
+                  <Image
+                    src={SearchIcon}
+                    alt="search"
+                    className={styles.search__icon}
+                  />
+                </Box>
+
+                {/* fetch all patient data */}
+                {patientData.map((patient, key) => {
+                  console.log(patient);
+                  return (
+                    <Box
+                      key={key}
+                      onClick={() =>
+                        router.push(`/patients/${patient.PatientID}`)
+                      }
+                    >
+                      <CardTemplate
+                        loading={loading}
+                        profilePicture={patient.Image}
+                        Name={`${patient.FirstName} ${patient.LastName}`}
+                        Address={`${patient.Street} ${patient.Baranggay} ${patient.City}`}
+                        Phone={patient.Phone}
+                      />
+                    </Box>
+                  );
+                })}
+                {patientData.length <= 0 && (
+                  <Typography variant="h5" component="h5" color="#B82623">
+                    No words or phrases found
+                  </Typography>
+                )}
+
+                <Box className={styles.pagination}>
+                  <Button
+                    className={styles.page}
+                    onClick={PreviousPage}
+                    disabled={currentPage <= 1 ? true : false}
+                  >
+                    Previous
+                  </Button>
+
+                  <Button
+                    className={styles.page}
+                    onClick={NextPage}
+                    disabled={patientData.length <= 0 ? true : false}
+                  >
+                    Next
+                  </Button>
+                </Box>
               </Box>
             </Box>
           </Box>
@@ -105,9 +180,9 @@ const index = ({ patients }) => {
 
 export default index;
 
-export const getStaticProps = async () => {
+export const getStaticProps = async ({ context }) => {
   try {
-    const res = await fetch("http://localhost:3001/patients");
+    const res = await fetch("http://localhost:3001/patientswithimage");
     const { Patients } = await res.json();
 
     return {

@@ -4,6 +4,10 @@ const Patients = require("../model/patient");
 const getById = require("../middleware/getById");
 const { validateToken } = require("../middleware/JWT");
 const paginatedResults = require("../middleware/paginatedResults");
+// const paginatedData = require("../middleware/pagination");
+
+// import db connection
+const connection = require("../db/connection");
 
 // import for AsyncAwait Functions
 const RegisterPatientPromise = require("../AsyncAwait/Patients/RegisterPatient");
@@ -12,6 +16,9 @@ const GetPatientsByIDPromise = require("../AsyncAwait/Patients/PatientsByID");
 const DeletePatientsByIDPromise = require("../AsyncAwait/Patients/DeletePatient");
 const UpdatePatientsPromiseByID = require("../AsyncAwait/Patients/UpdatePatient");
 const PatientProfileRecordsPromise = require("../AsyncAwait/Patients/PatientProfileRecords");
+const GetAllPatientsWithImagePromise = require("../AsyncAwait/Patients/PatientsWithImage");
+const GetAllPatientsLimitPromise = require("../AsyncAwait/Patients/PatientsLimit");
+const CountDocumentsPromise = require("../AsyncAwait/Patients/CountDocuments");
 const AddPatientHistoryPromise = require("../AsyncAwait/PatientHistory/AddHistory");
 
 router.use(express.json());
@@ -19,10 +26,68 @@ router.use(express.json());
 // router.get("/patients", paginatedResults(Patients), (req, res) => {
 //   res.json(res.paginatedResults);
 // });
+
+const paginatedData = () => {
+  return async (req, res, next) => {
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    let LIKE = req.query.LIKE;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+    const rowNumberOfCollection = await CountDocumentsPromise();
+    const count = await rowNumberOfCollection[0].NumberOfPatients;
+    if (endIndex < count) {
+      results.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    const offset = startIndex;
+
+    try {
+      results.results = await GetAllPatientsLimitPromise({
+        limit,
+        offset,
+        LIKE,
+      });
+      res.paginatedData = results;
+      next();
+    } catch (err) {
+      console.log("error page and limit or no data");
+    }
+  };
+};
+
+router.get("/patients", paginatedData(), (req, res) => {
+  res.json(res.paginatedData);
+});
+
 // Get ALl Patients
-router.get("/patients", async (req, res) => {
+router.get("/all_patients", async (req, res) => {
   try {
     const resultElements = await GetAllPatientsPromise();
+    res.status(200).json({ Patients: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get ALl Patients with Image
+router.get("/patientswithimage", async (req, res) => {
+  try {
+    const resultElements = await GetAllPatientsWithImagePromise();
     res.status(200).json({ Patients: resultElements });
   } catch (error) {
     console.log(error);

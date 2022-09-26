@@ -265,17 +265,17 @@ const index = ({ patients }) => {
 
 export default index;
 
-export const getStaticProps = async () => {
-  try {
-    const res = await fetch("http://localhost:3001/patients");
-    const { Patients } = await res.json();
+// export const getStaticProps = async () => {
+//   try {
+//     const res = await fetch("http://localhost:3001/patients");
+//     const { Patients } = await res.json();
 
-    return {
-      props: {
-        patients: Patients,
-      },
-    };
-  } catch (error) {
-    console.log("please check your internet connection", error);
-  }
-};
+//     return {
+//       props: {
+//         patients: Patients,
+//       },
+//     };
+//   } catch (error) {
+//     console.log("please check your internet connection", error);
+//   }
+// };

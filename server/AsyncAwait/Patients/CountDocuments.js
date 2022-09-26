@@ -1,11 +1,11 @@
 // import db connection
 const connection = require("../../db/connection");
 
-// Get All Patients
-const GetPatientsByIDPromise = (PatientID) => {
+// Count the total document in Patients table
+const CountDocumentsPromise = () => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * from Patients WHERE PatientID = ${PatientID}`,
+      `SELECT COUNT(PatientID) AS NumberOfPatients FROM Patients`,
       (error, Patients) => {
         error && reject(error);
         return resolve(Patients);
@@ -14,4 +14,4 @@ const GetPatientsByIDPromise = (PatientID) => {
   });
 };
 
-module.exports = GetPatientsByIDPromise;
+module.exports = CountDocumentsPromise;
