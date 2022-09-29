@@ -196,6 +196,10 @@
   gap: 1rem;
 }
 
+.modal {
+  border-radius: 20px !important;
+}
+
 .name {
   display: flex;
   justify-content: space-between;

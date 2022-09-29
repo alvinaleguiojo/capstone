@@ -24,13 +24,31 @@
   display: flex;
   height: 60px;
   width: 100vw;
-  z-index: 1;
+  z-index: 2;
   box-sizing: border-box;
   box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -webkit-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   -moz-box-shadow: -1px 3px 3px 2px rgba(0, 0, 0, 0.11);
   position: fixed;
   background-color: #fff;
+}
+
+.menu {
+  width: 100%;
+}
+
+.menu__item {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 10px;
+  transition: background 500ms;
+  padding: 0.5rem;
+}
+
+.menu__item:hover {
+  background-color: #dbdff3;
 }
 
 /* .DarkMode here */
@@ -40,8 +58,8 @@
   width: 100vw;
   z-index: 1;
   box-sizing: border-box;
-  box-shadow: -1px 3px 3px 2px  rgba(190, 190, 190, 0.11);
-  -webkit-box-shadow: -1px 3px 3px 2px  rgba(190, 190, 190, 0.11);
+  box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
+  -webkit-box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
   -moz-box-shadow: -1px 3px 3px 2px rgba(190, 190, 190, 0.11);
   position: fixed;
   background-color: black;
@@ -50,6 +68,7 @@
 
 .navbar__right {
   display: flex;
+  flex: 1;
   padding-top: 5px;
   padding-bottom: 5px;
 }
@@ -69,7 +88,29 @@
 
 .user {
   display: flex;
-  justify-content: space-around;
+  justify-content: space-evenly;
   align-items: center;
-  width: 330px;
+  width: 300px;
+}
+
+.header__icons {
+  display: flex;
+  align-items: center;
+}
+
+.header__icon,
+.header__icon__dark,
+.icon__button {
+  color: #abafc0;
+}
+
+.header__icon_active {
+  color: #b82623;
+  background-color: #b8252315;
+  border-radius: 999px;
+}
+
+.header__icon__dark:hover,
+.header__icon:hover {
+  color: #b82623;
 }

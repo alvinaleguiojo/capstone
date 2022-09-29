@@ -142,7 +142,7 @@ export default function CustomizedSwitches() {
   const [theme, setTheme] = useState(false);
   const router = useRouter();
 
-  const handleChange = (e) => {
+  const toggleSwitch = (e) => {
     e.preventDefault();
     setTheme(e.target.checked);
     localStorage.setItem("theme", JSON.stringify(e.target.checked));
@@ -163,9 +163,8 @@ export default function CustomizedSwitches() {
         control={
           <IOSSwitch
             sx={{ m: 1 }}
-            defaultChecked={theme}
             checked={theme}
-            onChange={handleChange}
+            onChange={toggleSwitch}
           />
         }
         label={theme ? "Dark Mode" : "Light Mode"}

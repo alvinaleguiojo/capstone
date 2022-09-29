@@ -45,7 +45,7 @@ const Tabs = () => {
         <Link href="/patients">PATIENTS</Link>
       </Box>
 
-      <Box
+      {/* <Box
         className={
           router.route == "/records"
             ? theme
@@ -56,7 +56,7 @@ const Tabs = () => {
       >
         <Box className={styles.vertical__line}></Box>
         <Link href="/records">RECORDS</Link>
-      </Box>
+      </Box> */}
 
       <Box
         className={
