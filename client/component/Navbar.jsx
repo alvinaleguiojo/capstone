@@ -22,6 +22,7 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import DarkModeIcon from "@mui/icons-material/DarkMode";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CustomModal from "./CustomModal";
 
 const Navbar = () => {
   const router = useRouter();
@@ -125,6 +126,7 @@ const Navbar = () => {
               </IconButton>
             </Box>
             {open && <DropdownMenu />}
+            {router.query.settings && <CustomModal />}
           </Box>
         );
       })}
@@ -177,7 +179,11 @@ function DropdownMenu() {
         onClick={
           props.goToMenu === "logout"
             ? handleLogout
-            : () => props.goToMenu && setActiveMenu(props.goToMenu)
+            : () =>
+                (props.goToMenu && setActiveMenu(props.goToMenu)) ||
+                props.goToMenu === "settings"
+                  ? router.push(`?settings=services`)
+                  : () => props.goToMenu && setActiveMenu(props.goToMenu)
         }
       >
         <span className={styles.icon__button}>{props.leftIcon}</span>
@@ -197,7 +203,7 @@ function DropdownMenu() {
       >
         <div className={styles.menu}>
           <DropdownItem leftIcon={<AccountCircleIcon fontSize="large" />}>
-            My Profile
+            Profile
           </DropdownItem>
           <DropdownItem
             leftIcon={<DarkModeIcon fontSize="large" />}
@@ -205,7 +211,10 @@ function DropdownMenu() {
           >
             Theme
           </DropdownItem>
-          <DropdownItem leftIcon={<SettingsIcon fontSize="large" />}>
+          <DropdownItem
+            leftIcon={<SettingsIcon fontSize="large" />}
+            goToMenu="settings"
+          >
             Settings
           </DropdownItem>
           <DropdownItem
@@ -217,6 +226,7 @@ function DropdownMenu() {
         </div>
       </CSSTransition>
 
+      {/* theme */}
       <CSSTransition
         in={activeMenu === "theme"}
         unmountOnExit
