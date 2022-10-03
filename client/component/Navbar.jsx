@@ -125,7 +125,7 @@ const Navbar = () => {
                 />
               </IconButton>
             </Box>
-            {open && <DropdownMenu />}
+            {open && !router.query.settings && <DropdownMenu />}
             {router.query.settings && <CustomModal />}
           </Box>
         );

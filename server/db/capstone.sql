@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 29, 2022 at 12:46 PM
+-- Generation Time: Oct 03, 2022 at 07:13 PM
 -- Server version: 8.0.30-0ubuntu0.22.04.1
 -- PHP Version: 8.1.2
 
@@ -49,7 +49,8 @@ INSERT INTO `Appointments` (`AppointmentID`, `PatientID`, `Schedule`, `ServiceID
 (14, 39, '2022-08-26 00:00:00', 1, 'Waiting', '2022-08-25', 'mama appointment'),
 (15, 42, '2022-08-26 00:00:00', 1, 'Waiting', '2022-08-25', 'Schedule for monday vaccine'),
 (16, 40, '2022-08-26 00:00:00', 3, 'Waiting', '2022-08-25', 'lunes for TB'),
-(17, 47, '2022-08-26 00:00:00', 4, 'Waiting', '2022-08-26', 'New Appointment test');
+(17, 47, '2022-08-26 00:00:00', 4, 'Waiting', '2022-08-26', 'New Appointment test'),
+(18, 47, '2022-09-03 00:00:00', 1, 'Waiting', '2022-09-03', 'undefined');
 
 -- --------------------------------------------------------
 
@@ -120,7 +121,8 @@ INSERT INTO `Patients` (`PatientID`, `LastName`, `FirstName`, `Gender`, `Phone`,
 (47, 'asdasd', 'test', 'Female', '09321312312', '2022-08-24', '2022-09-28', 'dasda', 'JR', 'dsad', 'asdasdasd', 'cebuad', 49),
 (48, 'dsadas', 'asda', 'Female', '12312312', '2022-08-24', '2022-09-28', 'ASD', 'JR', 'DASDAS', 'DASDASD', 'DASDASD', 50),
 (49, 'Image', 'Check ', 'Female', '0912312312', '2022-08-25', '2022-09-28', 'M', 'SR', 'No street', 'No brgy', 'Cebu City', 52),
-(50, 'testlastname', 'test1', 'Female', '0912312312', '2022-08-26', '2022-09-22', 't', 'SR', 'street', 'inayawan', 'cebu', 54);
+(50, 'testlastname', 'test1', 'Female', '0912312312', '2022-08-26', '2022-09-22', 't', 'SR', 'street', 'inayawan', 'cebu', 54),
+(51, 'sdadasd', 'alvs', 'Female', '0977776767', '2022-08-30', '2022-09-28', 'sdsdsa', 'JR', 'adasdsad', 'dasdasdas', 'dasdas', 57);
 
 --
 -- Indexes for dumped tables
@@ -156,7 +158,7 @@ ALTER TABLE `Patients`
 -- AUTO_INCREMENT for table `Appointments`
 --
 ALTER TABLE `Appointments`
-  MODIFY `AppointmentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `AppointmentID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- AUTO_INCREMENT for table `Medicines`
@@ -168,7 +170,7 @@ ALTER TABLE `Medicines`
 -- AUTO_INCREMENT for table `Patients`
 --
 ALTER TABLE `Patients`
-  MODIFY `PatientID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=51;
+  MODIFY `PatientID` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- Constraints for dumped tables

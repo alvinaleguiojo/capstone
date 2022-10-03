@@ -41,6 +41,7 @@
 
 .services {
   display: flex;
+  flex-wrap: wrap;
   gap: 1rem;
 }
 
@@ -54,6 +55,8 @@
 }
 
 .service__save {
+  position: absolute;
+  right: 0;
   display: flex;
   gap: 0.5rem;
   align-self: flex-end;
@@ -126,4 +129,84 @@
   align-self: flex-end;
   border-radius: 10px 0px 0px 10px;
   cursor: pointer;
+}
+
+/* add new service */
+
+.button__back button {
+  display: flex;
+  align-items: center;
+  color: #b82623;
+}
+
+.content__container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form__container {
+  padding-left: 30px;
+  margin-bottom: 100px;
+}
+
+.service__add {
+  display: flex;
+  justify-content: space-between;
+}
+
+.service__add__container {
+  display: flex;
+  gap: 1rem;
+  flex-direction: column;
+  padding-top: 10px;
+}
+
+.service__inputs {
+  display: flex;
+  gap: 5rem;
+}
+
+.service__inputs input {
+  padding: 10px;
+  gap: 0.5rem;
+  background-color: #dbdff3;
+  border: none;
+  border-radius: 5px;
+  width: 300px;
+  height: 40px;
+}
+
+.service__input__container {
+  display: flex;
+  flex-direction: column;
+  color: rgb(70, 70, 70);
+}
+
+.service__left__inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.service__options {
+  display: flex;
+  flex-direction: column;
+  color: rgb(70, 70, 70);
+}
+
+.service__options select {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  width: 300px;
+  height: 40px;
+  background-color: #dbdff3;
+}
+
+.service__options select:focus-within {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  border: solid 1px #b82623;
 }

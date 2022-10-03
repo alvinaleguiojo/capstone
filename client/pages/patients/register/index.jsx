@@ -40,7 +40,7 @@ const index = () => {
   const [imageURL, setImageURL] = useState(null);
 
   // modal
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   // modal
@@ -79,7 +79,7 @@ const index = () => {
   }, [patient]);
 
   const handleProceed = async (e) => {
-    console.log(patient)
+    console.log(patient);
     localStorage.setItem("patient", JSON.stringify(patient));
     setDisabled(true);
     router.push(`/patients/register/history`);
@@ -212,6 +212,7 @@ const index = () => {
                       onClose={handleClose}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
+                      className={styles.modal}
                     >
                       <Box sx={style}>
                         <Webcam

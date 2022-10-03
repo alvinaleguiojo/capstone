@@ -151,7 +151,7 @@ const index = ({ Appointments }) => {
                   color="#B82623"
                   paddingLeft="15px"
                 >
-                  My Appointments
+                  Appointments
                 </Typography>
                 <Box className={styles.header}>
                   <Typography

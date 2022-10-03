@@ -128,7 +128,6 @@ const index = ({ patients }) => {
 
                 {/* fetch all patient data */}
                 {patientData.map((patient, key) => {
-                  console.log(patient);
                   return (
                     <Box
                       key={key}

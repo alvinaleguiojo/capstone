@@ -151,3 +151,15 @@ secondary  */
   transform: translateX(110%);
   transition: all 500ms ease;
 }
+
+/* skeleton styling */
+.css-794kqy-MuiSkeleton-root {
+  display: block;
+  background-color: rgba(0, 0, 0, 0.11);
+  height: 1.2em;
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: -webkit-radial-gradient(white, black);
+  background-color: #dbdff3;
+  border-radius: 5px;
+}

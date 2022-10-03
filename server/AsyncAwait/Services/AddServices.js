@@ -1,13 +1,13 @@
 // import db connection
 const connection = require("../../db/connection");
 
-// Adding Appointment for the patient
-const AddServicePromise = ({ ServiceType, Availability }) => {
-  const newUser = `INSERT INTO Services (ServiceType, Availability) VALUES ('${ServiceType}', ${Availability})`;
+// Adding Service
+const AddServicePromise = ({ ServiceType, Availability, Description }) => {
+  const newService = `INSERT INTO Services (ServiceType, Availability, Description) VALUES ('${ServiceType}', ${Availability}, '${Description}')`;
   return new Promise((resolve, reject) => {
-    connection.query(newUser, (error, newCreatedUser) => {
+    connection.query(newService, (error, newCreatedService) => {
       error && reject(error);
-      return resolve(newCreatedUser);
+      return resolve(newCreatedService);
     });
   });
 };

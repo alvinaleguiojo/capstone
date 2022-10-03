@@ -306,7 +306,7 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
 
-    const serviceResponse = await fetch(`http://localhost:3001/services`);
+    const serviceResponse = await fetch(`http://localhost:3001/services_enabled`);
     const { Services } = await serviceResponse.json();
 
     return {
