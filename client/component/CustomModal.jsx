@@ -14,6 +14,9 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Skeleton from "@mui/material/Skeleton";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ModeEditIcon from "@mui/icons-material/ModeEdit";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -102,7 +105,7 @@ export default function CustomModal() {
       .catch((error) => {
         console.log(error);
       });
-  }, []);
+  }, [addService]); // refetch servicesData state when theres new added services
 
   // when toggleSwitch is called
   const ToggleUpdateService = (e, serviceData) => {
@@ -130,7 +133,10 @@ export default function CustomModal() {
       //passing data to an API call Update Service
       axios.patch(
         `http://localhost:3001/service/update/${serviceData.ServiceID}`,
-        { Availability: newValue.Availability }
+        {
+          Availability: newValue.Availability,
+          ServiceType: newValue.ServiceType,
+        }
       );
       Toast.fire({
         icon: "success",
@@ -159,11 +165,85 @@ export default function CustomModal() {
         //return to list of services
         setTimeout(() => {
           setService(false);
-        }, 1000);
+        }, 2000);
 
         //Add new service to serviceData state
         return setServicesData([...servicesData, addService]);
       });
+  };
+
+  const ToggleMoreAction = (serviceData) => {
+    const newValue = { ...serviceData, moreAction: !serviceData.moreAction };
+    const updatedServiceItem = servicesData.map((newServiceItem) => {
+      return newServiceItem.ServiceID === serviceData.ServiceID
+        ? newValue
+        : newServiceItem;
+    });
+
+    setServicesData(updatedServiceItem);
+  };
+
+  const EditService = async (serviceData) => {
+    const { value: newService } = await Swal.fire({
+      title: "Update Service",
+      input: "text",
+      inputValue: serviceData.ServiceType,
+      showCancelButton: true,
+      allowOutsideClick: false,
+      inputValidator: (value) => {
+        if (!value) {
+          return "You need to write something!";
+        }
+      },
+    });
+
+    if (newService) {
+      //passing data to an API call Update Service
+      axios
+        .patch(
+          `http://localhost:3001/service/update/${serviceData.ServiceID}`,
+          {
+            Availability: serviceData.Availability,
+            ServiceType: newService,
+          }
+        )
+        .then(() => {
+          setServicesData([...servicesData, serviceData]);
+          ToggleMoreAction(serviceData);
+          Swal.fire("Success!", "Service updated successfully!", "success");
+        });
+    }
+  };
+
+  // removing service from the list and update the serviceData state
+  const DeleteService = async (serviceData) => {
+    const deleteServce = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to log out?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "grey",
+      confirmButtonText: "Confirm",
+      allowOutsideClick: false,
+    }).then(async (result) => {
+      result.isConfirmed &&
+        (await axios.delete(
+          `http://localhost:3001/service/delete/${serviceData.ServiceID}`
+        ));
+      // here we are filtering - the idea is remove an item from the serviceData array on a button click
+      const removeItem = servicesData.filter((service) => {
+        // return the rest of the services that don't match the item we are deleting
+        return service.ServiceID !== serviceData.ServiceID;
+      });
+      // removeItem returns a new array - so now we are setting the serviceData to the new array
+      setServicesData(removeItem);
+      await Swal.fire(
+        "Success!",
+        "Service has been deleted successfully!",
+        "success"
+      );
+    });
   };
 
   return (
@@ -210,12 +290,14 @@ export default function CustomModal() {
                   <Skeleton animation="wave" sx={{ width: "60%" }} />
                 </>
               ) : (
-                <Typography variant="body1" component="h3" color="#b82623">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex
-                </Typography>
+                <>
+                  <Typography variant="body1" component="h3" color="#b82623">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
+                    do eiusmod tempor incididunt ut labore et dolore magna
+                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
+                    ullamco laboris nisi ut aliquip ex
+                  </Typography>
+                </>
               )}
 
               <Box className={styles.divider}></Box>
@@ -224,58 +306,126 @@ export default function CustomModal() {
             <Box className={styles.content}>
               {!service && (
                 <Box className={styles.content__container}>
-                  <Typography variant="h6" component="h6">
-                    Create Services
-                  </Typography>
-                  <Box className={styles.services}>
-                    {servicesData.map((serviceData, index) => (
-                      <>
-                        <Box
-                          className={styles.service}
-                          key={serviceData.ServiceID}
-                        >
-                          <FormGroup>
-                            {loading ? (
-                              <Skeleton
-                                animation="wave"
-                                variant="rectangular"
-                                sx={{ bgcolor: "grey.300", width: "110px" }}
-                              />
-                            ) : (
-                              <Stack
-                                direction="row"
-                                spacing={1}
-                                alignItems="center"
-                              >
-                                <Typography>
-                                  {serviceData.ServiceType}
-                                </Typography>
-                                <AntSwitch
-                                  checked={
-                                    serviceData.Availability == 1 ? true : false
-                                  }
-                                  inputProps={{ "aria-label": "ant design" }}
-                                  onChange={(e) =>
-                                    ToggleUpdateService(e, serviceData)
-                                  }
+                  {/* Update and Delete Services */}
+                  {!service && (
+                    <Box className={styles.content__container}>
+                      <Typography variant="h6" component="h6">
+                        Manage Services
+                      </Typography>
+                      <Box className={styles.services__actions}>
+                        {servicesData.map((serviceData, index) => (
+                          <Box
+                            className={styles.service}
+                            key={serviceData.ServiceID}
+                          >
+                            <FormGroup>
+                              {loading ? (
+                                <Skeleton
+                                  animation="wave"
+                                  variant="rectangular"
+                                  sx={{
+                                    bgcolor: "grey.300",
+                                    width: "250px",
+                                    height: "35px",
+                                  }}
                                 />
-                              </Stack>
-                            )}
-                          </FormGroup>
-                        </Box>
-                      </>
-                    ))}
+                              ) : (
+                                <Box className={styles.action}>
+                                  <Stack
+                                    direction="row"
+                                    spacing={1}
+                                    alignItems="center"
+                                  >
+                                    <input
+                                      type="text"
+                                      disabled={true}
+                                      value={serviceData.ServiceType || ""}
+                                    />
 
-                    {/* <Box className={styles.service}>Immunization</Box>
-                    <Box className={styles.service}>Prenatal</Box>
-                    <Box className={styles.service}>Any</Box> */}
-                  </Box>
-                  <Box className={styles.service__new}>
-                    <Button className={styles.service} onClick={handleService}>
-                      + Add Service
-                    </Button>
-                  </Box>
-                  <Box className={styles.divider}></Box>
+                                    <AntSwitch
+                                      checked={
+                                        serviceData.Availability == 1
+                                          ? true
+                                          : false
+                                      }
+                                      inputProps={{
+                                        "aria-label": "ant design",
+                                      }}
+                                      onChange={(e) =>
+                                        ToggleUpdateService(e, serviceData)
+                                      }
+                                    />
+                                  </Stack>
+
+                                  {serviceData.moreAction && (
+                                    <Box className={styles.more}>
+                                      <Box
+                                        className={styles.more__action}
+                                        onClick={() => EditService(serviceData)}
+                                      >
+                                        <ModeEditIcon fontSize="small" />
+
+                                        <Typography
+                                          variant="body1"
+                                          component="h5"
+                                        >
+                                          Edit
+                                        </Typography>
+                                      </Box>
+                                      <Box
+                                        className={styles.more__action}
+                                        onClick={() =>
+                                          DeleteService(serviceData)
+                                        }
+                                      >
+                                        <DeleteOutlineIcon fontSize="small" />
+
+                                        <Typography
+                                          variant="body1"
+                                          component="h5"
+                                        >
+                                          Delete
+                                        </Typography>
+                                      </Box>
+                                    </Box>
+                                  )}
+
+                                  <IconButton
+                                    className={styles.action__icons}
+                                    onClick={() =>
+                                      ToggleMoreAction(serviceData)
+                                    }
+                                  >
+                                    <MoreVertIcon
+                                      style={
+                                        serviceData.moreAction
+                                          ? {
+                                              color: "#B82623",
+                                            }
+                                          : {
+                                              color: "grey",
+                                            }
+                                      }
+                                    />
+                                  </IconButton>
+                                </Box>
+                              )}
+                            </FormGroup>
+                          </Box>
+                        ))}
+                      </Box>
+
+                      <Box className={styles.service__new}>
+                        <Button
+                          className={styles.service}
+                          onClick={handleService}
+                        >
+                          + Add Service
+                        </Button>
+                      </Box>
+                      {/* <Box className={styles.divider}></Box> */}
+                    </Box>
+                  )}
                 </Box>
               )}
 

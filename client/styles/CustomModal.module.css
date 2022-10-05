@@ -1,3 +1,26 @@
+.action {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.action__icons {
+  color: grey;
+}
+
+.action__icons:hover {
+  color: #b82623;
+}
+
+.action input {
+  background-color: transparent;
+  border: none;
+  width: 180px;
+  height: 40px;
+  border-radius: 10px;
+  padding: 5px;
+}
+
 .content {
   display: flex;
   flex-direction: column;
@@ -28,6 +51,38 @@
   border: 1px solid #b82623;
 }
 
+.more {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  height: 70px;
+  width: 130px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  translate: 100px 30px;
+  padding: 10px;
+}
+
+.more__action {
+  display: flex;
+  align-items: center;
+  align-items: center;
+  gap: 0.2rem;
+  cursor: pointer;
+  color: grey;
+}
+
+.more__action:hover {
+  background-color: #dbdff3;
+  color: #b82623;
+}
+
 .popup__settings {
   display: flex;
   flex-direction: column;
@@ -43,6 +98,14 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
+}
+
+.services__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  overflow: scroll;
+  padding: 10px;
 }
 
 .service__new button {
@@ -79,8 +142,19 @@
 
 .service {
   padding: 10px;
-  background-color: #dbdff3;
+  /* background-color: #dbdff3; */
+  background-color: #fff;
+  box-sizing: border-box;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
   border-radius: 5px;
+}
+
+.service:hover {
+  background-color: #dbdff3;
 }
 
 .settings {

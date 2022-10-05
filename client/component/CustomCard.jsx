@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import styles from "../styles/CustomCard.module.css";
 import Image from "next/image";
 
-const CustomCard = ({ icon, name, date, AppointmentID, status }) => {
+const CustomCard = ({ icon, name, date, AppointmentID, status , loading }) => {
   const [theme, setTheme] = useState(false);
 
   useEffect(() => {

@@ -13,7 +13,8 @@ import axios from "axios";
 import { useRouter } from "next/router";
 import Meta from "../../component/Meta";
 import adminBanner from "../../assets/image/adminBanner.svg";
-
+import Skeleton from "@mui/material/Skeleton";
+import Calendar from "react-calendar";
 import checkIcon from "../../assets/image/check.svg";
 import clockIcon from "../../assets/image/clock.svg";
 import waitingIcon from "../../assets/image/Waiting Room.svg";
@@ -22,6 +23,7 @@ import treatmentIcon from "../../assets/image/Treatment.svg";
 import userIcon from "../../assets/image/User.svg";
 import completedIcon from "../../assets/image/Task Completed.svg";
 import cancelIcon from "../../assets/image/Cancel.svg";
+import NoAppointments from "../../assets/image/NoAppointments.svg";
 
 import arrowDown from "../../assets/image/arrowdown.svg";
 import CustomCard from "../../component/CustomCard";
@@ -49,12 +51,57 @@ ChartJS.register(
 
 const index = ({ Appointments }) => {
   const [theme, setTheme] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [toggleCalendar, setToggleCalendar] = useState(false);
+  const [calendar, setCalendar] = useState(new Date());
+  const [appointments, setAppointments] = useState(Appointments || []);
 
   useEffect(() => {
     // fetch color scheme from local storage
     const enabled = JSON.parse(localStorage.getItem("theme"));
     setTheme(enabled);
   }, []);
+
+  // fetch Appointment with Date Range
+  useEffect(() => {
+    if (calendar.length > 0) {
+      const start = calendar[0];
+      const end = calendar[1];
+      const StartDate = `${start.getFullYear()}-${start.getMonth()}-${start.getDate()}`;
+      const EndDate = `${end.getFullYear()}-${end.getMonth()}-${end.getDate()}`;
+
+      axios
+        .get(
+          `http://localhost:3001/appointments_daterange?StartDate=${StartDate}&EndDate=${EndDate}`
+        )
+        .then((response) => {
+          setAppointments(response.data.Appointments);
+          console.log(response.data.Appointments);
+        })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
+  }, [calendar]);
+
+  // Setting Data for the charts
+  useEffect(() => {
+    // formatting the date of the appointments
+    const schedules = appointments.map((appointment) => {
+      const DateEntry = new Date(appointment.Schedule).toLocaleDateString(
+        "en-us",
+        {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }
+      );
+      return DateEntry;
+    });
+    if (appointments.length <= 0) return;
+    // Setting the chart data labels
+    setChartData({ ...chartData, labels: schedules });
+  }, [calendar]);
 
   // All appointments state
   const [chartData, setChartData] = useState({
@@ -68,14 +115,7 @@ const index = ({ Appointments }) => {
   //All Appointments charts
   useEffect(() => {
     setChartData({
-      labels: [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-      ],
+      labels: [],
       datasets: [
         {
           label: "Completed",
@@ -105,7 +145,14 @@ const index = ({ Appointments }) => {
         },
       },
     });
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
+
+  const handleToggleCalendar = () => {
+    setToggleCalendar(!toggleCalendar);
+  };
 
   return (
     <>
@@ -185,20 +232,42 @@ const index = ({ Appointments }) => {
                 </Box>
                 {/* List of Appointments  */}
                 <Box className={styles.cards}>
-                  {Appointments.map((appointment) => {
+                  {appointments.map((appointment) => {
                     return (
-                      <CustomCard
-                        name={appointment.LastName}
-                        date={appointment.ServiceType}
-                        AppointmentID={appointment.AppointmentID}
-                        icon={waitingIcon}
-                        status={appointment.Status}
-                      />
+                      <>
+                        {loading ? (
+                          <Skeleton
+                            animation="wave"
+                            style={{ width: "100%", padding: "20px" }}
+                          />
+                        ) : (
+                          <CustomCard
+                            name={appointment.LastName}
+                            date={appointment.ServiceType}
+                            AppointmentID={appointment.AppointmentID}
+                            icon={waitingIcon}
+                            status={appointment.Status}
+                          />
+                        )}
+                      </>
                     );
                   })}
                 </Box>
 
                 {/* List of Appointments  */}
+
+                {appointments.length <= 0 && (
+                  <>
+                    <Image
+                      // className={styles.ImageBanner}
+                      src={NoAppointments}
+                      alt="banner"
+                    />
+                    <h3 style={{ textAlign: "center", color: "#B82623" }}>
+                      No Available Appointments
+                    </h3>
+                  </>
+                )}
               </Box>
 
               <Box className={styles.right__content}>
@@ -214,17 +283,34 @@ const index = ({ Appointments }) => {
 
                   <Box className={styles.monthly__filter} width={100}>
                     <Typography
-                      variant="caption"
+                      variant="body1"
                       component="h6"
                       color="#5A5959"
                       className={styles.header__cell}
                     >
-                      Last Month
+                      Calendar
                     </Typography>
-                    <IconButton width={10} height={10}>
+                    <IconButton
+                      width={10}
+                      height={10}
+                      onClick={() => handleToggleCalendar()}
+                    >
                       <Image src={arrowDown} height={15} width={15} />
                     </IconButton>
                   </Box>
+
+                  {/* calendar  */}
+                  {toggleCalendar && (
+                    <Box className={styles.calendar}>
+                      <Calendar
+                        selectRange={true}
+                        onChange={setCalendar}
+                        value={calendar}
+                        // minDate={new Date()}
+                        // tileDisabled={({ date }) => !date.getDay("Sunday")}
+                      />
+                    </Box>
+                  )}
                 </Box>
                 <Box className={styles.report__cards}>
                   <Box
@@ -251,7 +337,7 @@ const index = ({ Appointments }) => {
                         color: "white",
                       }}
                     >
-                      {Appointments.length}
+                      {appointments.length}
                     </Typography>
                   </Box>
                   <Box
@@ -276,7 +362,7 @@ const index = ({ Appointments }) => {
                         color: "#B82623",
                       }}
                     >
-                      {Appointments.length}
+                      {appointments.length}
                     </Typography>
                   </Box>
                   <Box
@@ -350,20 +436,6 @@ const index = ({ Appointments }) => {
                   >
                     Number of Patients
                   </Typography>
-
-                  <Box className={styles.monthly__filter} width={100}>
-                    <Typography
-                      variant="caption"
-                      component="h6"
-                      color="#5A5959"
-                      className={styles.header__cell}
-                    >
-                      Last Week
-                    </Typography>
-                    <IconButton width={10} height={10}>
-                      <Image src={arrowDown} height={15} width={15} />
-                    </IconButton>
-                  </Box>
                 </Box>
                 <Box width="100%">
                   <Bar options={chartOptions} data={chartData} />

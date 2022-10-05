@@ -225,7 +225,7 @@ const Index = ({ patient, Services }) => {
                 <Box className={styles.content__right}>
                   <Box className={styles.sunrise}>
                     <Typography variant="h5" component="h5" color="#585858">
-                      Date: {format(calendar, "MMMM dd, yyyy")}
+                      Schedule: {format(calendar, "MMMM dd, yyyy")}
                     </Typography>
                   </Box>
 

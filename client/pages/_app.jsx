@@ -5,7 +5,7 @@ import Layout from "../component/Layout";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { CookiesProvider } from "react-cookie";
-
+import 'react-calendar/dist/Calendar.css';
 import userApiReducer from "../features/Users";
 
 const store = configureStore({

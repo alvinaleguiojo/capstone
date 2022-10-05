@@ -6,6 +6,7 @@ const AddService = require("../AsyncAwait/Services/AddServices");
 const GetAllServicesPromise = require("../AsyncAwait/Services/AllServices");
 const GetAllServicesEnabledPromise = require("../AsyncAwait/Services/ServiceEnabled");
 const UpdateServicesPromiseByID = require("../AsyncAwait/Services/UpdateService");
+const DeleteServicesByIDPromise = require("../AsyncAwait/Services/DeleteService");
 
 router.use(express.json());
 
@@ -20,7 +21,7 @@ router.get("/services", async (req, res) => {
   }
 });
 
-// Get All Services with Availability is true
+// Get All Services when Availability is true
 router.get("/services_enabled", async (req, res) => {
   try {
     const resultElements = await GetAllServicesEnabledPromise();
@@ -52,17 +53,31 @@ router.post("/service/create", async (req, res) => {
 
 router.patch("/service/update/:id", async (req, res) => {
   const ServiceID = req.params.id;
-  const Availability = req.body.Availability;
+  const { Availability, ServiceType } = req.body;
 
   try {
     await UpdateServicesPromiseByID({
       ServiceID,
       Availability,
+      ServiceType,
     });
     res.status(200).json({ message: "Service has been updated successfully" });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({ message: "Invalid data entry" });
+  }
+});
+
+// Remove Service from the list
+router.delete("/service/delete/:id", async (req, res) => {
+  const ID = req.params.id;
+  try {
+    const service = await GetAllServicesPromise();
+    const id = await service.filter((id) => id.ServiceID == ID);
+    await DeleteServicesByIDPromise({ ServiceID: id[0].ServiceID });
+    res.json({ message: "Patient has been deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid PatientID" });
   }
 });
 

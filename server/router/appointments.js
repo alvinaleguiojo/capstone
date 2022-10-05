@@ -7,6 +7,7 @@ const paginatedResults = require("../middleware/paginatedResults");
 const CreateAppointmentsPromise = require("../AsyncAwait/Appointments/AddAppointment");
 const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppointments");
 const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboardAppointments");
+const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/AppointmentsByDateRange");
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
@@ -17,6 +18,22 @@ const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboa
 router.get("/appointments", async (req, res) => {
   try {
     const resultElements = await GetAllAppointmentsPromise();
+    res.status(200).json({ Appointments: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get All Appointments By Date Range
+router.get("/appointments_daterange", async (req, res) => {
+  const { StartDate, EndDate } = req.query;
+
+  try {
+    const resultElements = await SelectAppointmentsByDateRange({
+      StartDate,
+      EndDate,
+    });
     res.status(200).json({ Appointments: resultElements });
   } catch (error) {
     console.log(error);
