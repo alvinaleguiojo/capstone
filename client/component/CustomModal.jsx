@@ -17,6 +17,7 @@ import Skeleton from "@mui/material/Skeleton";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import UserManagement from "./UserManagement";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -68,6 +69,7 @@ export default function CustomModal() {
   const [servicesData, setServicesData] = useState([]);
   const [disabled, setDisabled] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [newService, setNewService] = useState([]);
 
   //Adding New Service to State
   const [addService, setAddService] = useState({
@@ -100,12 +102,13 @@ export default function CustomModal() {
         setTimeout(() => {
           setLoading(false);
         }, 1000);
+        //set new Service data to servicesData
         setServicesData(response.data.Services);
       })
       .catch((error) => {
         console.log(error);
       });
-  }, [addService]); // refetch servicesData state when theres new added services
+  }, [addService, newService]); // refetch servicesData state when theres new added services
 
   // when toggleSwitch is called
   const ToggleUpdateService = (e, serviceData) => {
@@ -184,6 +187,7 @@ export default function CustomModal() {
   };
 
   const EditService = async (serviceData) => {
+    ToggleMoreAction(serviceData);
     const { value: newService } = await Swal.fire({
       title: "Update Service",
       input: "text",
@@ -197,8 +201,8 @@ export default function CustomModal() {
       },
     });
 
-    if (newService) {
-      //passing data to an API call Update Service
+    // to check if the field is not empty then send request to update the service
+    newService &&
       axios
         .patch(
           `http://localhost:3001/service/update/${serviceData.ServiceID}`,
@@ -208,11 +212,10 @@ export default function CustomModal() {
           }
         )
         .then(() => {
-          setServicesData([...servicesData, serviceData]);
+          setNewService({ ...serviceData, ServiceType: newService });
           ToggleMoreAction(serviceData);
           Swal.fire("Success!", "Service updated successfully!", "success");
         });
-    }
   };
 
   // removing service from the list and update the serviceData state
@@ -227,10 +230,10 @@ export default function CustomModal() {
       confirmButtonText: "Confirm",
       allowOutsideClick: false,
     }).then(async (result) => {
-      result.isConfirmed &&
-        (await axios.delete(
-          `http://localhost:3001/service/delete/${serviceData.ServiceID}`
-        ));
+      if (!result.isConfirmed) return ToggleMoreAction(serviceData);
+      await axios.delete(
+        `http://localhost:3001/service/delete/${serviceData.ServiceID}`
+      );
       // here we are filtering - the idea is remove an item from the serviceData array on a button click
       const removeItem = servicesData.filter((service) => {
         // return the rest of the services that don't match the item we are deleting
@@ -282,7 +285,9 @@ export default function CustomModal() {
           <Box className={styles.content__right}>
             <Box className={styles.content__right__header}>
               <Typography variant="h4" component="h4">
-                Services
+                {router.query.settings == "services" && "Services"}
+                {router.query.settings == "user_management" &&
+                  "User Management"}
               </Typography>
               {loading ? (
                 <>
@@ -303,221 +308,232 @@ export default function CustomModal() {
               <Box className={styles.divider}></Box>
             </Box>
 
-            <Box className={styles.content}>
-              {!service && (
-                <Box className={styles.content__container}>
-                  {/* Update and Delete Services */}
-                  {!service && (
-                    <Box className={styles.content__container}>
-                      <Typography variant="h6" component="h6">
-                        Manage Services
-                      </Typography>
-                      <Box className={styles.services__actions}>
-                        {servicesData.map((serviceData, index) => (
-                          <Box
-                            className={styles.service}
-                            key={serviceData.ServiceID}
-                          >
-                            <FormGroup>
-                              {loading ? (
-                                <Skeleton
-                                  animation="wave"
-                                  variant="rectangular"
-                                  sx={{
-                                    bgcolor: "grey.300",
-                                    width: "250px",
-                                    height: "35px",
-                                  }}
-                                />
-                              ) : (
-                                <Box className={styles.action}>
-                                  <Stack
-                                    direction="row"
-                                    spacing={1}
-                                    alignItems="center"
-                                  >
-                                    <input
-                                      type="text"
-                                      disabled={true}
-                                      value={serviceData.ServiceType || ""}
-                                    />
+            {/* display services when router settings router is services */}
+            {router.query.settings == "services" && (
+              <Box className={styles.content}>
+                {!service && (
+                  <Box className={styles.content__container}>
+                    {/* Update and Delete Services */}
+                    {!service && (
+                      <Box className={styles.content__container}>
+                        <Typography variant="h6" component="h6">
+                          Manage Services
+                        </Typography>
+                        <Box className={styles.services__actions}>
+                          {servicesData.map((serviceData, index) => (
+                            <Box
+                              className={styles.service}
+                              key={serviceData.ServiceID}
+                            >
+                              <FormGroup>
+                                {loading ? (
+                                  <Skeleton
+                                    animation="wave"
+                                    variant="rectangular"
+                                    sx={{
+                                      bgcolor: "grey.300",
+                                      width: "250px",
+                                      height: "35px",
+                                    }}
+                                  />
+                                ) : (
+                                  <Box className={styles.action}>
+                                    <Stack
+                                      direction="row"
+                                      spacing={1}
+                                      alignItems="center"
+                                    >
+                                      <input
+                                        type="text"
+                                        disabled={true}
+                                        value={serviceData.ServiceType || ""}
+                                      />
 
-                                    <AntSwitch
-                                      checked={
-                                        serviceData.Availability == 1
-                                          ? true
-                                          : false
-                                      }
-                                      inputProps={{
-                                        "aria-label": "ant design",
-                                      }}
-                                      onChange={(e) =>
-                                        ToggleUpdateService(e, serviceData)
-                                      }
-                                    />
-                                  </Stack>
-
-                                  {serviceData.moreAction && (
-                                    <Box className={styles.more}>
-                                      <Box
-                                        className={styles.more__action}
-                                        onClick={() => EditService(serviceData)}
-                                      >
-                                        <ModeEditIcon fontSize="small" />
-
-                                        <Typography
-                                          variant="body1"
-                                          component="h5"
-                                        >
-                                          Edit
-                                        </Typography>
-                                      </Box>
-                                      <Box
-                                        className={styles.more__action}
-                                        onClick={() =>
-                                          DeleteService(serviceData)
+                                      <AntSwitch
+                                        checked={
+                                          serviceData.Availability == 1
+                                            ? true
+                                            : false
                                         }
-                                      >
-                                        <DeleteOutlineIcon fontSize="small" />
+                                        inputProps={{
+                                          "aria-label": "ant design",
+                                        }}
+                                        onChange={(e) =>
+                                          ToggleUpdateService(e, serviceData)
+                                        }
+                                      />
+                                    </Stack>
 
-                                        <Typography
-                                          variant="body1"
-                                          component="h5"
+                                    {serviceData.moreAction && (
+                                      <Box className={styles.more}>
+                                        <Box
+                                          className={styles.more__action}
+                                          onClick={() =>
+                                            EditService(serviceData)
+                                          }
                                         >
-                                          Delete
-                                        </Typography>
+                                          <ModeEditIcon fontSize="small" />
+
+                                          <Typography
+                                            variant="body1"
+                                            component="h5"
+                                          >
+                                            Edit
+                                          </Typography>
+                                        </Box>
+                                        <Box
+                                          className={styles.more__action}
+                                          onClick={() =>
+                                            DeleteService(serviceData)
+                                          }
+                                        >
+                                          <DeleteOutlineIcon fontSize="small" />
+
+                                          <Typography
+                                            variant="body1"
+                                            component="h5"
+                                          >
+                                            Delete
+                                          </Typography>
+                                        </Box>
                                       </Box>
-                                    </Box>
-                                  )}
+                                    )}
 
-                                  <IconButton
-                                    className={styles.action__icons}
-                                    onClick={() =>
-                                      ToggleMoreAction(serviceData)
-                                    }
-                                  >
-                                    <MoreVertIcon
-                                      style={
-                                        serviceData.moreAction
-                                          ? {
-                                              color: "#B82623",
-                                            }
-                                          : {
-                                              color: "grey",
-                                            }
+                                    <IconButton
+                                      className={styles.action__icons}
+                                      onClick={() =>
+                                        ToggleMoreAction(serviceData)
                                       }
-                                    />
-                                  </IconButton>
+                                    >
+                                      <MoreVertIcon
+                                        style={
+                                          serviceData.moreAction
+                                            ? {
+                                                color: "#B82623",
+                                              }
+                                            : {
+                                                color: "grey",
+                                              }
+                                        }
+                                      />
+                                    </IconButton>
+                                  </Box>
+                                )}
+                              </FormGroup>
+                            </Box>
+                          ))}
+                        </Box>
+
+                        <Box className={styles.service__new}>
+                          <Button
+                            className={styles.service}
+                            onClick={handleService}
+                          >
+                            + Add Service
+                          </Button>
+                        </Box>
+                        {/* <Box className={styles.divider}></Box> */}
+                      </Box>
+                    )}
+                  </Box>
+                )}
+
+                {service && (
+                  <motion.div
+                    className={styles.register__container}
+                    initial={{ x: "-5vw" }}
+                    animate={{ x: 0 }}
+                    transition={{ type: "spring", stiffness: 70 }}
+                  >
+                    <Box className={styles.service__add}>
+                      <Box className={styles.service__add__container}>
+                        <Box className={styles.button__back}>
+                          <Button onClick={() => setService(false)}>
+                            <ArrowBackIosIcon fontSize="small" />
+                            Go back
+                          </Button>
+                        </Box>
+
+                        <Typography variant="h6" component="h6">
+                          Add New Service
+                        </Typography>
+                        <Box className={styles.form__container}>
+                          <form>
+                            <Box className={styles.service__inputs}>
+                              <Box className={styles.service__left__inputs}>
+                                <Box
+                                  className={styles.service__input__container}
+                                >
+                                  <label>Name</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Name"
+                                    onChange={(e) => {
+                                      return setAddService({
+                                        ...addService,
+                                        ServiceType: e.target.value,
+                                      });
+                                    }}
+                                  />
                                 </Box>
-                              )}
-                            </FormGroup>
-                          </Box>
-                        ))}
-                      </Box>
-
-                      <Box className={styles.service__new}>
-                        <Button
-                          className={styles.service}
-                          onClick={handleService}
-                        >
-                          + Add Service
-                        </Button>
-                      </Box>
-                      {/* <Box className={styles.divider}></Box> */}
-                    </Box>
-                  )}
-                </Box>
-              )}
-
-              {service && (
-                <motion.div
-                  className={styles.register__container}
-                  initial={{ x: "-5vw" }}
-                  animate={{ x: 0 }}
-                  transition={{ type: "spring", stiffness: 70 }}
-                >
-                  <Box className={styles.service__add}>
-                    <Box className={styles.service__add__container}>
-                      <Box className={styles.button__back}>
-                        <Button onClick={() => setService(false)}>
-                          <ArrowBackIosIcon fontSize="small" />
-                          Go back
-                        </Button>
-                      </Box>
-
-                      <Typography variant="h6" component="h6">
-                        Add New Service
-                      </Typography>
-                      <Box className={styles.form__container}>
-                        <form>
-                          <Box className={styles.service__inputs}>
-                            <Box className={styles.service__left__inputs}>
-                              <Box className={styles.service__input__container}>
-                                <label>Name</label>
-                                <input
-                                  type="text"
-                                  placeholder="Name"
+                                <Box
+                                  className={styles.service__input__container}
+                                >
+                                  <label>Description</label>
+                                  <input
+                                    type="text"
+                                    placeholder="Description"
+                                    onChange={(e) => {
+                                      return setAddService({
+                                        ...addService,
+                                        Description: e.target.value,
+                                      });
+                                    }}
+                                  />
+                                </Box>
+                              </Box>
+                              <Box className={styles.service__options}>
+                                <label>Availability</label>
+                                <select
+                                  className={styles.input__register}
                                   onChange={(e) => {
                                     return setAddService({
                                       ...addService,
-                                      ServiceType: e.target.value,
+                                      Availability: e.target.value,
                                     });
                                   }}
-                                />
-                              </Box>
-                              <Box className={styles.service__input__container}>
-                                <label>Description</label>
-                                <input
-                                  type="text"
-                                  placeholder="Description"
-                                  onChange={(e) => {
-                                    return setAddService({
-                                      ...addService,
-                                      Description: e.target.value,
-                                    });
-                                  }}
-                                />
+                                >
+                                  <option value={false}>Disable</option>
+                                  <option value={true}>Enable</option>
+                                </select>
                               </Box>
                             </Box>
-                            <Box className={styles.service__options}>
-                              <label>Availability</label>
-                              <select
-                                className={styles.input__register}
-                                onChange={(e) => {
-                                  return setAddService({
-                                    ...addService,
-                                    Availability: e.target.value,
-                                  });
-                                }}
-                              >
-                                <option value={false}>Disable</option>
-                                <option value={true}>Enable</option>
-                              </select>
-                            </Box>
-                          </Box>
-                        </form>
+                          </form>
+                        </Box>
                       </Box>
                     </Box>
-                  </Box>
-                  <Box className={styles.service__save}>
-                    <Button
-                      className={styles.discard}
-                      onClick={() => setService(false)}
-                    >
-                      Discard
-                    </Button>
-                    <Button
-                      className={styles.save}
-                      variant="contained"
-                      disabled={disabled}
-                      onClick={submitNewService}
-                    >
-                      Save
-                    </Button>
-                  </Box>
-                </motion.div>
-              )}
-            </Box>
+                    <Box className={styles.service__save}>
+                      <Button
+                        className={styles.discard}
+                        onClick={() => setService(false)}
+                      >
+                        Discard
+                      </Button>
+                      <Button
+                        className={styles.save}
+                        variant="contained"
+                        disabled={disabled}
+                        onClick={submitNewService}
+                      >
+                        Save
+                      </Button>
+                    </Box>
+                  </motion.div>
+                )}
+              </Box>
+            )}
+
+            {router.query.settings == "user_management" && <UserManagement />}
           </Box>
         </Box>
       </Box>

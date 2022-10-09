@@ -1,0 +1,108 @@
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 50px;
+  background-color: #dbdff3;
+  border-radius: 5px;
+}
+
+.delete {
+  gap: 15px;
+  display: flex;
+  align-items: center;
+  color: grey;
+}
+
+.delete:hover {
+  background-color: #dbdff3;
+  color: #b82623;
+}
+
+.edit {
+  gap: 15px;
+  display: flex;
+  align-items: center;
+  color: grey;
+}
+.edit:hover {
+  background-color: #dbdff3;
+  color: #b82623;
+}
+
+.more {
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  right: 0;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  height: 90px;
+  width: 130px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  z-index: 1;
+  translate: -30px -10px;
+  padding: 10px;
+}
+
+.user__actions {
+  display: flex;
+  gap: 5px;
+}
+
+.users__headers {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.user__name {
+  display: flex;
+  align-items: center;
+  min-width: 280px;
+}
+
+.users__position {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  min-width: 300px;
+}
+
+.users__status {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+  min-width: 300px;
+}
+
+.user__status {
+  background-color: rgb(7, 199, 7);
+  color: white;
+  padding: 5px;
+  border-radius: 20px;
+}
+
+.user__status__deactivate {
+  background-color: red;
+  color: white;
+  padding: 5px;
+  border-radius: 20px;
+}
+
+.status {
+  color: grey;
+  gap: 10px;
+  display: flex;
+  align-items: center;
+}

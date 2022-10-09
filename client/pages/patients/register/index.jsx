@@ -195,16 +195,6 @@ const index = () => {
                           height={50}
                         />
                       </IconButton>
-
-                      {/* <input
-                        className={styles.input__capture}
-                        //   onChange={(e) =>
-                        //     setUser({ ...user, firstname: e.target.value })
-                        //   }
-                        type="file"
-                        name="uploadPhoto"
-                        //   value={user.firstname || ""}
-                      /> */}
                     </Box>
 
                     <Modal

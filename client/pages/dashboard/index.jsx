@@ -51,7 +51,7 @@ ChartJS.register(
 
 const index = ({ Appointments }) => {
   const [theme, setTheme] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [toggleCalendar, setToggleCalendar] = useState(false);
   const [calendar, setCalendar] = useState(new Date());
   const [appointments, setAppointments] = useState(Appointments || []);
@@ -64,6 +64,7 @@ const index = ({ Appointments }) => {
 
   // fetch Appointment with Date Range
   useEffect(() => {
+    setLoading(true);
     if (calendar.length > 0) {
       const start = calendar[0];
       const end = calendar[1];
@@ -76,7 +77,9 @@ const index = ({ Appointments }) => {
         )
         .then((response) => {
           setAppointments(response.data.Appointments);
-          console.log(response.data.Appointments);
+          setTimeout(() => {
+            setLoading(false);
+          }, 1000);
         })
         .catch((err) => {
           console.log(err.message);
@@ -238,7 +241,7 @@ const index = ({ Appointments }) => {
                         {loading ? (
                           <Skeleton
                             animation="wave"
-                            style={{ width: "100%", padding: "20px" }}
+                            style={{ width: "100%", padding: "25px", gap: "0px" }}
                           />
                         ) : (
                           <CustomCard

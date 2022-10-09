@@ -31,6 +31,7 @@
     "next": "12.2.5",
     "next-progress": "^2.2.0",
     "react": "18.2.0",
+    "react-barcode": "^1.4.5",
     "react-bootstrap": "^2.5.0",
     "react-calendar": "^3.7.0",
     "react-chartjs-2": "^4.3.1",
