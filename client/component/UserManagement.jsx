@@ -13,6 +13,7 @@ import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Skeleton from "@mui/material/Skeleton";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -62,6 +63,7 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 // fetch users data from User Endpoint
 const UserManagement = () => {
   const [users, setUsers] = useState([{ action: false }]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const users = async () => {
@@ -69,6 +71,9 @@ const UserManagement = () => {
         const res = await axios.get("http://localhost:3001/users");
         const { Users } = await res.data;
         setUsers(Users);
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
       } catch (error) {
         console.log(error.message);
       }
@@ -214,79 +219,92 @@ const UserManagement = () => {
         <Box className={styles.cards}>
           {/* cards starts here */}
           {users.map((user) => (
-            <Box className={styles.card} key={user.StaffID}>
-              <Box className={styles.user__name}>
-                {/* User Profile Picture and Name */}
-                <Image src={UserIcon} width="40px" height="40px" />
-                <Typography variant="body1" component="h5">
-                  {user.FirstName + " " + user.LastName}
-                </Typography>
-              </Box>
-              {/* User position  */}
-              <Box className={styles.users__position}>
-                <Typography variant="body1" component="h5">
-                  {user.Role}
-                </Typography>
-              </Box>
-
-              {/* User Status  */}
-              <Box className={styles.users__status}>
-                <Box
-                  className={
-                    user.Status
-                      ? styles.user__status
-                      : styles.user__status__deactivate
-                  }
-                ></Box>
-                <Typography variant="body1" component="h5">
-                  {user.Status ? "Activated" : "Deactivated"}
-                </Typography>
-              </Box>
-
-              <IconButton onClick={(e) => toggleAction(user)}>
-                <MoreVertIcon style={{ color: user.action && "#B82623" }} />
-              </IconButton>
-
-              {/* display action option when user action state is true */}
-              {user.action && (
-                <motion.div
-                  //  className={styles.register__container}
-                  initial={{ x: "2vw" }}
-                  animate={{ x: 0 }}
-                  transition={{ type: "spring", stiffness: 450 }}
-                >
-                  <Box className={styles.more}>
-                    <Box className={styles.status}>
-                      <AntSwitch
-                        checked={user.Status == 1 ? true : false}
-                        onChange={(e) => ToggleUpdateStatus(e, user)}
-                      />
-                      <Typography variant="body1" component="h5">
-                        Status
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={styles.edit}
-                      onClick={() => handlesetRole(user)}
-                    >
-                      <ModeEditIcon fontSize="small" />
-                      <Typography variant="body1" component="h5">
-                        Set Role
-                      </Typography>
-                    </Box>
-                    <Box
-                      className={styles.delete}
-                      onClick={() => handleDelete(user)}
-                    >
-                      <DeleteIcon fontSize="small" />
-                      <Typography variant="body1" component="h5">
-                        Remove
-                      </Typography>
-                    </Box>
+            <>
+              {loading ? (
+                <Skeleton
+                  animation="wave"
+                  variant="rectangular"
+                  width="100%"
+                  height={50}
+                  style={{ borderRadius: "5px" }}
+                  // sx={theme && { bgcolor: "grey.900" }}
+                />
+              ) : (
+                <Box className={styles.card} key={user.StaffID}>
+                  <Box className={styles.user__name}>
+                    {/* User Profile Picture and Name */}
+                    <Image src={UserIcon} width="40px" height="40px" />
+                    <Typography variant="body1" component="h5">
+                      {user.FirstName + " " + user.LastName}
+                    </Typography>
                   </Box>
-                </motion.div>
+                  {/* User position  */}
+                  <Box className={styles.users__position}>
+                    <Typography variant="body1" component="h5">
+                      {user.Role}
+                    </Typography>
+                  </Box>
+
+                  {/* User Status  */}
+                  <Box className={styles.users__status}>
+                    <Box
+                      className={
+                        user.Status
+                          ? styles.user__status
+                          : styles.user__status__deactivate
+                      }
+                    ></Box>
+                    <Typography variant="body1" component="h5">
+                      {user.Status ? "Activated" : "Deactivated"}
+                    </Typography>
+                  </Box>
+
+                  <IconButton onClick={(e) => toggleAction(user)}>
+                    <MoreVertIcon style={{ color: user.action && "#B82623" }} />
+                  </IconButton>
+
+                  {/* display action option when user action state is true */}
+                  {user.action && (
+                    <motion.div
+                      //  className={styles.register__container}
+                      initial={{ x: "2vw" }}
+                      animate={{ x: 0 }}
+                      transition={{ type: "spring", stiffness: 450 }}
+                    >
+                      <Box className={styles.more}>
+                        <Box className={styles.status}>
+                          <AntSwitch
+                            checked={user.Status == 1 ? true : false}
+                            onChange={(e) => ToggleUpdateStatus(e, user)}
+                          />
+                          <Typography variant="body1" component="h5">
+                            Status
+                          </Typography>
+                        </Box>
+                        <Box
+                          className={styles.edit}
+                          onClick={() => handlesetRole(user)}
+                        >
+                          <ModeEditIcon fontSize="small" />
+                          <Typography variant="body1" component="h5">
+                            Set Role
+                          </Typography>
+                        </Box>
+                        <Box
+                          className={styles.delete}
+                          onClick={() => handleDelete(user)}
+                        >
+                          <DeleteIcon fontSize="small" />
+                          <Typography variant="body1" component="h5">
+                            Remove
+                          </Typography>
+                        </Box>
+                      </Box>
+                    </motion.div>
+                  )}
+                </Box>
               )}
-            </Box>
+            </>
           ))}
           {/* end card here */}
         </Box>

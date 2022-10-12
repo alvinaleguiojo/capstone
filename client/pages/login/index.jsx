@@ -91,12 +91,14 @@ const Index = () => {
           },
         });
 
-        Toast.fire({
-          icon: "success",
-          title: "Signed in successfully",
-        });
-        router.push("/dashboard");
-        setLoading(false);
+        setTimeout(() => {
+          Toast.fire({
+            icon: "success",
+            title: "Signed in successfully",
+          });
+          router.push("/dashboard");
+          setLoading(false);
+        }, 2000);
       })
       .catch((err) => {
         console.log(err);
