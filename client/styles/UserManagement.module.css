@@ -18,6 +18,7 @@
   display: flex;
   align-items: center;
   color: grey;
+  cursor: pointer;
 }
 
 .delete:hover {
@@ -30,6 +31,7 @@
   display: flex;
   align-items: center;
   color: grey;
+  cursor: pointer;
 }
 .edit:hover {
   background-color: #dbdff3;

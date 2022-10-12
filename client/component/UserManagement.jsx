@@ -12,6 +12,8 @@ import { styled } from "@mui/material/styles";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import axios from "axios";
+import Swal from "sweetalert2";
+
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
   height: 16,
@@ -77,17 +79,116 @@ const UserManagement = () => {
   // Action options will be visible when the user state action is true else hidden
   const toggleAction = (user) => {
     // setting all action state to false
-    const actionInVisible = users.map((toggle) => {
-      return (toggle.action = false);
-    });
-    setUsers(actionInVisible);
-
     const newValue = { ...user, action: !user.action };
     const updatedUser = users.map((newuser) => {
       return newuser.StaffID === user.StaffID ? newValue : newuser;
     });
 
     setUsers(updatedUser);
+  };
+
+  // Toggle to update the user status
+  const ToggleUpdateStatus = async (e, user) => {
+    const userStatus = { ...user, Status: e.target.checked };
+    const updatedUserStatus = users.map((updateUser) => {
+      return updateUser.StaffID === user.StaffID ? userStatus : updateUser;
+    });
+
+    const Toast = await Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+    if (Toast) {
+      //passing data to an API call Update Service
+      await axios
+        .patch(`http://localhost:3001/user/update/${user.StaffID}`, {
+          ...user,
+          Status: userStatus.Status,
+        })
+        .then(() => {
+          setUsers(updatedUserStatus);
+        });
+      Toast.fire({
+        icon: "success",
+        title: "Changes are saved",
+      });
+    }
+  };
+
+  // setting or updating user role
+  const handlesetRole = async (user) => {
+    const { value: updatedRole } = await Swal.fire({
+      title: "Update User Role",
+      input: "select",
+      inputOptions: {
+        Role: {
+          ADMIN: "ADMIN",
+          BHW: "BHW",
+        },
+      },
+      inputPlaceholder: user.Role,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          if (value === "ADMIN" || value === "BHW") {
+            resolve();
+            axios
+              .patch(`http://localhost:3001/user/update/${user.StaffID}`, {
+                ...user,
+                Role: value,
+              })
+              .then(() => {
+                // setUsers([...users,{ ...user, Role: updatedRole }]);
+                const newValue = { ...user, Role: value };
+                const updatedUserItem = users.map((updatedUser) => {
+                  return updatedUser.StaffID === user.StaffID
+                    ? newValue
+                    : updatedUser;
+                });
+                //setting new services data to array
+                setUsers(updatedUserItem);
+              })
+              .then(() => {
+                Swal.fire("Success!", `User Role has been updated!`, "success");
+              });
+          } else {
+            resolve("You need to select a Role");
+          }
+        });
+      },
+    });
+  };
+
+  // deleting or removing user
+  const handleDelete = (user) => {
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "grey",
+      confirmButtonText: "Confirm",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axios.delete(`http://localhost:3001/user/delete/${user.StaffID}`);
+        // here we are filtering - the idea is remove an item from the serviceData array on a button click
+        const removeItem = users.filter((deleteUser) => {
+          // return the rest of the services that don't match the item we are deleting
+          return deleteUser.StaffID !== user.StaffID;
+        });
+        // removeItem returns a new array - so now we are setting the serviceData to the new array
+        setUsers(removeItem);
+        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+      }
+    });
   };
 
   return (
@@ -132,17 +233,17 @@ const UserManagement = () => {
               <Box className={styles.users__status}>
                 <Box
                   className={
-                    user.Status === 1
+                    user.Status
                       ? styles.user__status
                       : styles.user__status__deactivate
                   }
                 ></Box>
                 <Typography variant="body1" component="h5">
-                  {user.Status === 1 ? "Activated" : "Deactivated"}
+                  {user.Status ? "Activated" : "Deactivated"}
                 </Typography>
               </Box>
 
-              <IconButton onClick={() => toggleAction(user)}>
+              <IconButton onClick={(e) => toggleAction(user)}>
                 <MoreVertIcon style={{ color: user.action && "#B82623" }} />
               </IconButton>
 
@@ -150,24 +251,33 @@ const UserManagement = () => {
               {user.action && (
                 <motion.div
                   //  className={styles.register__container}
-                  initial={{ x: "3vw" }}
+                  initial={{ x: "2vw" }}
                   animate={{ x: 0 }}
-                  transition={{ type: "spring", stiffness: 400 }}
+                  transition={{ type: "spring", stiffness: 450 }}
                 >
                   <Box className={styles.more}>
                     <Box className={styles.status}>
-                      <AntSwitch checked={user.Status == 1 ? true : false} />
+                      <AntSwitch
+                        checked={user.Status == 1 ? true : false}
+                        onChange={(e) => ToggleUpdateStatus(e, user)}
+                      />
                       <Typography variant="body1" component="h5">
                         Status
                       </Typography>
                     </Box>
-                    <Box className={styles.edit}>
+                    <Box
+                      className={styles.edit}
+                      onClick={() => handlesetRole(user)}
+                    >
                       <ModeEditIcon fontSize="small" />
                       <Typography variant="body1" component="h5">
                         Set Role
                       </Typography>
                     </Box>
-                    <Box className={styles.delete}>
+                    <Box
+                      className={styles.delete}
+                      onClick={() => handleDelete(user)}
+                    >
                       <DeleteIcon fontSize="small" />
                       <Typography variant="body1" component="h5">
                         Remove

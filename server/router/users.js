@@ -57,10 +57,10 @@ router.delete("/user/delete/:id", async (req, res) => {
 
 // Update User By ID
 router.patch("/user/update/:id", async (req, res) => {
-  const { Role, Verified } = req.body;
+  const { Role, Verified , Status} = req.body;
   const ID = req.params.id;
   try {
-    await UpdateUserPromiseByID(ID, Role, Verified);
+    await UpdateUserPromiseByID(ID, Role, Verified, Status);
     res.status(200).json({ message: "Data has been updated successfully" });
   } catch (err) {
     res.status(400).json({ message: "field is required" });

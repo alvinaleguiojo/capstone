@@ -1,12 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import styles from "../styles/Navbar.module.css";
-import Link from "next/link";
 import Box from "@mui/material/Box";
 import Image from "next/image";
-import UserIcon from "../assets/image/User.svg";
-import ArrowDown from "../assets/image/arrow-down.svg";
 import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
 import Today from "../assets/image/Today.svg";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
@@ -35,11 +31,8 @@ const Navbar = () => {
   // dropdown state
   const [open, setOpen] = useState(false);
 
-  //modal
-  // const [fullscreen, setFullscreen] = useState(true);
-
+  // fetch color scheme from local storage
   useEffect(() => {
-    // fetch color scheme from local storage
     const enabled = JSON.parse(localStorage.getItem("theme"));
     setTheme(enabled);
   }, []);
@@ -48,7 +41,7 @@ const Navbar = () => {
     axios
       .get("http://localhost:3001", { withCredentials: true })
       .then((response) => {
-        return setUserData([...userData, response.data]);
+        return setUserData([...userData, response.data.userData]);
       })
       .catch(() => {
         router.push("/login");

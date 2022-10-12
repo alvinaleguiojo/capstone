@@ -38,8 +38,8 @@ const Index = () => {
 
   // sending and checking the input email if it is exist
   useEffect(() => {
-    socket.emit("email", user.email);
-  }, [user.email]);
+    socket.emit("email", user.Email);
+  }, [user.Email]);
 
   // to check if the input field is not empty and turn on the button if meets the requirements
   useEffect(() => {
@@ -48,7 +48,7 @@ const Index = () => {
     Object.keys(user).length >= 5 &&
     terms == true &&
     privacy == true &&
-    user.password === user.confirmPassword
+    user.Password === user.ConfirmPassword
       ? setDisabled(false)
       : setDisabled(true);
   }, [user, terms, privacy]);
@@ -71,11 +71,11 @@ const Index = () => {
         setLoading(false);
         setUser({
           ...user,
-          firstname: "",
-          lastname: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
+          FirstName: "",
+          LastName: "",
+          Email: "",
+          Password: "",
+          ConfirmPassword: "",
         });
         router.push("/dashboard");
         setTerms(false);
@@ -84,11 +84,11 @@ const Index = () => {
       .catch((err) => console.log("Error" + err));
     setUser({
       ...user,
-      firstname: "",
-      lastname: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
+      FirstName: "",
+      LastName: "",
+      Email: "",
+      Password: "",
+      ConfirmPassword: "",
     });
     setTerms(false);
     setPrivacy(false);
@@ -124,11 +124,11 @@ const Index = () => {
                 <input
                   className={styles.input__username}
                   onChange={(e) =>
-                    setUser({ ...user, firstname: e.target.value })
+                    setUser({ ...user, FirstName: e.target.value })
                   }
                   type="text"
                   name="firstname"
-                  value={user.firstname || ""}
+                  value={user.FirstName || ""}
                 />
               </Box>
 
@@ -139,11 +139,11 @@ const Index = () => {
                 <input
                   className={styles.input__username}
                   onChange={(e) =>
-                    setUser({ ...user, lastname: e.target.value })
+                    setUser({ ...user, LastName: e.target.value })
                   }
                   type="text"
                   name="lastname"
-                  value={user.lastname || ""}
+                  value={user.LastName || ""}
                 />
               </Box>
             </Box>
@@ -161,9 +161,9 @@ const Index = () => {
               className={styles.input}
               type="email"
               name="email"
-              value={user.email || ""}
+              value={user.Email || ""}
               onChange={(e) =>
-                setUser({ ...user, email: e.target.value.toLocaleLowerCase() })
+                setUser({ ...user, Email: e.target.value.toLocaleLowerCase() })
               }
             />
 
@@ -172,7 +172,7 @@ const Index = () => {
               <Typography variant="body2" component="h4" color="#585858">
                 PASSWORD
               </Typography>
-              {user.password !== user.confirmPassword && (
+              {user.Password !== user.ConfirmPassword && (
                 <Typography variant="caption" component="h5" color="#B82623">
                   *Password and Confirm Password doesn&apos;t match!
                 </Typography>
@@ -183,8 +183,8 @@ const Index = () => {
                 className={styles.input}
                 type="password"
                 name="password"
-                value={user.password || ""}
-                onChange={(e) => setUser({ ...user, password: e.target.value })}
+                value={user.Password || ""}
+                onChange={(e) => setUser({ ...user, Password: e.target.value })}
               />
             </Box>
 
@@ -196,9 +196,9 @@ const Index = () => {
               className={styles.input}
               type="password"
               name="confirm password"
-              value={user.confirmPassword || ""}
+              value={user.ConfirmPassword || ""}
               onChange={(e) =>
-                setUser({ ...user, confirmPassword: e.target.value })
+                setUser({ ...user, ConfirmPassword: e.target.value })
               }
             />
 
