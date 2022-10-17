@@ -14,6 +14,10 @@ import GridTable from "../../../component/GridTable";
 import Button from "@mui/material/Button";
 import Swal from "sweetalert2";
 import axios from "axios";
+import PropTypes from "prop-types";
+import Tabs from "@mui/material/Tabs";
+import Tab from "@mui/material/Tab";
+import LinearProgress from "@mui/material/LinearProgress";
 
 import {
   Chart as ChartJS,
@@ -69,6 +73,10 @@ const PatientProfile = ({ patient, records, patientImage }) => {
   const [sendMessage, setSendMessage] = useState("");
   const router = useRouter();
   const id = router.query._id;
+  const [loading, setLoading] = useState(true);
+
+  // Record tab state
+  const [value, setValue] = useState(0);
 
   // pushing patients data to array
   const rows = [];
@@ -107,7 +115,7 @@ const PatientProfile = ({ patient, records, patientImage }) => {
   //All Appointments
   useEffect(() => {
     setChartData({
-      labels: ["Monday", "Wednesday", "Friday"],
+      labels: ["June", "July", "August"],
       datasets: [
         {
           label: "All Appointments",
@@ -134,7 +142,7 @@ const PatientProfile = ({ patient, records, patientImage }) => {
   //  cancelled data
   useEffect(() => {
     setChartDataCancelled({
-      labels: ["Monday", "Wednesday", "Friday"],
+      labels: ["June", "July", "August"],
       datasets: [
         {
           label: "All Cancelled",
@@ -161,7 +169,7 @@ const PatientProfile = ({ patient, records, patientImage }) => {
   //  All Completed data
   useEffect(() => {
     setChartDataCompleted({
-      labels: ["Monday", "Wednesday", "Friday"],
+      labels: ["June", "July", "December"],
       datasets: [
         {
           label: "All Completed",
@@ -183,6 +191,12 @@ const PatientProfile = ({ patient, records, patientImage }) => {
         },
       },
     });
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
 
   // send sms to patient open modal
@@ -226,6 +240,15 @@ const PatientProfile = ({ patient, records, patientImage }) => {
     }
   };
 
+  // request medicine and pass this patient to medicine cart
+  const handleRequest = () => {
+    localStorage.setItem("requestedMedicine", JSON.stringify(patient));
+  };
+
+  const handleChange = (event, newValue) => {
+    setValue(newValue);
+  };
+
   return (
     <>
       {patient.map((patientData, key) => {
@@ -236,7 +259,7 @@ const PatientProfile = ({ patient, records, patientImage }) => {
               description="add or update medicines here"
               keywords="Capstone project, health center, baranggay"
             />
-            <Navbar />
+            {/* <Navbar /> */}
             <Box
               className={styles.patientProfile}
               style={{ backgroundColor: "#dbdff3" }}
@@ -372,23 +395,23 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                 <Box className={styles.right__container}>
                   {/* right container header  */}
                   <Box className={styles.right__container__header}>
-                    <Box className={styles.getStartedBtn} variant="contained">
+                    {/* <Button
+                      className={styles.getStartedBtn}
+                      variant="contained"
+                      disabled={false}
+                      onClick={handleRequest}
+                    >
+                      Request Medicine
+                    </Button> */}
+                    {/* <Box className={styles.getStartedBtn} variant="contained">
                       <Link
                         className={styles.getStartedLink}
                         href={`/patients/${patientData.PatientID}/appointment`}
                       >
-                        Add New Appointment
+                        Diagnosis
                       </Link>
-                    </Box>
-                    <Box className={styles.getStartedBtn} variant="contained">
-                      <Link
-                        className={styles.getStartedLink}
-                        href={`/patients/${patientData.PatientID}/appointment`}
-                      >
-                        Request Medicine
-                      </Link>
-                    </Box>
-                    <Box
+                    </Box> */}
+                    {/* <Box
                       className={styles.print__button}
                       style={{
                         height: "30px",
@@ -403,16 +426,16 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                           width={30}
                         />
                       </Link>
-                    </Box>
+                    </Box> */}
                   </Box>
                   {/* right container header end here */}
 
                   {/* Charts starts here*/}
                   <Box className={styles.chart__cards}>
-                    <Box className={styles.chart__card}>
+                    {/* <Box className={styles.chart__card}>
                       <Bar options={chartOptions} data={chartData} />
-                    </Box>
-                    <Box className={styles.chart__card}>
+                    </Box> */}
+                    {/* <Box className={styles.chart__card}>
                       <Bar
                         options={chartOptionsCancelled}
                         data={chartDataCancelled}
@@ -423,7 +446,7 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                         options={chartOptionsCompleted}
                         data={chartDataCompleted}
                       />
-                    </Box>
+                    </Box> */}
                   </Box>
                   {/* Charts Ends here*/}
 
@@ -433,14 +456,109 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                       <Typography variant="body" component="h4" color="#B82623">
                         Patient&apos;s Records
                       </Typography>
-                      <GridTable
-                        rows={rows}
-                        columns={columns}
-                        path="patients"
-                        maxHeight={380}
-                        firstRow={2}
-                        rowPerPage={[2]}
-                      />
+                      <Box className={styles.records__tabs}>
+                        {/* <Typography
+                          variant="body2"
+                          component="h4"
+                          color="#B82623"
+                        >
+                          Appointments
+                        </Typography>
+                        <Typography
+                          variant="body2"
+                          component="h4"
+                          color="#B82623"
+                        >
+                          Requested Medicines
+                        </Typography>
+
+                        <Typography
+                          variant="body2"
+                          component="h4"
+                          color="#B82623"
+                          style={{ borderRight: "1px solid #B82623" }}
+                        >
+                          Diagnosis
+                        </Typography> */}
+
+                        <Box sx={{ width: "100%" }}>
+                          <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
+                            <Tabs
+                              value={value}
+                              onChange={handleChange}
+                              aria-label="basic tabs example"
+                            >
+                              <Tab label="Appointments" {...a11yProps(0)} />
+                              <Tab
+                                label="Requested Medicines"
+                                {...a11yProps(1)}
+                              />
+                              <Tab label="Diagnosis" {...a11yProps(2)} />
+                            </Tabs>
+                          </Box>
+                          {loading && (
+                            <Box sx={{ width: "100%", color: "#b82623" }}>
+                              <LinearProgress color="inherit" />
+                            </Box>
+                          )}
+
+                          <TabPanel value={value} index={0}>
+                            {!loading && (
+                              <>
+                                <GridTable
+                                  rows={rows}
+                                  columns={columns}
+                                  path="patients"
+                                  maxHeight={380}
+                                  firstRow={2}
+                                  rowPerPage={[2]}
+                                />
+                                <Box
+                                  className={styles.getStartedBtn}
+                                  variant="contained"
+                                  onClick={() =>
+                                    router.push(
+                                      `/patients/${patientData.PatientID}/appointment`
+                                    )
+                                  }
+                                >
+                                  Add New Appointment
+                                </Box>
+                              </>
+                            )}
+                          </TabPanel>
+                          <TabPanel value={value} index={1}>
+                            {!loading && (
+                              <>
+                                <GridTable
+                                  rows={rows}
+                                  columns={columns}
+                                  path="patients"
+                                  maxHeight={380}
+                                  firstRow={2}
+                                  rowPerPage={[2]}
+                                />
+                                <Box
+                                  className={styles.getStartedBtn}
+                                  variant="contained"
+                                  onClick={() => {
+                                    localStorage.setItem(
+                                      "Patient",
+                                      JSON.stringify(patientData)
+                                    );
+                                    router.push(`/medicines`);
+                                  }}
+                                >
+                                  Request Medicine
+                                </Box>
+                              </>
+                            )}
+                          </TabPanel>
+                          <TabPanel value={value} index={2}>
+                            Diagnosis Records here
+                          </TabPanel>
+                        </Box>
+                      </Box>
                     </Box>
                   </Box>
                   {/* patients records */}
@@ -454,6 +572,40 @@ const PatientProfile = ({ patient, records, patientImage }) => {
     </>
   );
 };
+
+// Tabs Panel functions
+function TabPanel(props) {
+  const { children, value, index, ...other } = props;
+
+  return (
+    <div
+      role="tabpanel"
+      hidden={value !== index}
+      id={`simple-tabpanel-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
+      {...other}
+    >
+      {value === index && (
+        <Box sx={{ p: 3 }}>
+          <Typography>{children}</Typography>
+        </Box>
+      )}
+    </div>
+  );
+}
+
+TabPanel.propTypes = {
+  children: PropTypes.node,
+  index: PropTypes.number.isRequired,
+  value: PropTypes.number.isRequired,
+};
+
+function a11yProps(index) {
+  return {
+    id: `simple-tab-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
+  };
+}
 
 export default PatientProfile;
 

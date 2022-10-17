@@ -114,3 +114,71 @@
 .header__icon:hover {
   color: #b82623;
 }
+
+/* Medicine Cart Here */
+.MedicineCart {
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  min-width: 300px;
+  z-index: 2;
+  gap: 0.5rem;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  /* translate: 0px 107px; */
+  right: 0;
+  top: 60px;
+  padding: 30px 15px;
+  border-radius: 5px;
+}
+
+.request__card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.request__card:hover {
+  background-color: #dbdff3;
+  border-radius: 10px;
+}
+
+.request__card__remove:hover {
+  color: #b82623;
+}
+
+.request__count {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #b82623;
+  color: white;
+  padding: 3px;
+  border-radius: 999px;
+  height: 20px;
+  width: 20px;
+  z-index: 1;
+  top: 5px;
+  right: 80px;
+}
+
+.add__patient {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 5px;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 10px;
+  color: grey;
+  cursor: pointer;
+}

@@ -87,7 +87,7 @@ const index = ({ patients }) => {
             description="set an appointment to schedule your check-up"
             keywords="Capstone project, health center, baranggay"
           />
-          <Navbar />
+          {/* <Navbar /> */}
           <Box
             className={theme ? contentStyles.DarkMode : contentStyles.content}
           >

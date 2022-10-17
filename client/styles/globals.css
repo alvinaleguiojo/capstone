@@ -163,3 +163,16 @@ secondary  */
   background-color: #dbdff3;
   border-radius: 5px;
 }
+
+/* tab panel styling here */
+.css-19kzrtu {
+  padding: 0px !important;
+}
+
+.css-1h9z7r5-MuiButtonBase-root-MuiTab-root.Mui-selected {
+  color: #b82623 !important;
+}
+
+.css-1aquho2-MuiTabs-indicator {
+  background-color: #b82623 !important;
+}

@@ -128,7 +128,7 @@ const Released = ({ patients }) => {
         description="add or update medicines here"
         keywords="Capstone project, health center, baranggay"
       />
-      <Navbar />
+      {/* <Navbar /> */}
       <Box className={contentStyles.content}>
         <Tabs />
         <Box className={reusableStyle.main__content}>

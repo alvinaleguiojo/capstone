@@ -9,7 +9,7 @@ import styles from "../../../styles/Patients.module.css";
 import Meta from "../../../component/Meta";
 import Typography from "@mui/material/Typography";
 import useAuth from "../../../customhook/Auth";
-import { Button } from "@mui/material";
+import { Button } from "@mui/material"; 
 import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
@@ -104,7 +104,7 @@ const index = ({ patients }) => {
             description="set an appointment to schedule your check-up"
             keywords="Capstone project, health center, baranggay"
           />
-          <Navbar />
+          {/* <Navbar /> */}
           <Box className={contentStyles.content}>
             <Tabs />
             <Box className={reusableStyle.main__content}>

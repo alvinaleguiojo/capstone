@@ -166,7 +166,7 @@ const index = ({ Appointments }) => {
       />
       {useAuth() ? (
         <Box className={styles.dashboard}>
-          <Navbar />
+          {/* <Navbar /> */}
           <Box
             className={theme ? contentStyles.DarkMode : contentStyles.content}
           >
@@ -241,7 +241,11 @@ const index = ({ Appointments }) => {
                         {loading ? (
                           <Skeleton
                             animation="wave"
-                            style={{ width: "100%", padding: "25px", gap: "0px" }}
+                            style={{
+                              width: "100%",
+                              padding: "25px",
+                              gap: "0px",
+                            }}
                           />
                         ) : (
                           <CustomCard
@@ -281,7 +285,7 @@ const index = ({ Appointments }) => {
                     color="#B82623"
                     className={styles.header__cell}
                   >
-                    Monthly Reports
+                    Reports
                   </Typography>
 
                   <Box className={styles.monthly__filter} width={100}>

@@ -1,19 +1,38 @@
 import React, { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import Box from "@mui/material/Box";
-import styles from "../styles/CardTemplate.module.css";
+import styles from "../styles/MedicineCardTemplate.module.css";
 import Image from "next/image";
-import User from "../assets/image/User.svg";
-import Skeleton from "@mui/material/Skeleton";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import { Button, Box, Skeleton, Typography } from "@mui/material";
+
+import { useDispatch } from "react-redux";
+import { addMedicineRequest } from "../features/Medicines";
 
 const CardTemplate = (props) => {
   const [theme, setTheme] = useState(false);
+  const [medicineIDs, setMedicineIDs] = useState([]);
+
+  // medicine redux
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // fetch color scheme from local storage
     const enabled = JSON.parse(localStorage.getItem("theme"));
     setTheme(enabled);
+    return () => {};
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("medicines", JSON.stringify(medicineIDs));
+    console.log(medicineIDs);
+    return () => {};
+  }, [medicineIDs]);
+
+  const handleRequest = (data) => {
+    // console.log(data);
+    // setMedicineIDs([...medicineIDs, data.id]);
+
+    dispatch(addMedicineRequest(data));
+  };
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
@@ -29,7 +48,7 @@ const CardTemplate = (props) => {
         ) : (
           <Image
             src={props.profilePicture}
-            alt="profile"
+            alt="Image"
             className={styles.image}
             width={100}
             height={100}
@@ -53,26 +72,54 @@ const CardTemplate = (props) => {
               Name
             </Typography>
             <Typography variant="Body1" component="h5">
-              {props.Name}
+              {props.data.Name}
             </Typography>
           </Box>
 
           <Box className={styles.content}>
             <Typography variant="caption" component="h5">
-              Address
+              Stocks
             </Typography>
             <Typography variant="Body1" component="h5">
-              {props.Address}
+              {props.data.Stocks}
             </Typography>
           </Box>
 
           <Box className={styles.content}>
             <Typography variant="caption" component="h5">
-              Phone
+              Availability
+            </Typography>
+            <Typography
+              variant="Body1"
+              component="h5"
+              style={{
+                color:
+                  props.data.Availability == "In-Stocks" ? "rgb(7, 199, 7)" : "red",
+              }}
+            >
+              {props.data.Availability === 1 ? "In-Stocks" : "Out-of-Stocks"}
+            </Typography>
+          </Box>
+
+          <Box className={styles.content}>
+            <Typography variant="caption" component="h5">
+              Expiry Date
             </Typography>
             <Typography variant="Body1" component="h5">
-              {props.Phone}
+              {props.data.ExpiryDate}
             </Typography>
+          </Box>
+
+          <Box
+            className={styles.content}
+            style={{ display: "flex", alignItems: "center" }}
+          >
+            <Button
+              onClick={() => handleRequest(props.data)}
+              disabled={props.data.Stocks > 0 ? false : true}
+            >
+              <AddCircleOutlineIcon /> Request
+            </Button>
           </Box>
         </Box>
       )}

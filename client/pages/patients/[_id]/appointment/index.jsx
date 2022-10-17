@@ -100,7 +100,7 @@ const Index = ({ patient, Services }) => {
               description="set an appointment to schedule your check-up"
               keywords="Capstone project, health center, baranggay"
             />
-            <Navbar />
+            {/* <Navbar /> */}
             <Box className={contentStyles.content}>
               <Tabs />
               <Box className={reusableStyle.main__content}>
