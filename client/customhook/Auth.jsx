@@ -18,6 +18,6 @@ export default async function useAuth() {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [router]);
 }
 

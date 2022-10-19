@@ -104,7 +104,7 @@ const index = ({ patients }) => {
                   <Typography variant="h5" component="h5" color="#B82623">
                     All Patients
                   </Typography>
-                  <Button className={styles.addPatient} onClick={AddPatient}>
+                  <Button className={styles.addPatient}  onClick={AddPatient}>
                     Add New Patient
                   </Button>
                 </Box>

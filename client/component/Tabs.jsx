@@ -60,7 +60,7 @@ const Tabs = () => {
 
       <Box
         className={
-          router.route == "/medicines" || router.route == "/medicines/released"
+          router.route == "/medicines" || router.route == "/medicines/released" || router.route == "/medicines/register"
             ? theme
               ? styles.active__Dark
               : styles.active

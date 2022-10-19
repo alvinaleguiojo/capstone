@@ -22,5 +22,5 @@ export default async function useAuthRedirect() {
       }
     }
     dashboard();
-  }, []);
+  }, [router]);
 }

@@ -135,6 +135,7 @@ const UserManagement = () => {
       inputOptions: {
         Role: {
           ADMIN: "ADMIN",
+          MIDWIFE: "MIDWIFE",
           BHW: "BHW",
         },
       },

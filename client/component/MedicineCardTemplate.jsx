@@ -23,14 +23,11 @@ const CardTemplate = (props) => {
 
   useEffect(() => {
     localStorage.setItem("medicines", JSON.stringify(medicineIDs));
-    console.log(medicineIDs);
     return () => {};
   }, [medicineIDs]);
 
+  // dispatch an action to add medicine to card request
   const handleRequest = (data) => {
-    // console.log(data);
-    // setMedicineIDs([...medicineIDs, data.id]);
-
     dispatch(addMedicineRequest(data));
   };
 
@@ -78,10 +75,10 @@ const CardTemplate = (props) => {
 
           <Box className={styles.content}>
             <Typography variant="caption" component="h5">
-              Stocks
+              Dosage
             </Typography>
             <Typography variant="Body1" component="h5">
-              {props.data.Stocks}
+              {props.data.Dosage}
             </Typography>
           </Box>
 
@@ -93,8 +90,7 @@ const CardTemplate = (props) => {
               variant="Body1"
               component="h5"
               style={{
-                color:
-                  props.data.Availability == "In-Stocks" ? "rgb(7, 199, 7)" : "red",
+                color: props.data.Availability == 1 ? "rgb(7, 199, 7)" : "red",
               }}
             >
               {props.data.Availability === 1 ? "In-Stocks" : "Out-of-Stocks"}
@@ -106,7 +102,12 @@ const CardTemplate = (props) => {
               Expiry Date
             </Typography>
             <Typography variant="Body1" component="h5">
-              {props.data.ExpiryDate}
+              {new Date(props.data.ExpiryDate).toLocaleDateString("en-us", {
+                // weekday: "long",
+                year: "numeric",
+                month: "long",
+                day: "numeric",
+              })}
             </Typography>
           </Box>
 

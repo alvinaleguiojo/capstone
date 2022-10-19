@@ -28,8 +28,6 @@ const index = ({ Medicines }) => {
   const [data, setData] = useState(Medicines);
   const [loading, setLoading] = useState(false);
 
-  const [requestData, setRequestData] = useState(Medicines);
-
   return (
     <Box>
       <Meta
@@ -45,29 +43,36 @@ const index = ({ Medicines }) => {
             <Box className={recordStyles.search}>
               {/* medicines tabs  */}
               <Box className={MedicineStyles.medicineTabs}>
-                <Box
-                  className={
-                    router.route == "/medicines"
-                      ? MedicineStyles.active
-                      : MedicineStyles.tab
-                  }
-                  onClick={() => router.push("/medicines")}
-                >
-                  <Typography variant="h5" component="h5" color="#B82623">
-                    Medicine Inventory
-                  </Typography>
+                <Box className={MedicineStyles.tabs}>
+                  <Box
+                    className={
+                      router.route == "/medicines"
+                        ? MedicineStyles.active
+                        : MedicineStyles.tab
+                    }
+                    onClick={() => router.push("/medicines")}
+                  >
+                    <Typography variant="h5" component="h5" color="#B82623">
+                      Medicine Inventory
+                    </Typography>
+                  </Box>
+                  <Box
+                    className={
+                      router.route == "/medicines/released"
+                        ? MedicineStyles.active
+                        : MedicineStyles.tab
+                    }
+                    onClick={() => router.push("/medicines/released")}
+                  >
+                    <Typography variant="h5" component="h5" color="#B82623">
+                      Released Medicine
+                    </Typography>
+                  </Box>
                 </Box>
-                <Box
-                  className={
-                    router.route == "/medicines/released"
-                      ? MedicineStyles.active
-                      : MedicineStyles.tab
-                  }
-                  onClick={() => router.push("/medicines/released")}
-                >
-                  <Typography variant="h5" component="h5" color="#B82623">
-                    Released Medicine
-                  </Typography>
+                <Box className={MedicineStyles.AddMedicine}>
+                  <Button onClick={() => router.push("/medicines/register")}>
+                    Add New Medicine
+                  </Button>
                 </Box>
               </Box>
             </Box>
@@ -87,7 +92,7 @@ const index = ({ Medicines }) => {
             </Box>
 
             {/* Medicine cards here */}
-            {requestData.map((request, index) => {
+            {Medicines.map((request, index) => {
               return (
                 <MedicineCardTemplate
                   key={index}

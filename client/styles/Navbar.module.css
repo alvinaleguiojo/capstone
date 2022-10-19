@@ -171,7 +171,6 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 5px;
   box-sizing: border-box;
   box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
   -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
@@ -182,3 +181,23 @@
   color: grey;
   cursor: pointer;
 }
+
+.button__add__patient {
+  width: 100%;
+}
+
+.btn__quantity:hover{
+  color:#b82623;
+}
+
+.quantity {
+  display: flex;
+  align-items: center;
+}
+
+.quantity input {
+  padding: 5px;
+  max-width: 30px;
+  border: none;
+}
+

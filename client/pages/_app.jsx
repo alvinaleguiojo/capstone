@@ -15,7 +15,7 @@ import { useRouter } from "next/router";
 const store = configureStore({
   reducer: {
     users: userApiReducer,
-    medicines: medicinesRequestReducer
+    medicines: medicinesRequestReducer,
   },
 });
 
@@ -37,8 +37,8 @@ function MyApp({ Component, pageProps }) {
       axios
         .get("http://localhost:3001", { withCredentials: true })
         .then((response) => {
-          console.log(response)
-          return setAuthenticated(!authenticated);
+          console.log(response);
+          return setAuthenticated(true);
         })
         .catch((error) => {
           console.log(error.message);
@@ -47,7 +47,7 @@ function MyApp({ Component, pageProps }) {
     } catch (error) {
       console.log(error);
     }
-  }, []);
+  }, [router]);
 
   return (
     <Layout>

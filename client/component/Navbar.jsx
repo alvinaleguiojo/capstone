@@ -22,9 +22,14 @@ import CustomModal from "./CustomModal";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import CloseIcon from "@mui/icons-material/Close";
 import SearchIcon from "@mui/icons-material/Search";
-
+import AddBoxIcon from "@mui/icons-material/AddBox";
 import { useSelector, useDispatch } from "react-redux";
-import { deleteMedicineRequest } from "../features/Medicines";
+import {
+  deleteMedicineRequest,
+  addQuantity,
+  deductQuantity,
+} from "../features/Medicines";
+import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 
 const Navbar = () => {
   const router = useRouter();
@@ -53,7 +58,7 @@ const Navbar = () => {
     // fetch Patient dat from local storage
     const Patient = JSON.parse(localStorage.getItem("Patient"));
     setPatientData(Patient);
-  }, []);
+  }, [router]);
 
   const handleClickSettings = () => {
     setRequestGroupFocus(false);
@@ -182,16 +187,6 @@ const MedicineCart = (props) => {
         Requested Medicines
       </Typography>
 
-      <Box className={styles.add__patient}>
-        <Box style={{ display: "flex", alignContent: "center" }}>
-          <SearchIcon />
-          {props.patientName}
-        </Box>
-        <IconButton>
-          <CloseIcon />
-        </IconButton>
-      </Box>
-
       {/* start cards here */}
       <Box className={styles.request__cards}>
         {medicinesList.map((medicine, index) => (
@@ -199,12 +194,31 @@ const MedicineCart = (props) => {
             <Box style={{ display: "flex", alignItems: "center" }}>
               <Image src={Today} height={60} width={60} />
               <Box>
-                <Typography variant="caption" component="h5" color="#b82623">
+                <Typography variant="Body1" component="h5" color="#b82623">
                   {medicine.Name}
                 </Typography>
-                <Typography variant="caption" component="h5" color="#b82623">
-                  Quantity
-                </Typography>
+                <Box className={styles.quantity}>
+                  <span> Quantity:</span>
+                  <IconButton
+                    onClick={() =>
+                      dispatch(deductQuantity({ id: medicine.MedicineID }))
+                    }
+                    disabled={medicine.Quantity === 1 && true}
+                    className={styles.btn__quantity}
+                  >
+                    <IndeterminateCheckBoxIcon />
+                  </IconButton>
+                  {medicine.Quantity}
+                  <IconButton
+                    deductQuantity
+                    onClick={() =>
+                      dispatch(addQuantity({ id: medicine.MedicineID }))
+                    }
+                    className={styles.btn__quantity}
+                  >
+                    <AddBoxIcon />
+                  </IconButton>
+                </Box>
               </Box>
             </Box>
             <IconButton
@@ -217,12 +231,15 @@ const MedicineCart = (props) => {
           </Box>
         ))}
 
-        {/* <Box style={{ display: "flex", justifyContent: "center" }}>
-          <Button>View All Request</Button>
-        </Box> */}
-        {medicinesList <= 0 && <span>No medicine request</span>}
         <Box style={{ display: "flex", justifyContent: "center" }}>
-          <Button disabled={true}>Send Request</Button>
+          {medicinesList <= 0 && (
+            <span style={{ textAlign: "center" }}>No medicine request</span>
+          )}
+        </Box>
+        <Box style={{ display: "flex", justifyContent: "center" }}>
+          <Button disabled={medicinesList.length <= 0 && true}>
+            View All Request
+          </Button>
         </Box>
       </Box>
       {/* end cards here.... */}
@@ -241,10 +258,6 @@ function DropdownMenu() {
     setMenuHeight(height);
   }
 
-  useEffect(() => {
-    console.log(menuHeight);
-  }, [menuHeight]);
-
   const handleLogout = async () => {
     await Swal.fire({
       title: "Are you sure?",
@@ -259,9 +272,15 @@ function DropdownMenu() {
       if (result.isConfirmed) {
         axios
           .get("http://localhost:3001/logout", { withCredentials: true })
-          .then((response) => {
-            Swal.fire("Success!", "You are now in the Login Page.", "success");
-            response && router.push("/login");
+          .then(() => {
+            setTimeout(() => {
+              router.push("/login");
+              Swal.fire(
+                "Success!",
+                "You are now in the Login Page.",
+                "success"
+              );
+            }, 1000);
           });
       }
     });
