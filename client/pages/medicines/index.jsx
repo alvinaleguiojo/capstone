@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Navbar from "../../component/Navbar";
 import Image from "next/image";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
-import GridTable from "../../component/GridTable";
 import Meta from "../../component/Meta";
 import styles from "../../styles/Patients.module.css";
 import MedicineStyles from "../../styles/Medicines.module.css";
 import recordStyles from "../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "../../assets/image/search.svg";
-import AddIcon from "../../assets/image/plus-circle.svg";
 import axios from "axios";
 import { Button } from "@mui/material";
-import Swal from "sweetalert2";
 import useAuth from "../../customhook/Auth";
 import MedicineCardTemplate from "../../component/MedicineCardTemplate";
 
@@ -26,7 +22,53 @@ const index = ({ Medicines }) => {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState("");
   const [data, setData] = useState(Medicines);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [previousPage, setPreviousPage] = useState(0);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [data]);
+
+  useEffect(() => {
+    axios
+      .get(
+        `http://localhost:3001/medicines?page=${currentPage}&limit=3&LIKE=${searchTerm}`
+      )
+      .then((response) => {
+        setPreviousPage(response.data.previous);
+        setPageNumber(response.data.next);
+        setData(response.data.results);
+        console.log(response);
+      })
+      .then(() => {
+        setTimeout(() => {
+          setLoading(false);
+        }, 1000);
+      });
+  }, [currentPage, searchTerm]);
+
+  // go back to previous page
+  const PreviousPage = () => {
+    setLoading(true);
+    setCurrentPage(previousPage.page);
+  };
+
+  // to trigger the next page
+  const NextPage = () => {
+    setLoading(true);
+    setCurrentPage(pageNumber.page);
+  };
+
+  // hamdling search terms
+  const handleSearch = (e) => {
+    setCurrentPage(1);
+    setLoading(true);
+    setSearchTerm(e.target.value);
+  };
 
   return (
     <Box>
@@ -35,7 +77,7 @@ const index = ({ Medicines }) => {
         description="add or update medicines here"
         keywords="Capstone project, health center, baranggay"
       />
-      {/* <Navbar /> */}
+
       <Box className={contentStyles.content}>
         <Tabs />
         <Box className={reusableStyle.main__content}>
@@ -45,18 +87,18 @@ const index = ({ Medicines }) => {
               <Box className={MedicineStyles.medicineTabs}>
                 <Box className={MedicineStyles.tabs}>
                   <Box
-                    className={
-                      router.route == "/medicines"
-                        ? MedicineStyles.active
-                        : MedicineStyles.tab
-                    }
+                    // className={
+                    //   router.route == "/medicines"
+                    //     ? MedicineStyles.active
+                    //     : MedicineStyles.tab
+                    // }
                     onClick={() => router.push("/medicines")}
                   >
                     <Typography variant="h5" component="h5" color="#B82623">
                       Medicine Inventory
                     </Typography>
                   </Box>
-                  <Box
+                  {/* <Box
                     className={
                       router.route == "/medicines/released"
                         ? MedicineStyles.active
@@ -67,7 +109,7 @@ const index = ({ Medicines }) => {
                     <Typography variant="h5" component="h5" color="#B82623">
                       Released Medicine
                     </Typography>
-                  </Box>
+                  </Box> */}
                 </Box>
                 <Box className={MedicineStyles.AddMedicine}>
                   <Button onClick={() => router.push("/medicines/register")}>
@@ -82,7 +124,7 @@ const index = ({ Medicines }) => {
                 type="text"
                 placeholder="Search for Medicine Name or Brand  "
                 className={styles.search__input}
-                // onChange={handleSearch}
+                onChange={handleSearch}
               />
               <Image
                 src={SearchIcon}
@@ -92,16 +134,41 @@ const index = ({ Medicines }) => {
             </Box>
 
             {/* Medicine cards here */}
-            {Medicines.map((request, index) => {
+            {data.map((request, index) => {
               return (
-                <MedicineCardTemplate
-                  key={index}
-                  loading={loading}
-                  id={request.id}
-                  data={request}
-                />
+                <Box className={styles.medicine__list} key={request.MedicineID}>
+                  <MedicineCardTemplate
+                    key={index}
+                    loading={loading}
+                    id={request.id}
+                    data={request}
+                  />
+                </Box>
               );
             })}
+             {Medicines.length <= 0 && (
+                  <Typography variant="h5" component="h5" color="#B82623">
+                    No words or phrases found
+                  </Typography>
+                )}
+
+                <Box className={styles.pagination}>
+                  <Button
+                    className={styles.page}
+                    onClick={PreviousPage}
+                    disabled={currentPage <= 1 ? true : false}
+                  >
+                    Previous
+                  </Button>
+
+                  <Button
+                    className={styles.page}
+                    onClick={NextPage}
+                    disabled={Medicines.length <= 0 ? true : false}
+                  >
+                    Next
+                  </Button>
+                </Box>
           </Box>
         </Box>
       </Box>
@@ -113,7 +180,7 @@ export default index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch(`http://localhost:3001/medicines`);
+    const res = await fetch(`http://localhost:3001/medicineswithimage`);
     const { Medicines } = await res.json();
 
     return {

@@ -104,7 +104,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  overflow: scroll;
   padding: 10px;
 }
 

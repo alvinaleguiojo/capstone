@@ -27,18 +27,18 @@ a {
   box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: light) {
+/* @media (prefers-color-scheme: light) {
   html {
-    color-scheme: dark;
+    color-scheme: light;
   }
   body {
-    color: grey;
+    color: black;
     background: black;
   }
   input {
     color: grey;
   }
-}
+} */
 
 .react-calendar {
   border: none !important;

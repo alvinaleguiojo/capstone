@@ -10,18 +10,135 @@ const { createTokens, validateToken } = require("../middleware/JWT");
 router.use(cookieParser());
 require("dotenv").config();
 
-
 // import for AsyncAwait Functions
 const GetAllMedicinesPromise = require("../AsyncAwait/Medicines/AllMedicines");
+const RegisterMedicinePromise = require("../AsyncAwait/Medicines/RegisterMedicine");
+const GetMedicinesLimitPromise = require("../AsyncAwait/Medicines/MedicinesLimit");
+const CountDocumentsPromise = require("../AsyncAwait/Medicines/CountDocument");
+const GetAllMedicinesWithImagePromise = require("../AsyncAwait/Medicines/MedicinesWithImage");
+const ReleasedMedicinePromise = require("../AsyncAwait/Medicines/ReleasedMedicine");
+const MedicinesByIDPromise = require("../AsyncAwait/Medicines/MedicinesByID");
+const RetrieveMedicinesByIDPromise = require("../AsyncAwait/Medicines/RetrieveMedicine");
 
 // get all medicines
 // router.get("/medicines", paginatedResults(Medicines), (req, res) => {
 //   res.json(res.paginatedResults);
 // });
 
+const paginatedData = () => {
+  return async (req, res, next) => {
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    let LIKE = req.query.LIKE;
 
-// Get All Appointments
-router.get("/medicines", async (req, res) => {
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+    const rowNumberOfCollection = await CountDocumentsPromise();
+    const count = await rowNumberOfCollection[0].NumberOfPatients;
+    if (endIndex < count) {
+      results.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    const offset = startIndex;
+
+    try {
+      results.results = await GetMedicinesLimitPromise({
+        limit,
+        offset,
+        LIKE,
+      });
+      res.paginatedData = results;
+      next();
+    } catch (err) {
+      console.log("error page and limit or no data");
+    }
+  };
+};
+
+// Add new Patient
+router.post("/medicine/register", async (req, res) => {
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  const {
+    Name,
+    Stocks,
+    Unit,
+    Size,
+    ExpiryDate,
+    Manufacturer,
+    Dosage,
+    Description,
+    ImageID,
+    Availability,
+  } = req.body;
+
+  try {
+    await RegisterMedicinePromise({
+      Name,
+      Stocks,
+      Unit,
+      Size,
+      ExpiryDate,
+      Manufacturer,
+      Dosage,
+      Description,
+      Availability: true,
+      DateEntry: date,
+      ImageID
+    });
+    res.status(200).json({ message: "Medicine added successfully" });
+  } catch (err) {
+    console.log(err.message);
+    res.status(400).json({ message: "Invalid data entry" });
+  }
+});
+
+// Add new Release Medicine
+router.post("/medicine/release", async (req, res) => {
+  const data = req.body.medicinesList;
+  const today = new Date();
+  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+  const Note = req.body.note;
+  const PatientID = req.body.PatientID;
+
+  data.map(async (medicine) => {
+    let Quantity = medicine.Quantity;
+    let MedicineID = medicine.MedicineID;
+    try {
+      await ReleasedMedicinePromise({
+        Quantity,
+        PatientID,
+        MedicineID, 
+        ReleasedDate: date,
+        Note
+      });
+      res.status(200).json({ message: "Medicine has been released" });
+    } catch (err) {
+      console.log(err.message);
+      res.status(400).json({ message: "Invalid data entry" });
+    }
+  });
+});
+
+// Get All Medicine with Paginated results
+router.get("/medicines", paginatedData(), async (req, res) => {
+  res.json(res.paginatedData);
+});
+
+// Get All Medicine without Paginated results
+router.get("/allmedicines", async (req, res) => {
   try {
     const resultElements = await GetAllMedicinesPromise();
     res.status(200).json({ Medicines: resultElements });
@@ -31,7 +148,45 @@ router.get("/medicines", async (req, res) => {
   }
 });
 
+
+// Get Patient's Medicines by ID
+router.get("/medicines/:id", async (req, res) => {
+  try {
+    const resultElements = await MedicinesByIDPromise({
+      PatientID: req.params.id
+    });
+    res.status(200).json({ Medicines: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get Medicine Details with Image
+router.get("/medicine/detail/:id", async (req, res) => {
+  try {
+    const resultElements = await RetrieveMedicinesByIDPromise({
+      MedicineID: req.params.id
+    });
+    res.status(200).json({ Medicines: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+
+
+
+// Get ALl Medicines with Image
+router.get("/medicineswithimage", async (req, res) => {
+  try {
+    const resultElements = await GetAllMedicinesWithImagePromise();
+    res.status(200).json({ Medicines: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
 module.exports = router;
-
-
-

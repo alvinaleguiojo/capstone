@@ -31,10 +31,7 @@ const Tabs = () => {
 
       <Box
         className={
-          router.route == "/patients" ||
-          router.route == "/patients/[_id]/appointment" ||
-          router.route == "/patients/register" ||
-          router.route == "/patients/register/history"
+          router.route.includes("patients")
             ? theme
               ? styles.active__Dark
               : styles.active
@@ -60,7 +57,7 @@ const Tabs = () => {
 
       <Box
         className={
-          router.route == "/medicines" || router.route == "/medicines/released" || router.route == "/medicines/register"
+          router.route.includes("medicines")
             ? theme
               ? styles.active__Dark
               : styles.active

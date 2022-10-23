@@ -65,11 +65,40 @@ const columns = [
   },
 ];
 
+// Released Medicines
+const releasedMedicinesColumns = [
+  {
+    id: "Name",
+    label: "Medicine Name",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "Quantity",
+    label: "Quantity",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "ReleasedDate",
+    label: "Released Date",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+];
+
 function createData(ServiceType, Schedule, Status) {
   return { ServiceType, Schedule, Status };
 }
 
-const PatientProfile = ({ patient, records, patientImage }) => {
+function createDataMedicines(Name, Quantity, ReleasedDate) {
+  return { Name, Quantity, ReleasedDate };
+}
+
+const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
   const [sendMessage, setSendMessage] = useState("");
   const router = useRouter();
   const id = router.query._id;
@@ -87,9 +116,21 @@ const PatientProfile = ({ patient, records, patientImage }) => {
       month: "short",
       day: "numeric",
     });
-    return (
-      record.PatientID == id &&
-      rows.push(createData(record.ServiceType, date, record.Status))
+    record.PatientID == id &&
+      rows.push(createData(record.ServiceType, date, record.Status));
+  });
+
+  // pushing patients data to array
+  const medicinesRows = [];
+  Medicines.map((medicine) => {
+    const date = new Date(medicine.ReleasedDate).toLocaleDateString("en-us", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    return medicinesRows.push(
+      createDataMedicines(medicine.Name, medicine.Quantity, date)
     );
   });
 
@@ -510,8 +551,8 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                                   columns={columns}
                                   path="patients"
                                   maxHeight={380}
-                                  firstRow={2}
-                                  rowPerPage={[2]}
+                                  firstRow={4}
+                                  rowPerPage={[4]}
                                 />
                                 <Box
                                   className={styles.getStartedBtn}
@@ -531,12 +572,12 @@ const PatientProfile = ({ patient, records, patientImage }) => {
                             {!loading && (
                               <>
                                 <GridTable
-                                  rows={rows}
-                                  columns={columns}
-                                  path="patients"
+                                  rows={medicinesRows}
+                                  columns={releasedMedicinesColumns}
+                                  path="medicines"
                                   maxHeight={380}
-                                  firstRow={2}
-                                  rowPerPage={[2]}
+                                  firstRow={4}
+                                  rowPerPage={[4]}
                                 />
                                 <Box
                                   className={styles.getStartedBtn}
@@ -636,6 +677,12 @@ export async function getStaticProps({ params }) {
     );
     const records = await patientRecords.json();
 
+    // Get all released Medicines
+    const releasedMedicines = await fetch(
+      `http://localhost:3001/medicines/${params._id}`
+    );
+    const { Medicines } = await releasedMedicines.json();
+
     // feth patient Image
     const patientImageID = await patient[0].ImageID.toString();
     const imageRes = await fetch(
@@ -649,6 +696,7 @@ export async function getStaticProps({ params }) {
         patient,
         records,
         patientImage,
+        Medicines,
       },
     };
   } catch (err) {

@@ -9,6 +9,9 @@ const { Server } = require("socket.io");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
+const fs = require("fs");
+const path = require("path");
+const url = require("url");
 
 //import MYSQL DB connection
 const connection = require("./db/connection");
@@ -45,7 +48,7 @@ const corsConfig = {
 app.use(cors(corsConfig));
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+// app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(index);
 app.use(appointments);
 app.use(users);
@@ -56,6 +59,11 @@ app.use(Medicines);
 app.use(twilio);
 app.use(Services);
 app.use(UploadImage);
+
+// retrieving images from file folders
+app.use('/files', express.static('files'), (req, res, err) =>{
+  if(err) res.send("Ops! no file found.");
+});
 
 // this is function is for sending realtime data to client without refreshing the browser
 const server = http.createServer(app);

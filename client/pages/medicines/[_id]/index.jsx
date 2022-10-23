@@ -21,7 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const index = () => {
+const index = ({ Medicines }) => {
   const router = useRouter();
 
   const webRef = useRef(null);
@@ -30,81 +30,14 @@ const index = () => {
   const [loading, setLoading] = useState(false);
 
   // setting image to state
-  const [images, setImages] = useState({ preview: "", data: "" });
+  const [images, setImages] = useState({
+    preview: Medicines[0].Image,
+    data: "",
+  });
   const [filename, setFilename] = useState("");
   const maxNumber = 69;
 
-  const [medicine, setMedicine] = useState({
-    Name: null,
-    Stocks: 0,
-    Unit: "microgram",
-    Size: 0,
-    ExpiryDate: null,
-    Manufacturer: null,
-    Dosage: null,
-    Description: null,
-    ImageID: null,
-  });
-
-  useEffect(() => {
-    console.log(medicine);
-    medicine.Name !== null &&
-      medicine.Name !== "" &&
-      medicine.Stocks !== 0 &&
-      medicine.Stocks !== "" &&
-      medicine.Unit !== null &&
-      medicine.Unit !== "" &&
-      medicine.Size !== 0 &&
-      medicine.Size !== "" &&
-      medicine.ExpiryDate !== null &&
-      medicine.ExpiryDate !== "" &&
-      medicine.Manufacturer !== null &&
-      medicine.Manufacturer !== "" &&
-      medicine.Dosage !== null &&
-      medicine.Dosage !== "";
-    medicine.Description !== null && medicine.Description !== ""
-      ? // medicine.ImageID !== null && medicine.ImageID !== ""
-        setDisabled(false)
-      : setDisabled(true);
-  }, [medicine]);
-
-  const handleSubmitMedicine = async (e) => {
-    e.preventDefault();
-    try {
-      const newMedicine = await axios.post(
-        "http://localhost:3001/medicine/register",
-        {
-          ...medicine,
-        }
-      );
-      newMedicine &&
-        (await Swal.fire(
-          "Success!",
-          "Medicine successfully registered!",
-          "success"
-        ).then(() => {
-          router.push("/medicines");
-        }));
-    } catch (error) {
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", Swal.stopTimer);
-          toast.addEventListener("mouseleave", Swal.resumeTimer);
-        },
-      });
-      Toast.fire({
-        icon: "error",
-        title: "Please check the input field value",
-      });
-
-      console.log(error.message);
-    }
-  };
+  const [medicine, setMedicine] = useState(Medicines);
 
   // going back to patient page list
   const handleBack = () => {
@@ -118,31 +51,6 @@ const index = () => {
     medicine && setMedicine(medicine);
     profilePicture && setImageURL(profilePicture);
   }, []);
-
-  const onChange = (imageList, addUpdateIndex) => {
-    // data for submit
-    // console.log(imageList, addUpdateIndex);
-    setImages(imageList);
-  };
-
-  // saving image to local storage
-  // const handleSave = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   let formData = new FormData();
-  //   formData.append("file", images.data);
-
-  //   const response = await fetch("http://localhost:3001/upload_file", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-
-  //   const res = await response.json();
-  //   setTimeout(() => {
-  //     res && setLoading(false);
-  //     res && setFilename(res.filename);
-  //   }, 2000);
-  // };
 
   const handleDeleteImage = async (filename) => {
     try {
@@ -206,7 +114,7 @@ const index = () => {
               <Box className={styles.patients}>
                 <Box className={styles.registration__header}>
                   <Typography variant="h4" component="h4" color="#B82623">
-                    Add New Medicine
+                    Medicine Details
                   </Typography>
                 </Box>
 
@@ -247,7 +155,20 @@ const index = () => {
                         />
                       </IconButton> */}
                       {images.preview && (
-                        <img src={images.preview} width="100" height="100" />
+                        <>
+                          <a
+                            href={images.preview}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <img
+                              src={images.preview}
+                              width="100%"
+                              height="100%"
+                              style={{ borderRadius: "999px" }}
+                            />
+                          </a>
+                        </>
                       )}
 
                       <form>
@@ -275,14 +196,14 @@ const index = () => {
                           </Box>
                         )}
 
-                        {images.preview && !filename && (
+                        {/* {images.preview && !filename && (
                           <button
                             type="submit"
                             className={medicineStyles.btn__uploadFile}
                           >
                             Save
                           </button>
-                        )}
+                        )} */}
                       </form>
                       {filename && (
                         <button
@@ -304,9 +225,9 @@ const index = () => {
                         gap: "1rem",
                       }}
                     >
-                      <Typography variant="h5" component="h5" color="#B82623">
+                      {/* <Typography variant="h5" component="h5" color="#B82623">
                         Medicine Information
-                      </Typography>
+                      </Typography> */}
                       <Box className={styles.name}>
                         <Box style={{ width: "100%" }}>
                           <Typography
@@ -326,7 +247,8 @@ const index = () => {
                             }
                             type="text"
                             name="Generic Name"
-                            value={medicine.Name || ""}
+                            value={medicine[0].Name || ""}
+                            disabled={true}
                           />
                         </Box>
 
@@ -348,7 +270,8 @@ const index = () => {
                             }
                             type="number"
                             name="Stocks"
-                            value={medicine.Stocks || ""}
+                            value={medicine[0].Stocks || ""}
+                            disabled={true}
                           />
                         </Box>
                         <Box style={{ width: "30%" }}>
@@ -367,6 +290,8 @@ const index = () => {
                                 Unit: e.target.value,
                               })
                             }
+                            value={medicine[0].Unit || ""}
+                            disabled={true}
                           >
                             <option value="microgram">microgram μg</option>
                             <option value="miligram">miligram</option>
@@ -392,7 +317,8 @@ const index = () => {
                             }
                             type="number"
                             name="middleName"
-                            value={medicine.Size || ""}
+                            value={medicine[0].Size || ""}
+                            disabled={true}
                           />
                         </Box>
                       </Box>
@@ -414,9 +340,19 @@ const index = () => {
                                 ExpiryDate: e.target.value,
                               })
                             }
-                            type="date"
+                            type="text"
                             name="Expiry Date"
-                            value={medicine.ExpiryDate || ""}
+                            value={
+                              new Date(
+                                medicine[0].ExpiryDate
+                              ).toLocaleDateString("en-us", {
+                                // weekday: "long",
+                                year: "numeric",
+                                month: "long",
+                                day: "numeric",
+                              }) || ""
+                            }
+                            disabled={true}
                           />
                         </Box>
 
@@ -438,7 +374,8 @@ const index = () => {
                             }
                             type="text"
                             name="City"
-                            value={medicine.Manufacturer || ""}
+                            value={medicine[0].Manufacturer || ""}
+                            disabled={true}
                           />
                         </Box>
 
@@ -460,7 +397,8 @@ const index = () => {
                             }
                             type="text"
                             name="Dosage"
-                            value={medicine.Dosage || ""}
+                            value={medicine[0].Dosage || ""}
+                            disabled={true}
                           />
                         </Box>
                       </Box>
@@ -473,7 +411,14 @@ const index = () => {
                           >
                             Description
                           </Typography>
-                          <input
+                          <textarea
+                            style={{
+                              height: "100px",
+                              maxHeight: "100px",
+                              minHeight: "100px",
+                              maxWidth: "100%",
+                              minWidth: "100%",
+                            }}
                             className={styles.input__register}
                             onChange={(e) =>
                               setMedicine({
@@ -483,7 +428,8 @@ const index = () => {
                             }
                             type="text"
                             name="Description"
-                            value={medicine.Description || ""}
+                            value={medicine[0].Description || "No Description"}
+                            disabled={true}
                           />
                         </Box>
                       </Box>
@@ -494,7 +440,7 @@ const index = () => {
                   <Button style={{ color: "#b82623" }} onClick={handleBack}>
                     Back
                   </Button>
-                  <Button
+                  {/* <Button
                     disabled={disabled}
                     className={
                       disabled ? styles.proceedBtnDisabled : styles.proceedBtn
@@ -502,7 +448,7 @@ const index = () => {
                     onClick={(e) => handleSubmitMedicine(e)}
                   >
                     Add Medicine
-                  </Button>
+                  </Button> */}
                 </Box>
               </Box>
               {/* </Box> */}
@@ -515,3 +461,40 @@ const index = () => {
 };
 
 export default index;
+
+export async function getStaticPaths() {
+  try {
+    const res = await fetch("http://localhost:3001/allmedicines");
+    const { Medicines } = await res.json();
+
+    return {
+      paths: Medicines.map((medicine) => {
+        return { params: { _id: medicine.MedicineID.toString() } };
+      }),
+      fallback: false,
+    };
+  } catch (err) {
+    console.log("Ops path in invaid!");
+  }
+}
+
+export async function getStaticProps({ params }) {
+  try {
+    // Get all released Medicines
+    const releasedMedicines = await fetch(
+      `http://localhost:3001/medicine/detail/${params._id}`
+    );
+    const { Medicines } = await releasedMedicines.json();
+
+    return {
+      props: {
+        Medicines,
+      },
+    };
+  } catch (err) {
+    console.log(
+      "Fetching data error or please check your internet connection",
+      err
+    );
+  }
+}

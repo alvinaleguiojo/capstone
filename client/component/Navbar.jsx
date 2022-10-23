@@ -183,16 +183,26 @@ const MedicineCart = (props) => {
 
   return (
     <Box className={styles.MedicineCart}>
-      <Typography variant="h6" component="h6" color="#b82623">
-        Requested Medicines
+      <Typography
+        variant="h6"
+        component="h6"
+        color="#b82623"
+        style={{ textAlign: "center" }}
+      >
+        Selected Medicines
       </Typography>
 
       {/* start cards here */}
       <Box className={styles.request__cards}>
         {medicinesList.map((medicine, index) => (
           <Box className={styles.request__card} key={index}>
-            <Box style={{ display: "flex", alignItems: "center" }}>
-              <Image src={Today} height={60} width={60} />
+            <Box style={{ display: "flex", alignItems: "center", cursor:"pointer" }} onClick={()=> router.push(`/medicines/${medicine.MedicineID}`)}>
+              <Image
+                loader={() => medicine.Image}
+                src={medicine.Image}
+                height={60}
+                width={60}
+              />
               <Box>
                 <Typography variant="Body1" component="h5" color="#b82623">
                   {medicine.Name}
@@ -233,12 +243,17 @@ const MedicineCart = (props) => {
 
         <Box style={{ display: "flex", justifyContent: "center" }}>
           {medicinesList <= 0 && (
-            <span style={{ textAlign: "center" }}>No medicine request</span>
+            <span style={{ textAlign: "center" }}>
+              No medicine being request
+            </span>
           )}
         </Box>
         <Box style={{ display: "flex", justifyContent: "center" }}>
-          <Button disabled={medicinesList.length <= 0 && true}>
-            View All Request
+          <Button
+            disabled={medicinesList.length <= 0 && true}
+            onClick={() => router.push("/medicines/request")}
+          >
+            View All 
           </Button>
         </Box>
       </Box>

@@ -53,13 +53,13 @@ function MyApp({ Component, pageProps }) {
     <Layout>
       <Provider store={store}>
         <CookiesProvider>
+          {authenticated && <Navbar />}
           <NextProgress
             color="red"
             delay={300}
             height="5px"
             options={{ showSpinner: false }}
           />
-          {authenticated && <Navbar />}
 
           <Component {...pageProps} />
         </CookiesProvider>

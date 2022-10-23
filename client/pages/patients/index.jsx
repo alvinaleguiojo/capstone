@@ -17,7 +17,7 @@ import axios from "axios";
 
 const index = ({ patients }) => {
   const router = useRouter();
-  const [patientData, setPatientData] = useState([]);
+  const [patientData, setPatientData] = useState(patients);
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNumber, setPageNumber] = useState(0);
   const [previousPage, setPreviousPage] = useState(0);
@@ -180,6 +180,7 @@ const index = ({ patients }) => {
 export default index;
 
 export const getStaticProps = async ({ context }) => {
+ 
   try {
     const res = await fetch("http://localhost:3001/patientswithimage");
     const { Patients } = await res.json();

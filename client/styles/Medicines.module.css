@@ -2,6 +2,10 @@
   border-bottom: 3px solid #b82623;
 }
 
+.imageUploaded {
+  height: inherit;
+}
+
 .medicineTabs {
   display: flex;
   justify-content: space-between;
@@ -22,3 +26,27 @@
 .active:hover {
   cursor: pointer;
 }
+
+.btn__uploadFile {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  translate: -80px 90px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  color: grey;
+}
+
+.btn__cancelFile {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  translate: 0px 100px;
+  padding: 5px 20px;
+  border: none;
+  border-radius: 5px;
+  color: grey;
+}
+
+

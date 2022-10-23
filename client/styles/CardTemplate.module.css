@@ -3,9 +3,9 @@
   align-items: center;
   gap: 0.5rem;
   box-sizing: border-box;
-  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.10);
+  /* box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.10);
   -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.10);
-  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.10);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.10); */
   border: 1px solid rgba(0, 0, 0, 0.10);
   z-index: 1;
   border-radius: 10px;
