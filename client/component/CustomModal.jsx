@@ -222,7 +222,7 @@ export default function CustomModal() {
   const DeleteService = async (serviceData) => {
     const deleteServce = await Swal.fire({
       title: "Are you sure?",
-      text: "You want to log out?",
+      text: "This action cannot be undone. Are you sure you want to delete this service",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",

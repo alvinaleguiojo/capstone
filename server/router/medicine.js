@@ -19,17 +19,21 @@ const GetAllMedicinesWithImagePromise = require("../AsyncAwait/Medicines/Medicin
 const ReleasedMedicinePromise = require("../AsyncAwait/Medicines/ReleasedMedicine");
 const MedicinesByIDPromise = require("../AsyncAwait/Medicines/MedicinesByID");
 const RetrieveMedicinesByIDPromise = require("../AsyncAwait/Medicines/RetrieveMedicine");
+const RetrieveReleasedMedicinesByIDPromise = require("../AsyncAwait/Medicines/RetrieveReleasedMedicines");
+const ReleasedMedicinesCountDocumentsPromise = require("../AsyncAwait/Medicines/ReleasedMedicinesCountDocument");
+const RetrieveReleasedMedicinesNoPagition = require("../AsyncAwait/Medicines/RetrieveReleasedMedicinesNoPagination");
 
 // get all medicines
 // router.get("/medicines", paginatedResults(Medicines), (req, res) => {
 //   res.json(res.paginatedResults);
 // });
 
+// Get all medicines with paginatedData
 const paginatedData = () => {
   return async (req, res, next) => {
     const limit = parseInt(req.query.limit);
     const page = parseInt(req.query.page);
-    let LIKE = req.query.LIKE;
+    const LIKE = req.query.LIKE;
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
@@ -55,6 +59,49 @@ const paginatedData = () => {
 
     try {
       results.results = await GetMedicinesLimitPromise({
+        limit,
+        offset,
+        LIKE,
+      });
+      res.paginatedData = results;
+      next();
+    } catch (err) {
+      console.log("error page and limit or no data");
+    }
+  };
+};
+
+const releasedMedicinespaginatedData = () => {
+  return async (req, res, next) => {
+    const limit = parseInt(req.query.limit);
+    const page = parseInt(req.query.page);
+    const LIKE = req.query.LIKE;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const results = {};
+    const rowNumberOfCollection =
+      await ReleasedMedicinesCountDocumentsPromise();
+    const count = await rowNumberOfCollection[0].NumberOfPatients;
+    if (endIndex < count) {
+      results.next = {
+        page: page + 1,
+        limit: limit,
+      };
+    }
+
+    if (startIndex > 0) {
+      results.previous = {
+        page: page - 1,
+        limit: limit,
+      };
+    }
+
+    const offset = startIndex;
+
+    try {
+      results.results = await RetrieveReleasedMedicinesByIDPromise({
         limit,
         offset,
         LIKE,
@@ -96,7 +143,7 @@ router.post("/medicine/register", async (req, res) => {
       Description,
       Availability: true,
       DateEntry: date,
-      ImageID
+      ImageID,
     });
     res.status(200).json({ message: "Medicine added successfully" });
   } catch (err) {
@@ -120,9 +167,9 @@ router.post("/medicine/release", async (req, res) => {
       await ReleasedMedicinePromise({
         Quantity,
         PatientID,
-        MedicineID, 
+        MedicineID,
         ReleasedDate: date,
-        Note
+        Note,
       });
       res.status(200).json({ message: "Medicine has been released" });
     } catch (err) {
@@ -148,12 +195,31 @@ router.get("/allmedicines", async (req, res) => {
   }
 });
 
+// Get Released Medicines without Paginated results
+router.get("/medicines/released/nopagination", async (req, res) => {
+  try {
+    const resultElements = await RetrieveReleasedMedicinesNoPagition();
+    res.status(200).json({ Medicines: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get All Released Medicines without Paginated results
+router.get(
+  "/medicines/released",
+  releasedMedicinespaginatedData(),
+  async (req, res) => {
+    res.json(res.paginatedData);
+  }
+);
 
 // Get Patient's Medicines by ID
 router.get("/medicines/:id", async (req, res) => {
   try {
     const resultElements = await MedicinesByIDPromise({
-      PatientID: req.params.id
+      PatientID: req.params.id,
     });
     res.status(200).json({ Medicines: resultElements });
   } catch (error) {
@@ -166,7 +232,7 @@ router.get("/medicines/:id", async (req, res) => {
 router.get("/medicine/detail/:id", async (req, res) => {
   try {
     const resultElements = await RetrieveMedicinesByIDPromise({
-      MedicineID: req.params.id
+      MedicineID: req.params.id,
     });
     res.status(200).json({ Medicines: resultElements });
   } catch (error) {
@@ -174,9 +240,6 @@ router.get("/medicine/detail/:id", async (req, res) => {
     res.sendStatus(500);
   }
 });
-
-
-
 
 // Get ALl Medicines with Image
 router.get("/medicineswithimage", async (req, res) => {

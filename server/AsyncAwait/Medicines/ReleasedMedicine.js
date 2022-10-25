@@ -1,7 +1,7 @@
 // import db connection
 const connection = require("../../db/connection");
 
-// Released Medicine
+// inserting released medicine table
 const ReleasedMedicinePromise = ({
   Quantity,
   PatientID,

@@ -39,21 +39,8 @@ const Tabs = () => {
         }
       >
         <Box className={styles.vertical__line}></Box>
-        <Link href="/patients">PATIENTS</Link>
+        <Link href="/patients">Patients</Link>
       </Box>
-
-      {/* <Box
-        className={
-          router.route == "/records"
-            ? theme
-              ? styles.active__Dark
-              : styles.active
-            : styles.tab
-        }
-      >
-        <Box className={styles.vertical__line}></Box>
-        <Link href="/records">RECORDS</Link>
-      </Box> */}
 
       <Box
         className={
@@ -65,7 +52,20 @@ const Tabs = () => {
         }
       >
         <Box className={styles.vertical__line}></Box>
-        <Link href="/medicines">MEDICINES</Link>
+        <Link href="/medicines">Medicines</Link>
+      </Box>
+
+      <Box
+        className={
+          router.route.includes("reports")
+            ? theme
+              ? styles.active__Dark
+              : styles.active
+            : styles.tab
+        }
+      >
+        <Box className={styles.vertical__line}></Box>
+        <Link href="/reports">Reports</Link>
       </Box>
 
       {/* <Box

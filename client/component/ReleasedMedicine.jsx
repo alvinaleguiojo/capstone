@@ -4,17 +4,12 @@ import Image from "next/image";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button, Box, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
-import { addMedicineRequest } from "../features/Medicines";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const CardTemplate = (props) => {
   const router = useRouter();
   const [theme, setTheme] = useState(false);
   const [medicineIDs, setMedicineIDs] = useState([]);
-
-  // medicine redux
-  const dispatch = useDispatch();
 
   useEffect(() => {
     // fetch color scheme from local storage
@@ -27,11 +22,6 @@ const CardTemplate = (props) => {
     localStorage.setItem("medicines", JSON.stringify(medicineIDs));
     return () => {};
   }, [medicineIDs]);
-
-  // dispatch an action to add medicine to card request
-  const handleRequest = (data) => {
-    dispatch(addMedicineRequest({ ...data, Quantity: 1 }));
-  };
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
@@ -78,39 +68,31 @@ const CardTemplate = (props) => {
 
           <Box className={styles.content}>
             <Typography variant="caption" component="h5">
-              Dosage
+              Patient Name
             </Typography>
             <Typography variant="body1" component="h5">
-              {props.data.Dosage}
+              {props.data.FirstName}
             </Typography>
           </Box>
 
-          <Box className={styles.content}>
+          <Box
+            className={styles.content}
+            style={{
+              color:
+                props.data.ExpiryDate >
+                  new Date().toLocaleDateString("en-us", {
+                    // weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }) && "red",
+            }}
+          >
             <Typography variant="caption" component="h5">
-              Availability
-            </Typography>
-            <Typography
-              variant="body1"
-              component="h5"
-              style={{
-                color: props.data.Availability == 1 ? "rgb(7, 199, 7)" : "red",
-              }}
-            >
-              {props.data.Availability === 1 ? "In-Stocks" : "Out-of-Stocks"}
-            </Typography>
-          </Box>
-
-          <Box className={styles.content} style={{ color: props.data.ExpiryDate > new Date().toLocaleDateString("en-us", {
-                // weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }) && "red"}}>
-            <Typography variant="caption" component="h5">
-              Expiry Date
+              Released Date
             </Typography>
             <Typography variant="body1" component="h5">
-              {new Date(props.data.ExpiryDate).toLocaleDateString("en-us", {
+              {new Date(props.data.ReleasedDate).toLocaleDateString("en-us", {
                 // weekday: "long",
                 year: "numeric",
                 month: "long",
@@ -119,22 +101,11 @@ const CardTemplate = (props) => {
             </Typography>
           </Box>
 
-          <Box
-            className={styles.content}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <Button
-              onClick={() => handleRequest(props.data)}
-              disabled={props.data.Stocks > 0 ? false : true}
-            >
-              <AddCircleOutlineIcon /> Add to Release
-            </Button>
-          </Box>
           <Button
-            onClick={() => router.push(`/medicines/${props.data.MedicineID}`)}
+            onClick={() => router.push(`/medicines/released/detail/${props.data.MedicineID}`)}
             style={{ display: "flex", alignItems: "center" }}
           >
-            <VisibilityIcon/>
+            <VisibilityIcon />
             view
           </Button>
         </Box>

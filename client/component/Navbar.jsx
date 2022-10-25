@@ -30,6 +30,7 @@ import {
   deductQuantity,
 } from "../features/Medicines";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
+import Link from "next/link";
 
 const Navbar = () => {
   const router = useRouter();
@@ -196,16 +197,26 @@ const MedicineCart = (props) => {
       <Box className={styles.request__cards}>
         {medicinesList.map((medicine, index) => (
           <Box className={styles.request__card} key={index}>
-            <Box style={{ display: "flex", alignItems: "center", cursor:"pointer" }} onClick={()=> router.push(`/medicines/${medicine.MedicineID}`)}>
-              <Image
-                loader={() => medicine.Image}
-                src={medicine.Image}
-                height={60}
-                width={60}
-              />
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                cursor: "pointer",
+              }}
+            >
+              <Link href={`/medicines/${medicine.MedicineID}`}>
+                <Image
+                  loader={() => medicine.Image}
+                  src={medicine.Image}
+                  height={60}
+                  width={60}
+                />
+              </Link>
               <Box>
                 <Typography variant="Body1" component="h5" color="#b82623">
-                  {medicine.Name}
+                  <Link href={`/medicines/${medicine.MedicineID}`}>
+                    {medicine.Name}
+                  </Link>
                 </Typography>
                 <Box className={styles.quantity}>
                   <span> Quantity:</span>
@@ -253,7 +264,7 @@ const MedicineCart = (props) => {
             disabled={medicinesList.length <= 0 && true}
             onClick={() => router.push("/medicines/request")}
           >
-            View All 
+            View All
           </Button>
         </Box>
       </Box>
@@ -345,7 +356,7 @@ function DropdownMenu() {
             leftIcon={<SettingsIcon fontSize="large" />}
             goToMenu="settings"
           >
-            Admin Settings
+            Settings
           </DropdownItem>
           <DropdownItem
             leftIcon={<LogoutIcon fontSize="large" />}

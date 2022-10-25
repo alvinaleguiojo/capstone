@@ -133,7 +133,8 @@ const request = () => {
                   <label>Patient Name</label>
                   <Button
                     className={styles.add__patient}
-                    onClick={() => PatientSearchModal()}
+                    // onClick={() => PatientSearchModal()}
+                    onClick={() => router.push("/patients")}
                     disabled={patient && true}
                     style={{ textAlign: "left" }}
                   >

@@ -42,6 +42,7 @@ function MyApp({ Component, pageProps }) {
         })
         .catch((error) => {
           console.log(error.message);
+          return setAuthenticated(false);
           // router.push("/forbidden");
         });
     } catch (error) {

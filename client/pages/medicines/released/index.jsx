@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import Tabs from "../../component/Tabs";
+import Tabs from "../../../component/Tabs";
 import Box from "@mui/material/Box";
-import contentStyles from "../../styles/Content.module.css";
-import reusableStyle from "../../styles/Reusable.module.css";
-import Meta from "../../component/Meta";
-import styles from "../../styles/Patients.module.css";
-import MedicineStyles from "../../styles/Medicines.module.css";
-import recordStyles from "../../styles/Records.module.css";
+import contentStyles from "../../../styles/Content.module.css";
+import reusableStyle from "../../../styles/Reusable.module.css";
+import Meta from "../../../component/Meta";
+import styles from "../../../styles/Patients.module.css";
+import MedicineStyles from "../../../styles/Medicines.module.css";
+import recordStyles from "../../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
-import SearchIcon from "../../assets/image/search.svg";
+import SearchIcon from "../../../assets/image/search.svg";
 import axios from "axios";
 import { Button } from "@mui/material";
-import useAuth from "../../customhook/Auth";
-import MedicineCardTemplate from "../../component/MedicineCardTemplate";
+import useAuth from "../../../customhook/Auth";
+import ReleasedMedicine from "../../../component/ReleasedMedicine";
 
 const index = ({ Medicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
@@ -36,7 +36,7 @@ const index = ({ Medicines }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3001/medicines?page=${currentPage}&limit=5&LIKE=${searchTerm}`
+        `http://localhost:3001/medicines/released?page=${currentPage}&limit=5&LIKE=${searchTerm}`
       )
       .then((response) => {
         setPreviousPage(response.data.previous);
@@ -111,18 +111,13 @@ const index = ({ Medicines }) => {
                     </Typography>
                   </Box>
                 </Box>
-                <Box className={MedicineStyles.AddMedicine}>
-                  <Button onClick={() => router.push("/medicines/register")}>
-                    Add New Medicine
-                  </Button>
-                </Box>
               </Box>
             </Box>
             <Box className={styles.search}>
               {/* Advance Search */}
               <input
                 type="text"
-                placeholder="Search for Medicine Name"
+                placeholder="Search for Medicine Name or Patient Name"
                 className={styles.search__input}
                 onChange={handleSearch}
               />
@@ -136,11 +131,10 @@ const index = ({ Medicines }) => {
             {/* Medicine cards here */}
             {data.map((request, index) => {
               return (
-                <Box className={styles.medicine__list} key={request.MedicineID}>
-                  <MedicineCardTemplate
-                    key={index}
+                <Box className={styles.medicine__list} key={request.ReleasedID}>
+                  <ReleasedMedicine
+                    key={request.ReleasedID}
                     loading={loading}
-                    id={request.id}
                     data={request}
                   />
                 </Box>
@@ -180,7 +174,9 @@ export default index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch(`http://localhost:3001/medicineswithimage`);
+    const res = await fetch(
+      `http://localhost:3001/medicines/released/nopagination`
+    );
     const { Medicines } = await res.json();
 
     return {

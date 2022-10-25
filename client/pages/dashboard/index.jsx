@@ -128,7 +128,7 @@ const index = ({ Appointments }) => {
           // borderRadius: 20,
         },
         {
-          label: "Cancel",
+          label: "Cancelled",
           data: [3, 6, 14, 10, 3, 7],
           borderColor: "rgb(184, 38, 35)",
           backgroundColor: "rgba(184, 38, 35)",

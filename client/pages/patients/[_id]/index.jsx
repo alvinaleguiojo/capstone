@@ -531,7 +531,7 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                             >
                               <Tab label="Appointments" {...a11yProps(0)} />
                               <Tab
-                                label="Requested Medicines"
+                                label="Released Medicines"
                                 {...a11yProps(1)}
                               />
                               <Tab label="Diagnosis" {...a11yProps(2)} />
@@ -590,7 +590,7 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                                     router.push(`/medicines`);
                                   }}
                                 >
-                                  Request Medicine
+                                  Release Medicine
                                 </Box>
                               </>
                             )}

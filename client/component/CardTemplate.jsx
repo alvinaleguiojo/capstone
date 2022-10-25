@@ -49,10 +49,10 @@ const CardTemplate = (props) => {
       ) : (
         <Box className={styles.contents}>
           <Box className={styles.content}>
-            <Typography variant="caption" component="h5">
+            <Typography variant="caption" component="h5" >
               Name
             </Typography>
-            <Typography variant="Body1" component="h5">
+            <Typography variant="body1" component="h5">
               {props.Name}
             </Typography>
           </Box>
@@ -61,7 +61,7 @@ const CardTemplate = (props) => {
             <Typography variant="caption" component="h5">
               Address
             </Typography>
-            <Typography variant="Body1" component="h5">
+            <Typography variant="body1" component="h5">
               {props.Address}
             </Typography>
           </Box>
@@ -70,7 +70,7 @@ const CardTemplate = (props) => {
             <Typography variant="caption" component="h5">
               Phone
             </Typography>
-            <Typography variant="Body1" component="h5">
+            <Typography variant="body1" component="h5">
               {props.Phone}
             </Typography>
           </Box>

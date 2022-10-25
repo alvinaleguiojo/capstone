@@ -37,7 +37,7 @@ const index = ({ patients }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3001/patients?page=${currentPage}&limit=3&LIKE=${searchTerm}`
+        `http://localhost:3001/patients?page=${currentPage}&limit=5&LIKE=${searchTerm}`
       )
       .then((response) => {
         setPreviousPage(response.data.previous);
@@ -63,7 +63,7 @@ const index = ({ patients }) => {
     setCurrentPage(pageNumber.page);
   };
 
-  // hamdling search terms
+  // handling search terms
   const handleSearch = (e) => {
     setCurrentPage(1);
     setLoading(true);
@@ -163,7 +163,7 @@ const index = ({ patients }) => {
                   <Button
                     className={styles.page}
                     onClick={NextPage}
-                    disabled={patientData.length <= 0 ? true : false}
+                    disabled={patientData.length <= 1 ? true : false}
                   >
                     Next
                   </Button>
