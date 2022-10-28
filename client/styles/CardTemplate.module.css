@@ -12,6 +12,7 @@
   min-height: 50px;
   padding: 5px;
   cursor: pointer;
+  background-color: #fff;
 }
 
 .card__dark {

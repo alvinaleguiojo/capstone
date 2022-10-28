@@ -112,7 +112,10 @@ const index = ({ Medicines }) => {
                   </Box>
                 </Box>
                 <Box className={MedicineStyles.AddMedicine}>
-                  <Button onClick={() => router.push("/medicines/register")}>
+                  <Button
+                    onClick={() => router.push("/medicines/register")}
+                    style={{ color: "#b82623" }}
+                  >
                     Add New Medicine
                   </Button>
                 </Box>

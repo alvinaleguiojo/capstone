@@ -30,6 +30,13 @@ import CustomCard from "../../component/CustomCard";
 import { Button, IconButton } from "@mui/material";
 
 import {
+  DateRangePickerComponent,
+  PresetsDirective,
+  PresetDirective,
+} from "@syncfusion/ej2-react-calendars";
+import moment from "moment";
+
+import {
   Chart as ChartJS,
   CategoryScale,
   LinearScale,
@@ -39,6 +46,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { DatasetSharp } from "@mui/icons-material";
 
 ChartJS.register(
   CategoryScale,
@@ -56,6 +64,63 @@ const index = ({ Appointments }) => {
   const [calendar, setCalendar] = useState(new Date());
   const [appointments, setAppointments] = useState(Appointments || []);
 
+  const hour = new Date().getHours();
+  const dateFormat = "MMM/dd/yyyy";
+  const weekFormat = "MM/DD";
+  const monthFormat = "YYYY/MM";
+  const dateFormatList = ["DD/MM/YYYY", "DD/MM/YY"];
+  const customFormat = (value) => `custom format: ${value.format(dateFormat)}`;
+  const customWeekStartEndFormat = (value) =>
+    `${moment(value).startOf("week").format(weekFormat)} ~ ${moment(value)
+      .endOf("week")
+      .format(weekFormat)}`;
+
+  //  date picker custom dates starts here
+  const startDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    25
+  );
+  const endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 28);
+
+  const today = new Date(new Date().toDateString());
+  const weekStart = new Date(
+    new Date(
+      new Date().setDate(new Date().getDate() - ((new Date().getDay() + 7) % 7))
+    ).toDateString()
+  );
+  const weekEnd = new Date(
+    new Date(
+      new Date().setDate(
+        new Date(
+          new Date().setDate(
+            new Date().getDate() - ((new Date().getDay() + 7) % 7)
+          )
+        ).getDate() + 6
+      )
+    ).toDateString()
+  );
+  const monthStart = new Date(new Date(new Date().setDate(1)).toDateString());
+  const monthEnd = new Date(
+    new Date(
+      new Date(new Date().setMonth(new Date().getMonth() + 1)).setDate(0)
+    ).toDateString()
+  );
+  const lastStart = new Date(
+    new Date(
+      new Date(new Date().setMonth(new Date().getMonth() - 1)).setDate(1)
+    ).toDateString()
+  );
+  const lastEnd = new Date(new Date(new Date().setDate(0)).toDateString());
+  const yearStart = new Date(
+    new Date(new Date().getFullYear() - 1, 0, 1).toDateString()
+  );
+  const yearEnd = new Date(
+    new Date(new Date().getFullYear() - 1, 11, 31).toDateString()
+  );
+
+  //date picker custom dates ends here
+
   useEffect(() => {
     // fetch color scheme from local storage
     const enabled = JSON.parse(localStorage.getItem("theme"));
@@ -65,7 +130,7 @@ const index = ({ Appointments }) => {
   // fetch Appointment with Date Range
   useEffect(() => {
     setLoading(true);
-    if (calendar.length > 0) {
+    try {
       const start = calendar[0];
       const end = calendar[1];
       const StartDate = `${start.getFullYear()}-${start.getMonth()}-${start.getDate()}`;
@@ -84,6 +149,8 @@ const index = ({ Appointments }) => {
         .catch((err) => {
           console.log(err.message);
         });
+    } catch (error) {
+      console.log(error.message);
     }
   }, [calendar]);
 
@@ -157,6 +224,12 @@ const index = ({ Appointments }) => {
     setToggleCalendar(!toggleCalendar);
   };
 
+  // get value from date picker
+  const getDateRange = (e) => {
+    const selectedDateRange = e.value;
+    setCalendar(selectedDateRange);
+  };
+
   return (
     <>
       <Meta
@@ -183,10 +256,17 @@ const index = ({ Appointments }) => {
                 <Box className={theme ? styles.banner__dark : styles.banner}>
                   <Box>
                     <Typography variant="h6" component="h6" color="#B82623">
-                      Good Morning <span>Dr.Dela Cruz</span>
+                      {"Good " +
+                        ((hour < 12 && "Morning") ||
+                          (hour < 18 && "Afternoon") ||
+                          "Evening") +
+                        "  Dr. Dela Cruz"}
                     </Typography>
                     <Typography variant="body2" component="h5">
-                      Have a <span>healthy</span> morning
+                      Have a <span>healthy</span>{" "}
+                      {(hour < 12 && "Morning") ||
+                        (hour < 18 && "Afternoon") ||
+                        "Evening"}
                     </Typography>
                   </Box>
                   <Image
@@ -248,13 +328,15 @@ const index = ({ Appointments }) => {
                             }}
                           />
                         ) : (
-                          <CustomCard
-                            name={appointment.LastName}
-                            date={appointment.ServiceType}
-                            AppointmentID={appointment.AppointmentID}
-                            icon={waitingIcon}
-                            status={appointment.Status}
-                          />
+                          <Box key={appointment.AppointmentID}>
+                            <CustomCard
+                              name={appointment.LastName}
+                              date={appointment.ServiceType}
+                              AppointmentID={appointment.AppointmentID}
+                              icon={waitingIcon}
+                              status={appointment.Status}
+                            />
+                          </Box>
                         )}
                       </>
                     );
@@ -288,22 +370,50 @@ const index = ({ Appointments }) => {
                     Reports
                   </Typography>
 
-                  <Box className={styles.monthly__filter} width={100}>
-                    <Typography
-                      variant="body1"
-                      component="h6"
-                      color="#5A5959"
-                      className={styles.header__cell}
-                    >
-                      Calendar
-                    </Typography>
-                    <IconButton
+                  <Box className={styles.monthly__filter}>
+                    {/* <IconButton
                       width={10}
                       height={10}
                       onClick={() => handleToggleCalendar()}
                     >
                       <Image src={arrowDown} height={15} width={15} />
-                    </IconButton>
+                    </IconButton> */}
+                    <DateRangePickerComponent
+                      placeholder=" Select Date"
+                      startDate={startDate}
+                      endDate={endDate}
+                      format="MMM-dd-yyyy"
+                      change={getDateRange}
+                    >
+                      <PresetsDirective>
+                        <PresetDirective
+                          label="Today"
+                          start={today}
+                          end={today}
+                        ></PresetDirective>
+
+                        <PresetDirective
+                          label="This Week"
+                          start={weekStart}
+                          end={weekEnd}
+                        ></PresetDirective>
+                        <PresetDirective
+                          label="This Month"
+                          start={monthStart}
+                          end={monthEnd}
+                        ></PresetDirective>
+                        <PresetDirective
+                          label="Last Month"
+                          start={lastStart}
+                          end={lastEnd}
+                        ></PresetDirective>
+                        <PresetDirective
+                          label="Last Year"
+                          start={yearStart}
+                          end={yearEnd}
+                        ></PresetDirective>
+                      </PresetsDirective>
+                    </DateRangePickerComponent>
                   </Box>
 
                   {/* calendar  */}
@@ -441,7 +551,7 @@ const index = ({ Appointments }) => {
                     // className={styles.header__cell}
                     // width="100%"
                   >
-                    Number of Patients
+                    Number of Appointments
                   </Typography>
                 </Box>
                 <Box width="100%">

@@ -18,27 +18,13 @@ import PropTypes from "prop-types";
 import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import LinearProgress from "@mui/material/LinearProgress";
+import { format } from "date-fns";
 
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js";
-import { Bar } from "react-chartjs-2";
-import CustomWebcam from "../../../component/CustomWebcam";
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend
-);
+  DateRangePickerComponent,
+  PresetsDirective,
+  PresetDirective,
+} from "@syncfusion/ej2-react-calendars";
 
 // get all records from patient ID
 const columns = [
@@ -103,6 +89,55 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
   const router = useRouter();
   const id = router.query._id;
   const [loading, setLoading] = useState(true);
+
+  // date picker state
+  const [calendar, setCalendar] = useState(new Date());
+
+  //  date picker custom dates starts here
+  const startDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    25
+  );
+  const endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 28);
+
+  const today = new Date(new Date().toDateString());
+  const weekStart = new Date(
+    new Date(
+      new Date().setDate(new Date().getDate() - ((new Date().getDay() + 7) % 7))
+    ).toDateString()
+  );
+  const weekEnd = new Date(
+    new Date(
+      new Date().setDate(
+        new Date(
+          new Date().setDate(
+            new Date().getDate() - ((new Date().getDay() + 7) % 7)
+          )
+        ).getDate() + 6
+      )
+    ).toDateString()
+  );
+  const monthStart = new Date(new Date(new Date().setDate(1)).toDateString());
+  const monthEnd = new Date(
+    new Date(
+      new Date(new Date().setMonth(new Date().getMonth() + 1)).setDate(0)
+    ).toDateString()
+  );
+  const lastStart = new Date(
+    new Date(
+      new Date(new Date().setMonth(new Date().getMonth() - 1)).setDate(1)
+    ).toDateString()
+  );
+  const lastEnd = new Date(new Date(new Date().setDate(0)).toDateString());
+  const yearStart = new Date(
+    new Date(new Date().getFullYear() - 1, 0, 1).toDateString()
+  );
+  const yearEnd = new Date(
+    new Date(new Date().getFullYear() - 1, 11, 31).toDateString()
+  );
+
+  //date picker custom dates ends here
 
   // Record tab state
   const [value, setValue] = useState(0);
@@ -290,6 +325,50 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
     setValue(newValue);
   };
 
+  const handleDiagnosis = async () => {
+    const patientName = `${patient[0].FirstName}  ${patient[0].LastName}`;
+    const today = format(new Date(), "MMMM dd, yyyy");
+
+    const { value: formValues } = await Swal.fire({
+      title: "Diagnosis",
+      html:
+        `<div class="diagnosis"><div class="input__wrapper"><label>Patient's Name</label><span>${patientName}</span></div>` +
+        `<div class="input__wrapper"><label>Date</label><span>${today}</span></div>` +
+        `<div class="input__wrapper"><label>Physician</label><span>Current User</span></div>` +
+        '<div class="input__wrapper"><label>Diagnosis</label><input id="swal-input1"></div>' +
+        '<div class="input__wrapper"><label>Additional Notes</label><textarea id="swal-input2"></textarea></div></div>',
+      focusConfirm: false,
+      allowOutsideClick: false,
+      showCancelButton: true,
+      inputValidator: (value) => {
+        return new Promise((resolve) => {
+          // if (value[0] !== '') {
+          //   resolve()
+          // } else {
+          //   resolve('You need to select oranges :)')
+          // }
+        });
+      },
+      preConfirm: () => {
+        return [
+          document.getElementById("swal-input1").value,
+          document.getElementById("swal-input2").value,
+        ];
+      },
+    });
+
+    if (formValues) {
+      // Swal.fire(JSON.stringify(formValues));
+      console.log(formValues[0]);
+    }
+  };
+
+  // get value from date picker
+  const getDateRange = (e) => {
+    const selectedDateRange = e.value;
+    setCalendar(selectedDateRange);
+  };
+
   return (
     <>
       {patient.map((patientData, key) => {
@@ -434,69 +513,62 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
 
                 {/* right container starts here */}
                 <Box className={styles.right__container}>
-                  {/* right container header  */}
-                  <Box className={styles.right__container__header}>
-                    {/* <Button
-                      className={styles.getStartedBtn}
-                      variant="contained"
-                      disabled={false}
-                      onClick={handleRequest}
-                    >
-                      Request Medicine
-                    </Button> */}
-                    {/* <Box className={styles.getStartedBtn} variant="contained">
-                      <Link
-                        className={styles.getStartedLink}
-                        href={`/patients/${patientData.PatientID}/appointment`}
-                      >
-                        Diagnosis
-                      </Link>
-                    </Box> */}
-                    {/* <Box
-                      className={styles.print__button}
-                      style={{
-                        height: "30px",
-                        width: "100px",
-                      }}
-                    >
-                      <Link href={`/patients/${patientData.PatientID}/pdf`}>
-                        <Image
-                          src={PrintIcon}
-                          alt="print"
-                          height={30}
-                          width={30}
-                        />
-                      </Link>
-                    </Box> */}
-                  </Box>
-                  {/* right container header end here */}
-
-                  {/* Charts starts here*/}
-                  <Box className={styles.chart__cards}>
-                    {/* <Box className={styles.chart__card}>
-                      <Bar options={chartOptions} data={chartData} />
-                    </Box> */}
-                    {/* <Box className={styles.chart__card}>
-                      <Bar
-                        options={chartOptionsCancelled}
-                        data={chartDataCancelled}
-                      />
-                    </Box>
-                    <Box className={styles.chart__card}>
-                      <Bar
-                        options={chartOptionsCompleted}
-                        data={chartDataCompleted}
-                      />
-                    </Box> */}
-                  </Box>
-                  {/* Charts Ends here*/}
-
                   {/* patients records */}
                   <Box className={styles.patient__records}>
                     <Box className={styles.patient__records__title}>
-                      <Typography variant="body" component="h4" color="#B82623">
-                        Patient&apos;s Records
-                      </Typography>
+                      <Box
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <Typography
+                          variant="body"
+                          component="h4"
+                          color="#B82623"
+                        >
+                          Patient&apos;s Records
+                        </Typography>
+                        <DateRangePickerComponent
+                          placeholder="Select Date"
+                          startDate={startDate}
+                          endDate={endDate}
+                          format="MMM-dd-yyyy"
+                          change={getDateRange}
+                          value={calendar}
+                          width={180}
+                        >
+                          <PresetsDirective>
+                            <PresetDirective
+                              label="Today"
+                              start={today}
+                              end={today}
+                            ></PresetDirective>
+
+                            <PresetDirective
+                              label="This Week"
+                              start={weekStart}
+                              end={weekEnd}
+                            ></PresetDirective>
+                            <PresetDirective
+                              label="This Month"
+                              start={monthStart}
+                              end={monthEnd}
+                            ></PresetDirective>
+                            <PresetDirective
+                              label="Last Month"
+                              start={lastStart}
+                              end={lastEnd}
+                            ></PresetDirective>
+                            <PresetDirective
+                              label="Last Year"
+                              start={yearStart}
+                              end={yearEnd}
+                            ></PresetDirective>
+                          </PresetsDirective>
+                        </DateRangePickerComponent>
+                      </Box>
                       <Box className={styles.records__tabs}>
                         {/* <Typography
                           variant="body2"
@@ -563,7 +635,7 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                                     )
                                   }
                                 >
-                                  Add New Appointment
+                                  Set Appointment
                                 </Box>
                               </>
                             )}
@@ -596,7 +668,32 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                             )}
                           </TabPanel>
                           <TabPanel value={value} index={2}>
-                            Diagnosis Records here
+                            {!loading && (
+                              <>
+                                <GridTable
+                                  rows={medicinesRows}
+                                  columns={releasedMedicinesColumns}
+                                  path="medicines"
+                                  maxHeight={380}
+                                  firstRow={4}
+                                  rowPerPage={[4]}
+                                />
+                                <Box
+                                  className={styles.getStartedBtn}
+                                  variant="contained"
+                                  onClick={
+                                    () => handleDiagnosis()
+                                    // localStorage.setItem(
+                                    //   "Patient",
+                                    //   JSON.stringify(patientData)
+                                    // );
+                                    // router.push(`/medicines`);
+                                  }
+                                >
+                                  Add Diagnosis
+                                </Box>
+                              </>
+                            )}
                           </TabPanel>
                         </Box>
                       </Box>

@@ -4,17 +4,24 @@ import Image from "next/image";
 import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
 import { Button, Box, Skeleton, Typography } from "@mui/material";
 import { useRouter } from "next/router";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { addMedicineRequest } from "../features/Medicines";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import Checkbox from "@mui/material/Checkbox";
+import { deleteMedicineRequest } from "../features/Medicines";
+
+const label = { inputProps: { "aria-label": "Checkbox demo" } };
 
 const CardTemplate = (props) => {
   const router = useRouter();
   const [theme, setTheme] = useState(false);
   const [medicineIDs, setMedicineIDs] = useState([]);
 
+  const [checked, setChecked] = useState(false);
+
   // medicine redux
   const dispatch = useDispatch();
+  const medicinesList = useSelector((state) => state.medicines.value);
 
   useEffect(() => {
     // fetch color scheme from local storage
@@ -30,11 +37,50 @@ const CardTemplate = (props) => {
 
   // dispatch an action to add medicine to card request
   const handleRequest = (data) => {
-    dispatch(addMedicineRequest({ ...data, Quantity: 1 }));
+    // dispatch(addMedicineRequest({ ...data, Quantity: 1 }));
+
+    dispatch(
+      addMedicineRequest({
+        ...data,
+        Quantity: 1,
+      })
+    );
+
+    const removeMedicine = medicinesList.filter((medicine) => {
+      return medicine.MedicineID === data.MedicineID;
+    });
+    removeMedicine.forEach((value) => {
+      return dispatch(deleteMedicineRequest({ id: value.MedicineID }));
+    });
+  };
+
+  const handleChange = (event, data) => {
+    setChecked(event.target.checked);
+    dispatch(
+      addMedicineRequest({
+        ...data,
+        Quantity: 1,
+        checked: event.target.checked,
+      })
+    );
+
+    const removeMedicine = medicinesList.filter((medicine) => {
+      return medicine.MedicineID === data.MedicineID;
+    });
+    removeMedicine.forEach((value) => {
+      setChecked(event.target.checked);
+      return dispatch(deleteMedicineRequest({ id: value.MedicineID }));
+    });
   };
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
+      <Checkbox
+        {...label}
+        checked={checked}
+        onChange={(event) => handleChange(event, props.data)}
+        disabled={props.data.Stocks > 0 ? false : true}
+      />
       <Box className={styles.imageContainer}>
         {props.loading ? (
           <Skeleton
@@ -100,12 +146,19 @@ const CardTemplate = (props) => {
             </Typography>
           </Box>
 
-          <Box className={styles.content} style={{ color: props.data.ExpiryDate > new Date().toLocaleDateString("en-us", {
-                // weekday: "long",
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              }) && "red"}}>
+          <Box
+            className={styles.content}
+            style={{
+              color:
+                props.data.ExpiryDate >
+                  new Date().toLocaleDateString("en-us", {
+                    // weekday: "long",
+                    year: "numeric",
+                    month: "long",
+                    day: "numeric",
+                  }) && "red",
+            }}
+          >
             <Typography variant="caption" component="h5">
               Expiry Date
             </Typography>
@@ -119,22 +172,23 @@ const CardTemplate = (props) => {
             </Typography>
           </Box>
 
-          <Box
+          {/* <Box
             className={styles.content}
             style={{ display: "flex", alignItems: "center" }}
           >
             <Button
               onClick={() => handleRequest(props.data)}
               disabled={props.data.Stocks > 0 ? false : true}
+              style={{ color: props.data.Stocks > 0 && "#b82623" }}
             >
-              <AddCircleOutlineIcon /> Add to Release
+              <AddCircleOutlineIcon /> Select
             </Button>
-          </Box>
+          </Box> */}
           <Button
             onClick={() => router.push(`/medicines/${props.data.MedicineID}`)}
-            style={{ display: "flex", alignItems: "center" }}
+            style={{ display: "flex", alignItems: "center", color: "#8a8fa0" }}
           >
-            <VisibilityIcon/>
+            <VisibilityIcon />
             view
           </Button>
         </Box>

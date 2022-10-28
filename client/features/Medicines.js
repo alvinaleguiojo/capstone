@@ -29,6 +29,10 @@ export const medicineSlice = createSlice({
   },
 });
 
-export const { addMedicineRequest, deleteMedicineRequest, addQuantity , deductQuantity} =
-  medicineSlice.actions;
+export const {
+  addMedicineRequest,
+  deleteMedicineRequest,
+  addQuantity,
+  deductQuantity,
+} = medicineSlice.actions;
 export default medicineSlice.reducer;

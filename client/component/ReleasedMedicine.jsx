@@ -71,9 +71,19 @@ const CardTemplate = (props) => {
               Patient Name
             </Typography>
             <Typography variant="body1" component="h5">
-              {props.data.FirstName}
+              {props.data.FirstName + " " + props.data.LastName}
             </Typography>
           </Box>
+
+          <Box className={styles.content}>
+            <Typography variant="caption" component="h5">
+              Quantity
+            </Typography>
+            <Typography variant="body1" component="h5">
+              {props.data.Quantity}
+            </Typography>
+          </Box>
+
 
           <Box
             className={styles.content}
@@ -102,8 +112,10 @@ const CardTemplate = (props) => {
           </Box>
 
           <Button
-            onClick={() => router.push(`/medicines/released/detail/${props.data.MedicineID}`)}
-            style={{ display: "flex", alignItems: "center" }}
+            onClick={() =>
+              router.push(`/medicines/released/detail/${props.data.MedicineID}`)
+            }
+            style={{ display: "flex", alignItems: "center", color: "#8a8fa0" }}
           >
             <VisibilityIcon />
             view

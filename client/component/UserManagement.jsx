@@ -135,6 +135,7 @@ const UserManagement = () => {
       inputOptions: {
         Role: {
           ADMIN: "ADMIN",
+          BNS: "BNS",
           MIDWIFE: "MIDWIFE",
           BHW: "BHW",
         },
@@ -143,7 +144,7 @@ const UserManagement = () => {
       showCancelButton: true,
       inputValidator: (value) => {
         return new Promise((resolve) => {
-          if (value === "ADMIN" || value === "BHW") {
+          if (value) {
             resolve();
             axios
               .patch(`http://localhost:3001/user/update/${user.StaffID}`, {

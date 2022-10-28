@@ -8,6 +8,8 @@ const CreateAppointmentsPromise = require("../AsyncAwait/Appointments/AddAppoint
 const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppointments");
 const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboardAppointments");
 const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/AppointmentsByDateRange");
+const GetAllAppointmentswithPatientsPromise = require("../AsyncAwait/Appointments/AppointmentswithPatients");
+
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
@@ -18,6 +20,17 @@ const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/Appoin
 router.get("/appointments", async (req, res) => {
   try {
     const resultElements = await GetAllAppointmentsPromise();
+    res.status(200).json({ Appointments: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get All Appointments with Patients Table
+router.get("/appointmentswithpatients", async (req, res) => {
+  try {
+    const resultElements = await GetAllAppointmentswithPatientsPromise();
     res.status(200).json({ Appointments: resultElements });
   } catch (error) {
     console.log(error);
@@ -73,6 +86,7 @@ router.post("/appointment/create", async (req, res) => {
       Status,
       Notes,
       CreatedDate: date,
+      isAllDay: true
     });
     res.status(200).json({ message: "Appointment added successfully" });
   } catch (err) {

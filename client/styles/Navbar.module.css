@@ -70,8 +70,6 @@
 .navbar__right {
   display: flex;
   flex: 1;
-  padding-top: 5px;
-  padding-bottom: 5px;
 }
 
 .logo {
@@ -97,12 +95,13 @@
 .header__icons {
   display: flex;
   align-items: center;
+  gap:0.5rem;
 }
 
 .header__icon,
 .header__icon__dark,
 .icon__button {
-  color: #abafc0;
+  color: #8a8fa0;
 }
 
 .header__icon_active {

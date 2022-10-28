@@ -55,6 +55,20 @@ const Tabs = () => {
         <Link href="/medicines">Medicines</Link>
       </Box>
 
+
+      <Box
+        className={
+          router.route.includes("appointments")
+            ? theme
+              ? styles.active__Dark
+              : styles.active
+            : styles.tab
+        }
+      >
+        <Box className={styles.vertical__line}></Box>
+        <Link href="/appointments">Appointments</Link>
+      </Box>
+
       <Box
         className={
           router.route.includes("reports")

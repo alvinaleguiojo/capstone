@@ -9,8 +9,9 @@ const AddAppointmentPromise = ({
   Status,
   Notes,
   CreatedDate,
+  isAllDay,
 }) => {
-  const newUser = `INSERT INTO Appointments (PatientID, Schedule, ServiceID, Status, Notes, CreatedDate ) VALUES ('${PatientID}', '${Schedule}','${ServiceID}', '${Status}', '${Notes}', '${CreatedDate}')`;
+  const newUser = `INSERT INTO Appointments (PatientID, Schedule, ServiceID, Status, Notes, CreatedDate, isAllDay ) VALUES ('${PatientID}', '${Schedule}','${ServiceID}', '${Status}', '${Notes}', '${CreatedDate}', ${isAllDay})`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, Appointments) => {
       error && reject(error);

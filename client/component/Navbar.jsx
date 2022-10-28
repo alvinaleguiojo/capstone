@@ -12,6 +12,7 @@ import { Button, IconButton } from "@mui/material";
 import CustomizedSwitches from "./CustomizedSwitches";
 import SettingsIcon from "@mui/icons-material/Settings";
 import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
+import LinearProgress from "@mui/material/LinearProgress";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { CSSTransition } from "react-transition-group";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -31,6 +32,10 @@ import {
 } from "../features/Medicines";
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox";
 import Link from "next/link";
+import Tooltip from "@mui/material/Tooltip";
+
+import { TransitionGroup } from "react-transition-group";
+import Collapse from "@mui/material/Collapse";
 
 const Navbar = () => {
   const router = useRouter();
@@ -38,6 +43,7 @@ const Navbar = () => {
   const [userData, setUserData] = useState([]);
   const { PatientID } = router.query;
   const [patientData, setPatientData] = useState();
+  const [loading, setLoading] = useState(false);
 
   // medicines data from redux
   const medicinesList = useSelector((state) => state.medicines.value);
@@ -71,28 +77,46 @@ const Navbar = () => {
     setRequestGroupFocus(!requestGroupFocus);
   };
 
+  useEffect(() => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
+  }, [router]);
+
   return (
     <>
-      <Box className={theme ? styles.DarkMode : styles.navbar}>
-        <Box className={styles.logo}></Box>
-        <Box className={styles.navbar__right}>
-          <Box className={styles.user}>
-            {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
-            <Box className={styles.avatar}>
-              <Typography variant="h5" component="h5">
-                {/* {user.userData.Email.substring(0, 1).toUpperCase()} */}
-              </Typography>
-            </Box>
-            <Box className={styles.user__name}>
-              <Typography variant="h5" component="h5" color="#b82623">
-                {/* {user.userData.Email.substring(0, 10)} */}
-              </Typography>
-              <Typography variant="caption" component="h5" color="#b82623">
-                Barangay Health Worker
-              </Typography>
-            </Box>
+      {loading && (
+        <Box
+          sx={{ width: "100%", color: "red" }}
+          style={{ position: "absolute", zIndex: 5 }}
+        >
+          <LinearProgress color="inherit" />
+        </Box>
+      )}
+      {router.route !== "/" &&
+        router.route !== "/login" &&
+        (router.route !== "/register" && (
+          <Box className={theme ? styles.DarkMode : styles.navbar}>
+            <Box className={styles.logo}></Box>
+            <Box className={styles.navbar__right}>
+              <Box className={styles.user}>
+                {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
+                <Box className={styles.avatar}>
+                  <Typography variant="h5" component="h5">
+                    {/* {user.userData.Email.substring(0, 1).toUpperCase()} */}
+                  </Typography>
+                </Box>
+                <Box className={styles.user__name}>
+                  <Typography variant="h5" component="h5" color="#b82623">
+                    {/* {user.userData.Email.substring(0, 10)} */}
+                  </Typography>
+                  <Typography variant="caption" component="h5" color="#b82623">
+                    Barangay Health Worker
+                  </Typography>
+                </Box>
 
-            {/* <IconButton onClick={handleLogout}>
+                {/* <IconButton onClick={handleLogout}>
                   <Image
                     src={ArrowDown}
                     alt="drop down"
@@ -100,82 +124,102 @@ const Navbar = () => {
                     width={10}
                   />
                 </IconButton> */}
-          </Box>
-          <Box className={styles.line}></Box>
+              </Box>
+              <Box className={styles.line}></Box>
 
-          <Box className={styles.date}>
-            <Image src={Today} alt="drop down" heigh={40} width={40} />
-            <Box className={styles.date__display}>
-              <Typography variant="h5" component="h5" color="#b82623">
-                Today
-              </Typography>
+              <Box className={styles.date}>
+                <Image src={Today} alt="drop down" heigh={40} width={40} />
+                <Box className={styles.date__display}>
+                  <Typography variant="h5" component="h5" color="#b82623">
+                    Today
+                  </Typography>
 
-              <Typography variant="caption" component="h5" color="#b82623">
-                {today}
-              </Typography>
+                  <Typography variant="caption" component="h5" color="#b82623">
+                    {today}
+                  </Typography>
+                </Box>
+              </Box>
             </Box>
-          </Box>
-        </Box>
-        <Box className={styles.header__icons}>
-          {medicinesList.length > 0 && (
-            <Box className={styles.request__count}>
-              <Typography variant="caption" component="h5" color="#fff">
-                {medicinesList.length}
-              </Typography>
+            <Box className={styles.header__icons}>
+              {medicinesList.length > 0 && (
+                <Box className={styles.request__count}>
+                  <Typography variant="caption" component="h5" color="#fff">
+                    {medicinesList.length >= 9 ? "9+" : medicinesList.length}
+                  </Typography>
+                </Box>
+              )}
+
+              <Tooltip title="Medicine Cart">
+                <IconButton
+                  onClick={handleRequestMedicineFocus}
+                  style={{ backgroundColor: "#dbdff3" }}
+                >
+                  <MedicalServicesIcon
+                    fontSize="small"
+                    className={
+                      theme
+                        ? styles.header__icon__dark
+                        : requestGroupFocus
+                        ? styles.header__icon_active
+                        : styles.header__icon
+                    }
+                  />
+                </IconButton>
+              </Tooltip>
+
+              {requestGroupFocus && (
+                <MedicineCart
+                  medicines={medicinesList}
+                  patientName={
+                    patientData !== null && patientData !== undefined
+                      ? patientData.FirstName + " " + patientData.LastName
+                      : "  Add Patient to this request"
+                  }
+                />
+              )}
+
+              <Tooltip title="Notification">
+                <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                  <svg
+                    viewBox="0 0 28 28"
+                    alt=""
+                    className={
+                      theme ? styles.header__icon__dark : styles.header__icon
+                    }
+                    fill="currentColor"
+                    height="20"
+                    width="20"
+                  >
+                    <path d="M7.847 23.488C9.207 23.488 11.443 23.363 14.467 22.806 13.944 24.228 12.581 25.247 10.98 25.247 9.649 25.247 8.483 24.542 7.825 23.488L7.847 23.488ZM24.923 15.73C25.17 17.002 24.278 18.127 22.27 19.076 21.17 19.595 18.724 20.583 14.684 21.369 11.568 21.974 9.285 22.113 7.848 22.113 7.421 22.113 7.068 22.101 6.79 22.085 4.574 21.958 3.324 21.248 3.077 19.976 2.702 18.049 3.295 17.305 4.278 16.073L4.537 15.748C5.2 14.907 5.459 14.081 5.035 11.902 4.086 7.022 6.284 3.687 11.064 2.753 15.846 1.83 19.134 4.096 20.083 8.977 20.506 11.156 21.056 11.824 21.986 12.355L21.986 12.356 22.348 12.561C23.72 13.335 24.548 13.802 24.923 15.73Z"></path>
+                  </svg>
+                </IconButton>
+              </Tooltip>
+
+              <IconButton
+                onClick={handleClickSettings}
+                style={{ backgroundColor: "#dbdff3", marginRight: "5px" }}
+              >
+                <ArrowDropDownIcon
+                  fontSize="small"
+                  className={
+                    theme
+                      ? styles.header__icon__dark
+                      : open
+                      ? styles.header__icon_active
+                      : styles.header__icon
+                  }
+                />
+              </IconButton>
             </Box>
-          )}
-
-          <IconButton onClick={handleRequestMedicineFocus}>
-            <MedicalServicesIcon
-              className={
-                theme
-                  ? styles.header__icon__dark
-                  : requestGroupFocus
-                  ? styles.header__icon_active
-                  : styles.header__icon
-              }
-            />
-          </IconButton>
-
-          {requestGroupFocus && (
-            <MedicineCart
-              medicines={medicinesList}
-              patientName={
-                patientData !== null && patientData !== undefined
-                  ? patientData.FirstName + " " + patientData.LastName
-                  : "  Add Patient to this request"
-              }
-            />
-          )}
-
-          <IconButton>
-            <NotificationsNoneIcon
-              className={
-                theme ? styles.header__icon__dark : styles.header__icon
-              }
-            />
-          </IconButton>
-
-          <IconButton onClick={handleClickSettings}>
-            <ArrowDropDownIcon
-              className={
-                theme
-                  ? styles.header__icon__dark
-                  : open
-                  ? styles.header__icon_active
-                  : styles.header__icon
-              }
-            />
-          </IconButton>
-        </Box>
-        {open && !router.query.settings && <DropdownMenu />}
-        {router.query.settings && <CustomModal />}
-      </Box>
+            {open && !router.query.settings && <DropdownMenu />}
+            {router.query.settings && <CustomModal />}
+          </Box>
+        ))}
     </>
   );
 };
 
-const MedicineCart = (props) => {
+const MedicineCart = () => {
   const router = useRouter();
 
   // medicines data from redux
@@ -195,62 +239,77 @@ const MedicineCart = (props) => {
 
       {/* start cards here */}
       <Box className={styles.request__cards}>
-        {medicinesList.map((medicine, index) => (
-          <Box className={styles.request__card} key={index}>
-            <Box
-              style={{
-                display: "flex",
-                alignItems: "center",
-                cursor: "pointer",
-              }}
-            >
-              <Link href={`/medicines/${medicine.MedicineID}`}>
-                <Image
-                  loader={() => medicine.Image}
-                  src={medicine.Image}
-                  height={60}
-                  width={60}
-                />
-              </Link>
-              <Box>
-                <Typography variant="Body1" component="h5" color="#b82623">
-                  <Link href={`/medicines/${medicine.MedicineID}`}>
-                    {medicine.Name}
-                  </Link>
-                </Typography>
-                <Box className={styles.quantity}>
-                  <span> Quantity:</span>
-                  <IconButton
-                    onClick={() =>
-                      dispatch(deductQuantity({ id: medicine.MedicineID }))
-                    }
-                    disabled={medicine.Quantity === 1 && true}
-                    className={styles.btn__quantity}
-                  >
-                    <IndeterminateCheckBoxIcon />
-                  </IconButton>
-                  {medicine.Quantity}
-                  <IconButton
-                    deductQuantity
-                    onClick={() =>
-                      dispatch(addQuantity({ id: medicine.MedicineID }))
-                    }
-                    className={styles.btn__quantity}
-                  >
-                    <AddBoxIcon />
-                  </IconButton>
-                </Box>
-              </Box>
-            </Box>
-            <IconButton
-              onClick={() =>
-                dispatch(deleteMedicineRequest({ id: medicine.MedicineID }))
-              }
-            >
-              <CloseIcon className={styles.request__card__remove} />
-            </IconButton>
-          </Box>
-        ))}
+        <TransitionGroup>
+          {medicinesList.map(
+            (medicine, index) =>
+              index <= 7 && (
+                <Collapse key={index}>
+                  <Box className={styles.request__card}>
+                    <Box
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        cursor: "pointer",
+                      }}
+                    >
+                      <Link href={`/medicines/${medicine.MedicineID}`}>
+                        <Image
+                          loader={() => medicine.Image}
+                          src={medicine.Image}
+                          height={60}
+                          width={60}
+                        />
+                      </Link>
+                      <Box>
+                        <Typography
+                          variant="Body1"
+                          component="h5"
+                          color="#b82623"
+                        >
+                          <Link href={`/medicines/${medicine.MedicineID}`}>
+                            {medicine.Name}
+                          </Link>
+                        </Typography>
+                        <Box className={styles.quantity}>
+                          <span> Quantity:</span>
+                          <IconButton
+                            onClick={() =>
+                              dispatch(
+                                deductQuantity({ id: medicine.MedicineID })
+                              )
+                            }
+                            disabled={medicine.Quantity === 1 && true}
+                            className={styles.btn__quantity}
+                          >
+                            <IndeterminateCheckBoxIcon />
+                          </IconButton>
+                          {medicine.Quantity}
+                          <IconButton
+                            deductQuantity
+                            onClick={() =>
+                              dispatch(addQuantity({ id: medicine.MedicineID }))
+                            }
+                            className={styles.btn__quantity}
+                          >
+                            <AddBoxIcon />
+                          </IconButton>
+                        </Box>
+                      </Box>
+                    </Box>
+                    <IconButton
+                      onClick={() =>
+                        dispatch(
+                          deleteMedicineRequest({ id: medicine.MedicineID })
+                        )
+                      }
+                    >
+                      <CloseIcon className={styles.request__card__remove} />
+                    </IconButton>
+                  </Box>
+                </Collapse>
+              )
+          )}
+        </TransitionGroup>
 
         <Box style={{ display: "flex", justifyContent: "center" }}>
           {medicinesList <= 0 && (
@@ -323,8 +382,8 @@ function DropdownMenu() {
             : () =>
                 (props.goToMenu && setActiveMenu(props.goToMenu)) ||
                 props.goToMenu === "settings"
-                  ? router.push(`?settings=services`)
-                  : () => props.goToMenu && setActiveMenu(props.goToMenu)
+                  ? router.query._id ? router.push(`${router.query._id}?settings=services`) :router.push(`?settings=services`)
+                  : () => props.goToMenu && setActiveMenu(props.goToMenu) 
         }
       >
         <span className={styles.icon__button}>{props.leftIcon}</span>
@@ -343,23 +402,41 @@ function DropdownMenu() {
         onEnter={calculateHeight}
       >
         <div className={styles.menu}>
-          <DropdownItem leftIcon={<AccountCircleIcon fontSize="large" />}>
+          <DropdownItem
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <AccountCircleIcon fontSize="medium" />
+              </IconButton>
+            }
+          >
             Profile
           </DropdownItem>
           <DropdownItem
-            leftIcon={<DarkModeIcon fontSize="large" />}
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <DarkModeIcon fontSize="medium" />
+              </IconButton>
+            }
             goToMenu="theme"
           >
             Theme
           </DropdownItem>
           <DropdownItem
-            leftIcon={<SettingsIcon fontSize="large" />}
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <SettingsIcon fontSize="medium" />
+              </IconButton>
+            }
             goToMenu="settings"
           >
             Settings
           </DropdownItem>
           <DropdownItem
-            leftIcon={<LogoutIcon fontSize="large" />}
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <LogoutIcon fontSize="medium" />
+              </IconButton>
+            }
             goToMenu="logout"
           >
             Logout

@@ -14,6 +14,7 @@ import SearchPatient from "../../component/SearchPatient";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import axios from "axios";
+import { format } from "date-fns";
 
 const request = () => {
   // medicines data from redux
@@ -124,7 +125,7 @@ const request = () => {
                     Date
                   </Typography>
                   <Typography variant="h6" component="h6" color="#b82623 ">
-                    Oct 20, 2022
+                 {  format(new Date(), "MMMM dd, yyyy")}
                   </Typography>
                 </Box>
               </Box>
@@ -143,10 +144,10 @@ const request = () => {
                       : "Add Patient"}
                   </Button>
 
-                  <label>Note</label>
+                  <label>Additional Notes</label>
                   <textarea
                     type="text"
-                    placeholder="Note..."
+                    placeholder="Additional Notes"
                     value={note || ""}
                     onChange={(e) => setNote(e.target.value)}
                   />

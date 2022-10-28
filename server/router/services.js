@@ -37,12 +37,14 @@ router.post("/service/create", async (req, res) => {
   const ServiceType = req.body.ServiceType;
   const Availability = req.body.Availability == "true" ? true : false;
   const Description = req.body.Description;
+  const Color = req.body.Color;
 
   try {
     await AddService({
       ServiceType,
       Availability,
       Description,
+      Color
     });
     res.status(200).json({ message: "Service Added successfully" });
   } catch (err) {

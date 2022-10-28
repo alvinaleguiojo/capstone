@@ -18,6 +18,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeEditIcon from "@mui/icons-material/ModeEdit";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import UserManagement from "./UserManagement";
+import { ColorPickerComponent } from "@syncfusion/ej2-react-inputs";
 
 const AntSwitch = styled(Switch)(({ theme }) => ({
   width: 28,
@@ -76,6 +77,7 @@ export default function CustomModal() {
     Availability: false,
     ServiceType: null,
     Description: null,
+    Color: null,
   });
 
   // To check if the fields is not empty
@@ -83,7 +85,9 @@ export default function CustomModal() {
     addService.ServiceType !== null &&
     addService.ServiceType !== "" &&
     addService.Description !== null &&
-    addService.Description !== ""
+    addService.Description !== "" &&
+    addService.Color !== null &&
+    addService.Color !== ""
       ? setDisabled(false)
       : setDisabled(true);
   }, [addService]);
@@ -164,6 +168,7 @@ export default function CustomModal() {
           Availability: false,
           ServiceType: null,
           Description: null,
+          Color: null,
         });
         //return to list of services
         setTimeout(() => {
@@ -249,11 +254,25 @@ export default function CustomModal() {
     });
   };
 
+  //  get  color palette value
+  const colorPicker = (args) => {
+    setAddService({
+      ...addService,
+      Color: args.currentValue.hex,
+    });
+  };
+
   return (
     <>
       <Box className={styles.popup__settings}>
         <Box className={styles.setting__close}>
-          <IconButton onClick={() => router.push("?settings")}>
+          <IconButton
+            onClick={() =>
+              router.query._id
+                ? router.push(`${router.query._id}?settings`)
+                : router.push(`?settings`)
+            }
+          >
             <CloseIcon fontSize="large" className={styles.close__icon} />
           </IconButton>
         </Box>
@@ -266,7 +285,11 @@ export default function CustomModal() {
                     ? styles.tab__active
                     : styles.tab
                 }
-                onClick={() => router.push("?settings=services")}
+                onClick={() =>
+                  router.query._id
+                    ? router.push(`${router.query._id}?settings=services`)
+                    : router.push(`?settings=services`)
+                }
               >
                 Services
               </Box>
@@ -276,7 +299,13 @@ export default function CustomModal() {
                     ? styles.tab__active
                     : styles.tab
                 }
-                onClick={() => router.push("?settings=user_management")}
+                onClick={() =>
+                  router.query._id
+                    ? router.push(
+                        `${router.query._id}?settings=user_management`
+                      )
+                    : router.push(`?settings=user_management`)
+                }
               >
                 User Management
               </Box>
@@ -343,6 +372,15 @@ export default function CustomModal() {
                                       spacing={1}
                                       alignItems="center"
                                     >
+                                      <Box
+                                        style={{
+                                          height: "10px",
+                                          width: "10px",
+                                          borderRadius: "999px",
+                                          backgroundColor:
+                                            serviceData.Color || "#fff",
+                                        }}
+                                      ></Box>
                                       <input
                                         type="text"
                                         disabled={true}
@@ -429,7 +467,7 @@ export default function CustomModal() {
                             className={styles.service}
                             onClick={handleService}
                           >
-                            + Add Service
+                            Add Service
                           </Button>
                         </Box>
                         {/* <Box className={styles.divider}></Box> */}
@@ -496,6 +534,7 @@ export default function CustomModal() {
                                 <label>Availability</label>
                                 <select
                                   className={styles.input__register}
+                                  style={{ marginBottom: "2rem" }}
                                   onChange={(e) => {
                                     return setAddService({
                                       ...addService,
@@ -506,6 +545,8 @@ export default function CustomModal() {
                                   <option value={false}>Disable</option>
                                   <option value={true}>Enable</option>
                                 </select>
+                                <label>Choose Color Tag</label>
+                                <ColorPickerComponent change={colorPicker} />
                               </Box>
                             </Box>
                           </form>
