@@ -21,7 +21,7 @@ const Item = styled(Paper)(({ theme }) => ({
 const darkTheme = createTheme({ palette: { mode: "dark" } });
 const lightTheme = createTheme({ palette: { mode: "light" } });
 
-const index = () => {
+const Index = () => {
   return (
     <Box>
       <Box className={contentStyles.content}>
@@ -34,4 +34,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

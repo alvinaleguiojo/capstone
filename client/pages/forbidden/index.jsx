@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import styles from "../../styles/Forbidden.module.css";
 
-const index = () => {
+const Index = () => {
   return (
     <Box className={styles.forbidden}>
         <Image src={ForbiddenIcon} alt="forbidden"/>
@@ -24,4 +24,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

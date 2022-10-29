@@ -5,7 +5,7 @@ import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
 
-const index = () => {
+const Index = () => {
   return (
     <Box>
       <Navbar />
@@ -17,4 +17,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

@@ -16,7 +16,7 @@ import { Button } from "@mui/material";
 import useAuth from "../../../customhook/Auth";
 import ReleasedMedicine from "../../../component/ReleasedMedicine";
 
-const index = ({ Medicines }) => {
+const Index = ({ Medicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
 
   const router = useRouter();
@@ -170,7 +170,7 @@ const index = ({ Medicines }) => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getStaticProps = async () => {
   try {

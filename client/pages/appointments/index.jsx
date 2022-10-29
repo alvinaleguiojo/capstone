@@ -20,7 +20,7 @@ import {
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Typography from "@mui/material/Typography";
 
-const index = ({ appointments, services }) => {
+const Index = ({ appointments, services }) => {
   const [appointmentsData, setAppointmentsData] = useState([]);
   const [servicesData, setServicesData] = useState([]);
 
@@ -142,7 +142,7 @@ const index = ({ appointments, services }) => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getStaticProps = async ({ context }) => {
   try {

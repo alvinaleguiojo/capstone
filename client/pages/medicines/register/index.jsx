@@ -21,7 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
 
   const webRef = useRef(null);
@@ -514,4 +514,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

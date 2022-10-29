@@ -21,7 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const index = ({ Medicines }) => {
+const Index = ({ Medicines }) => {
   const router = useRouter();
 
   const webRef = useRef(null);
@@ -460,7 +460,7 @@ const index = ({ Medicines }) => {
   );
 };
 
-export default index;
+export default Index;
 
 export async function getStaticPaths() {
   try {

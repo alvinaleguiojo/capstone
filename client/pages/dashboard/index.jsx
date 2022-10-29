@@ -57,7 +57,7 @@ ChartJS.register(
   Legend
 );
 
-const index = ({ Appointments }) => {
+const Index = ({ Appointments }) => {
   const [theme, setTheme] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggleCalendar, setToggleCalendar] = useState(false);
@@ -570,7 +570,7 @@ const index = ({ Appointments }) => {
   );
 };
 
-export default index;
+export default Index;
 
 export const getStaticProps = async () => {
   try {

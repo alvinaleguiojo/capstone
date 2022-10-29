@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import Link from "next/link";
 import styles from "../../styles/Error.module.css";
 
-const index = () => {
+const Index = () => {
   return (
     <Box className={styles.error}>
       <Box className={styles.left__container}>
@@ -29,4 +29,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;
