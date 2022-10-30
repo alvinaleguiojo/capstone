@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useSelector } from "react-redux";
 import Image from "next/image";
-import Navbar from "../../component/Navbar";
 import styles from "../../styles/Dashboard.module.css";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
@@ -15,8 +14,6 @@ import Meta from "../../component/Meta";
 import adminBanner from "../../assets/image/adminBanner.svg";
 import Skeleton from "@mui/material/Skeleton";
 import Calendar from "react-calendar";
-import checkIcon from "../../assets/image/check.svg";
-import clockIcon from "../../assets/image/clock.svg";
 import waitingIcon from "../../assets/image/Waiting Room.svg";
 
 import treatmentIcon from "../../assets/image/Treatment.svg";
@@ -25,9 +22,7 @@ import completedIcon from "../../assets/image/Task Completed.svg";
 import cancelIcon from "../../assets/image/Cancel.svg";
 import NoAppointments from "../../assets/image/NoAppointments.svg";
 
-import arrowDown from "../../assets/image/arrowdown.svg";
 import CustomCard from "../../component/CustomCard";
-import { Button, IconButton } from "@mui/material";
 
 import {
   DateRangePickerComponent,
@@ -46,7 +41,6 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
-import { DatasetSharp } from "@mui/icons-material";
 
 ChartJS.register(
   CategoryScale,

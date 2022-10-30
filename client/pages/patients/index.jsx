@@ -15,7 +15,7 @@ import CardTemplate from "../../component/CardTemplate";
 import SearchIcon from "../../assets/image/search.svg";
 import axios from "axios";
 
-const index = ({ patients }) => {
+const Index = ({ patients }) => {
   const router = useRouter();
   const [patientData, setPatientData] = useState(patients);
   const [currentPage, setCurrentPage] = useState(1);
@@ -177,7 +177,7 @@ const index = ({ patients }) => {
   );
 };
 
-export default index;
+export default  Index;
 
 export const getStaticProps = async ({ context }) => {
  

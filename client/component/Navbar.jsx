@@ -383,7 +383,7 @@ function DropdownMenu() {
 
   function DropdownItem(props) {
     return (
-      <a
+      <Link
         href="#"
         className={styles.menu__item}
         onClick={
@@ -401,7 +401,7 @@ function DropdownMenu() {
         <span className={styles.icon__button}>{props.leftIcon}</span>
         {props.children}
         <span className={styles.icon__button}>{props.rightIcon}</span>
-      </a>
+      </Link>
     );
   }
   return (

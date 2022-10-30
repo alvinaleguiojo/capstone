@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import CustomPDF from "../../../../component/CustomPDF";
 
-const index = ({ patient }) => {
+const Index = ({ patient }) => {
   return (
     <div>
       {patient.map((value, index) => {
@@ -19,7 +19,7 @@ const index = ({ patient }) => {
   );
 };
 
-export default index;
+export default Index;
 
 export async function getStaticPaths() {
   try {

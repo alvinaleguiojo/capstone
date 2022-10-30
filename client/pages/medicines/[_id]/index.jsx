@@ -20,6 +20,7 @@ import ImageUploading from "react-images-uploading";
 import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import Swal from "sweetalert2";
+import Link from "next/link";
 
 const Index = ({ Medicines }) => {
   const router = useRouter();
@@ -156,18 +157,18 @@ const Index = ({ Medicines }) => {
                       </IconButton> */}
                       {images.preview && (
                         <>
-                          <a
+                          <Link
                             href={images.preview}
                             target="_blank"
                             rel="noopener noreferrer"
                           >
-                            <img
+                            <Image
                               src={images.preview}
                               width="100%"
                               height="100%"
                               style={{ borderRadius: "999px" }}
                             />
-                          </a>
+                          </Link>
                         </>
                       )}
 

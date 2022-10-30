@@ -228,7 +228,7 @@ const Index = () => {
                         />
                       </IconButton> */}
                       {images.preview && (
-                        <img src={images.preview} width="100" height="100" />
+                        <Image src={images.preview} width="100" height="100" />
                       )}
 
                       <form>
