@@ -42,16 +42,28 @@
   grid-area: footer;
 }
 
-.getStartedBtn {
-  background-color: #b82623;
+.getStartedBtn  {
+  background-color: #b82623!important;
   width: 40%;
+  height: 40px;
+  border-radius: 5px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  text-align: center;
+  /* width:100px!important;
+  height: 30px !important;
+  padding:10px !important; */
 }
 
 .getStartedBtn:hover {
-  background-color: #db2f2c;
+  background-color: #db2f2c !important;
 }
 
 .getStartedBtn > a {
   width: 100%;
-  height: 100%;
+  /* height: 100%; */
+  /* background-color: black; */
 }

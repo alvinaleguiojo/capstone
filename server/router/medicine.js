@@ -22,6 +22,7 @@ const RetrieveMedicinesByIDPromise = require("../AsyncAwait/Medicines/RetrieveMe
 const RetrieveReleasedMedicinesByIDPromise = require("../AsyncAwait/Medicines/RetrieveReleasedMedicines");
 const ReleasedMedicinesCountDocumentsPromise = require("../AsyncAwait/Medicines/ReleasedMedicinesCountDocument");
 const RetrieveReleasedMedicinesNoPagition = require("../AsyncAwait/Medicines/RetrieveReleasedMedicinesNoPagination");
+const MedicinesByDateIDPromise = require("../AsyncAwait/Medicines/ReleasedByDate");
 
 // get all medicines
 // router.get("/medicines", paginatedResults(Medicines), (req, res) => {
@@ -220,6 +221,23 @@ router.get("/medicines/:id", async (req, res) => {
   try {
     const resultElements = await MedicinesByIDPromise({
       PatientID: req.params.id,
+    });
+    res.status(200).json({ Medicines: resultElements });
+  } catch (error) {
+    console.log(error);
+    res.sendStatus(500);
+  }
+});
+
+// Get Patient's Released Medicines by Released Date
+router.get("/medicines/date/:id", async (req, res) => {
+  const { StartDate, EndDate } = req.query;
+
+  try {
+    const resultElements = await MedicinesByDateIDPromise({
+      PatientID: req.params.id,
+      StartDate,
+      EndDate,
     });
     res.status(200).json({ Medicines: resultElements });
   } catch (error) {

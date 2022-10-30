@@ -74,24 +74,33 @@ const releasedMedicinesColumns = [
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
+  {
+    id: "ExpiryDate",
+    label: "Expiry Date",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
 ];
 
 function createData(ServiceType, Schedule, Status) {
   return { ServiceType, Schedule, Status };
 }
 
-function createDataMedicines(Name, Quantity, ReleasedDate) {
-  return { Name, Quantity, ReleasedDate };
+function createDataMedicines(Name, Quantity, ReleasedDate, ExpiryDate) {
+  return { Name, Quantity, ReleasedDate , ExpiryDate};
 }
 
 const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
   const [sendMessage, setSendMessage] = useState("");
+  const [medicinesData, setMedicinesData] = useState(Medicines);
+  const [appointmentsData, setAppointmentsData] = useState(records);
   const router = useRouter();
   const id = router.query._id;
   const [loading, setLoading] = useState(true);
 
   // date picker state
-  const [calendar, setCalendar] = useState(new Date());
+  const [calendar, setCalendar] = useState([]);
 
   //  date picker custom dates starts here
   const startDate = new Date(
@@ -136,7 +145,6 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
   const yearEnd = new Date(
     new Date(new Date().getFullYear() - 1, 11, 31).toDateString()
   );
-
   //date picker custom dates ends here
 
   // Record tab state
@@ -144,7 +152,7 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
 
   // pushing patients data to array
   const rows = [];
-  records.filter((record) => {
+  appointmentsData.filter((record) => {
     const date = new Date(record.Schedule).toLocaleDateString("en-us", {
       weekday: "long",
       year: "numeric",
@@ -157,123 +165,58 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
 
   // pushing patients data to array
   const medicinesRows = [];
-  Medicines.map((medicine) => {
-    const date = new Date(medicine.ReleasedDate).toLocaleDateString("en-us", {
+  medicinesData.map((medicine) => {
+    const ReleasedDate = new Date(medicine.ReleasedDate).toLocaleDateString("en-us", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    const ExpiryDate = new Date(medicine.ExpiryDate).toLocaleDateString("en-us", {
       weekday: "long",
       year: "numeric",
       month: "short",
       day: "numeric",
     });
     return medicinesRows.push(
-      createDataMedicines(medicine.Name, medicine.Quantity, date)
+      createDataMedicines(medicine.Name, medicine.Quantity, ReleasedDate, ExpiryDate)
     );
   });
-
-  // All appointments state
-  const [chartData, setChartData] = useState({
-    datasets: [],
-  });
-
-  // All Cancalled appointment state
-  const [chartDataCancelled, setChartDataCancelled] = useState({
-    datasets: [],
-  });
-
-  // All Completed appointment state
-  const [chartDataCompleted, setChartDataCompleted] = useState({
-    datasets: [],
-  });
-
-  const [chartOptions, setChartOptions] = useState({});
-  const [chartOptionsCancelled, setChartOptionsCancelled] = useState({});
-  const [chartOptionsCompleted, setChartOptionsCompleted] = useState({});
-
-  //All Appointments
-  useEffect(() => {
-    setChartData({
-      labels: ["June", "July", "August"],
-      datasets: [
-        {
-          label: "All Appointments",
-          data: [3, 6, 14],
-          borderColor: "rgb(152, 189, 4)",
-          backgroundColor: "rgba(152, 189, 4, 0.4)",
-        },
-      ],
-    });
-    setChartOptions({
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        title: {
-          display: true,
-          text: "Appointments",
-        },
-      },
-    });
-  }, []);
-
-  //  cancelled data
-  useEffect(() => {
-    setChartDataCancelled({
-      labels: ["June", "July", "August"],
-      datasets: [
-        {
-          label: "All Cancelled",
-          data: [8, 3, 14],
-          borderColor: "rgb(184, 38, 35)",
-          backgroundColor: "rgba(184, 38, 35, 0.4)",
-        },
-      ],
-    });
-    setChartOptionsCancelled({
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        title: {
-          display: true,
-          text: "Cancelled",
-        },
-      },
-    });
-  }, []);
-
-  //  All Completed data
-  useEffect(() => {
-    setChartDataCompleted({
-      labels: ["June", "July", "December"],
-      datasets: [
-        {
-          label: "All Completed",
-          data: [9, 6, 2],
-          borderColor: "rgb(0, 191, 54)",
-          backgroundColor: "rgba(0, 191, 54, 0.4)",
-        },
-      ],
-    });
-    setChartOptionsCompleted({
-      responsive: true,
-      plugins: {
-        legend: {
-          position: "top",
-        },
-        title: {
-          display: true,
-          text: "Completed",
-        },
-      },
-    });
-  }, []);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
-  }, []);
+    }, 500);
+  }, [calendar]);
+
+  // Promise data filtering by Date
+  useEffect(() => {
+    try {
+      const start = calendar[0];
+      const end = calendar[1];
+      const StartDate = `${start.getFullYear()}-${start.getMonth()}-${start.getDate()}`;
+      const EndDate = `${end.getFullYear()}-${end.getMonth()}-${end.getDate()}`;
+
+      const URLs = [
+        `http://localhost:3001/medicines/date/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
+        `http://localhost:3001/patient/appointments/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
+      ];
+
+      // map every url to the promise of the fetch
+      let requests = URLs.map((url) => fetch(url));
+      Promise.all(requests)
+        .then((responses) => {
+          return Promise.all(responses.map((response) => response.json()));
+        })
+        .then((data) => {
+          setMedicinesData(data[0].Medicines);
+          setAppointmentsData(data[1]);
+        })
+        .catch((error) => console.log(error.message));
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [calendar]);
 
   // send sms to patient open modal
   const handleMessageModal = async (phone) => {
@@ -294,7 +237,7 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
           text,
           phone,
         })
-        .then((response) => {
+        .then(() => {
           Swal.fire("Success!", "Appointment has been set!", "success");
         })
         .catch((err) =>
@@ -316,12 +259,8 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
     }
   };
 
-  // request medicine and pass this patient to medicine cart
-  const handleRequest = () => {
-    localStorage.setItem("requestedMedicine", JSON.stringify(patient));
-  };
-
   const handleChange = (event, newValue) => {
+    event.preventDefault();
     setValue(newValue);
   };
 
@@ -365,8 +304,8 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
 
   // get value from date picker
   const getDateRange = (e) => {
-    const selectedDateRange = e.value;
-    setCalendar(selectedDateRange);
+    setLoading(true);
+    setCalendar(e.value);
   };
 
   return (
@@ -536,7 +475,6 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                           endDate={endDate}
                           format="MMM-dd-yyyy"
                           change={getDateRange}
-                          value={calendar}
                           width={180}
                         >
                           <PresetsDirective>
@@ -570,30 +508,6 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                         </DateRangePickerComponent>
                       </Box>
                       <Box className={styles.records__tabs}>
-                        {/* <Typography
-                          variant="body2"
-                          component="h4"
-                          color="#B82623"
-                        >
-                          Appointments
-                        </Typography>
-                        <Typography
-                          variant="body2"
-                          component="h4"
-                          color="#B82623"
-                        >
-                          Requested Medicines
-                        </Typography>
-
-                        <Typography
-                          variant="body2"
-                          component="h4"
-                          color="#B82623"
-                          style={{ borderRight: "1px solid #B82623" }}
-                        >
-                          Diagnosis
-                        </Typography> */}
-
                         <Box sx={{ width: "100%" }}>
                           <Box sx={{ borderBottom: 1, borderColor: "divider" }}>
                             <Tabs
@@ -716,7 +630,7 @@ function TabPanel(props) {
   const { children, value, index, ...other } = props;
 
   return (
-    <div
+    <Box
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
@@ -728,7 +642,7 @@ function TabPanel(props) {
           <Typography>{children}</Typography>
         </Box>
       )}
-    </div>
+    </Box>
   );
 }
 
@@ -779,6 +693,7 @@ export async function getStaticProps({ params }) {
       `http://localhost:3001/medicines/${params._id}`
     );
     const { Medicines } = await releasedMedicines.json();
+
 
     // feth patient Image
     const patientImageID = await patient[0].ImageID.toString();

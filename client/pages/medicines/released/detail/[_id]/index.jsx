@@ -91,7 +91,7 @@ const Index = ({ Medicines }) => {
         res && setLoading(false);
         res && setMedicine({ ...medicine, ImageID: res.ImageID });
         res && setFilename(res.file.filename);
-      }, 1000);
+      }, 500);
     } catch (error) {
       console.log(error.message);
     }

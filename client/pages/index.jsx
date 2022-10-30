@@ -27,11 +27,11 @@ export default function Home() {
               nisi ut aliquip ex ea commodo consequat.
             </Typography>
           </Box>
-          <Button className={styles.getStartedBtn} variant="contained">
-            <Link className={styles.getStartedLink} href="/login">
+          <Box className={styles.getStartedBtn} variant="contained">
+            <Link className={styles.getStartedBtn} href="/login">
               Get Started
             </Link>
-          </Button>
+          </Box> 
         </Box>
 
         <Box className={styles.banner__image}>

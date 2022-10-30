@@ -57,10 +57,10 @@ router.delete("/user/delete/:id", async (req, res) => {
 
 // Update User By ID
 router.patch("/user/update/:id", async (req, res) => {
-  const { Role, Verified , Status} = req.body;
+  const { Role, Status } = req.body;
   const ID = req.params.id;
   try {
-    await UpdateUserPromiseByID(ID, Role, Verified, Status);
+    await UpdateUserPromiseByID(ID, Role, Status);
     res.status(200).json({ message: "Data has been updated successfully" });
   } catch (err) {
     res.status(400).json({ message: "field is required" });
@@ -70,6 +70,7 @@ router.patch("/user/update/:id", async (req, res) => {
 // create new User
 router.post("/register", async (req, res) => {
   const today = new Date();
+  today.setDate(today.getDate() + 31);
   const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const { LastName, FirstName, Email, Password } = req.body;
   const EmailExist = await UserCredentialPromise(Email);
@@ -81,25 +82,30 @@ router.post("/register", async (req, res) => {
   EmailExist.length <= 0 &&
     bcrypt.hash(Password, 10).then(async (hash) => {
       try {
-        const newUser = await CreateUserPromise({
+        const newStaff = await CreateUserPromise({
           LastName,
           FirstName,
           Email,
           Password: hash,
           Role: "BHW",
-          Verified: false,
           CreatedDate: date,
+          Status: false,
         });
-        const accessToken = createTokens(newUser);
-        res.cookie("access_token", accessToken, {
-          withCredentials: true,
-          httpOnly: true,
-          maxAge: 60 * 60 * 24 * 30 * 1000,
-          secure: true,
-          sameSite: "none",
-        });
-        res.status(200).json({ message: "User added successfully" });
+        const response = await newStaff;
+        const resData = await GetUsersPromiseByID(response.insertId);
+        if (await resData) {
+          const accessToken = createTokens(resData);
+          res.cookie("access_token", accessToken, {
+            withCredentials: true,
+            httpOnly: true,
+            maxAge: 60 * 60 * 24 * 30 * 1000,
+            secure: true,
+            sameSite: "none",
+          });
+          res.status(200).json({ message: "User added successfully" });
+        }
       } catch (err) {
+        console.log(err.message);
         res.status(400).json({ message: "Invalid data entry" });
       }
     });

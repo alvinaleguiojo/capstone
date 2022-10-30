@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
-import Navbar from "../../component/Navbar";
+import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
 import Image from "next/image";
+import Navbar from "../../component/Navbar";
 import styles from "../../styles/Dashboard.module.css";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
@@ -8,9 +10,7 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import Tabs from "../../component/Tabs";
 import useAuth from "../../customhook/Auth";
-import Verification from "../../component/Verification";
 import axios from "axios";
-import { useRouter } from "next/router";
 import Meta from "../../component/Meta";
 import adminBanner from "../../assets/image/adminBanner.svg";
 import Skeleton from "@mui/material/Skeleton";
@@ -61,7 +61,7 @@ const Index = ({ Appointments }) => {
   const [theme, setTheme] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggleCalendar, setToggleCalendar] = useState(false);
-  const [calendar, setCalendar] = useState(new Date());
+  const [calendar, setCalendar] = useState([]);
   const [appointments, setAppointments] = useState(Appointments || []);
 
   const hour = new Date().getHours();
@@ -75,6 +75,9 @@ const Index = ({ Appointments }) => {
       .endOf("week")
       .format(weekFormat)}`;
 
+  //get users data from redux
+  const user = useSelector((state) => state.user.value);
+
   //  date picker custom dates starts here
   const startDate = new Date(
     new Date().getFullYear(),
@@ -82,6 +85,9 @@ const Index = ({ Appointments }) => {
     25
   );
   const endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 28);
+
+  // startDate.setDate(startDate.getDate() + 30);
+  // endDate.setDate(endDate.getDate() + 30);
 
   const today = new Date(new Date().toDateString());
   const weekStart = new Date(
@@ -135,6 +141,8 @@ const Index = ({ Appointments }) => {
       const end = calendar[1];
       const StartDate = `${start.getFullYear()}-${start.getMonth()}-${start.getDate()}`;
       const EndDate = `${end.getFullYear()}-${end.getMonth()}-${end.getDate()}`;
+      // StartDate.setDate(StartDate.getDate() + 30);
+      // EndDate.setDate(EndDate.getDate() + 30);
 
       axios
         .get(
@@ -144,7 +152,7 @@ const Index = ({ Appointments }) => {
           setAppointments(response.data.Appointments);
           setTimeout(() => {
             setLoading(false);
-          }, 1000);
+          }, 500);
         })
         .catch((err) => {
           console.log(err.message);
@@ -217,7 +225,7 @@ const Index = ({ Appointments }) => {
     });
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, []);
 
   const handleToggleCalendar = () => {
@@ -257,10 +265,7 @@ const Index = ({ Appointments }) => {
                   <Box>
                     <Typography variant="h6" component="h6" color="#B82623">
                       {"Good " +
-                        ((hour < 12 && "Morning") ||
-                          (hour < 18 && "Afternoon") ||
-                          "Evening") +
-                        "  Dr. Dela Cruz"}
+                        ((hour < 12 && "Morning") || (hour < 18 && "Afternoon") || "Evening")}
                     </Typography>
                     <Typography variant="body2" component="h5">
                       Have a <span>healthy</span>{" "}
@@ -317,7 +322,7 @@ const Index = ({ Appointments }) => {
                 <Box className={styles.cards}>
                   {appointments.map((appointment) => {
                     return (
-                      <>
+                      <Box key={appointment.AppointmentID}>
                         {loading ? (
                           <Skeleton
                             animation="wave"
@@ -338,7 +343,7 @@ const Index = ({ Appointments }) => {
                             />
                           </Box>
                         )}
-                      </>
+                      </Box>
                     );
                   })}
                 </Box>
@@ -558,8 +563,6 @@ const Index = ({ Appointments }) => {
                   <Bar options={chartOptions} data={chartData} />
                 </Box>
               </Box>
-
-              <Verification />
             </Box>
           </Box>
         </Box>

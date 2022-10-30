@@ -81,7 +81,26 @@ const Index = () => {
         setTerms(false);
         setPrivacy(false);
       })
-      .catch((err) => console.log("Error" + err));
+      .catch((err) => {
+        console.log("Error" + err);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "error",
+          title: "Please check the details and try again.",
+        });
+        setLoading(false);
+      });
     setUser({
       ...user,
       FirstName: "",
@@ -229,7 +248,7 @@ const Index = () => {
             onClick={handleSubmit}
             loading={loading}
             variant="contained"
-            className={styles.loginBtn}
+            className={disabled ? styles.btnDisabled : styles.loginBtn}
             disabled={disabled}
           >
             Submit

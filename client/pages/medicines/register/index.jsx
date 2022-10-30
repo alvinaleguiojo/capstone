@@ -125,25 +125,6 @@ const Index = () => {
     setImages(imageList);
   };
 
-  // saving image to local storage
-  // const handleSave = async (e) => {
-  //   e.preventDefault();
-  //   setLoading(true);
-  //   let formData = new FormData();
-  //   formData.append("file", images.data);
-
-  //   const response = await fetch("http://localhost:3001/upload_file", {
-  //     method: "POST",
-  //     body: formData,
-  //   });
-
-  //   const res = await response.json();
-  //   setTimeout(() => {
-  //     res && setLoading(false);
-  //     res && setFilename(res.filename);
-  //   }, 2000);
-  // };
-
   const handleDeleteImage = async (filename) => {
     try {
       setLoading(true);

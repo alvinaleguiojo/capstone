@@ -30,7 +30,7 @@ const Index = ({ Medicines }) => {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, [data]);
 
   useEffect(() => {
@@ -47,7 +47,7 @@ const Index = ({ Medicines }) => {
       .then(() => {
         setTimeout(() => {
           setLoading(false);
-        }, 1000);
+        }, 500);
       });
   }, [currentPage, searchTerm]);
 

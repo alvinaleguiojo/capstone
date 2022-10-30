@@ -32,7 +32,7 @@ const style = {
   p: 4,
 };
 
-const index = () => {
+const Index = () => {
   const router = useRouter();
 
   const webRef = useRef(null);
@@ -486,4 +486,4 @@ const index = () => {
   );
 };
 
-export default index;
+export default Index;

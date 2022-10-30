@@ -16,7 +16,7 @@ import Link from "next/link";
 import axios from "axios";
 import { format } from "date-fns";
 
-const request = () => {
+const Request = () => {
   // medicines data from redux
   const router = useRouter();
   const medicinesList = useSelector((state) => state.medicines.value);
@@ -170,4 +170,4 @@ const request = () => {
   );
 };
 
-export default request;
+export default Request;

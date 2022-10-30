@@ -105,7 +105,7 @@ export default function CustomModal() {
         // set loading to false when data is available
         setTimeout(() => {
           setLoading(false);
-        }, 1000);
+        }, 500);
         //set new Service data to servicesData
         setServicesData(response.data.Services);
       })

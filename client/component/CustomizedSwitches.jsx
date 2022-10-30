@@ -148,7 +148,7 @@ export default function CustomizedSwitches() {
     localStorage.setItem("theme", JSON.stringify(e.target.checked));
     setTimeout(() => {
       router.reload();
-    }, 2000);
+    }, 500);
   };
 
   useEffect(() => {

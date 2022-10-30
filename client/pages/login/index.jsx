@@ -98,7 +98,7 @@ const Index = () => {
           });
           router.push("/dashboard");
           setLoading(false);
-        }, 2000);
+        }, 500);
       })
       .catch((err) => {
         console.log(err);
@@ -178,7 +178,7 @@ const Index = () => {
               loading={loading}
               disabled={disabled}
               variant="contained"
-              className={styles.loginBtn}
+              className={disabled ? styles.btnDisabled : styles.loginBtn}
             >
               Submit
             </LoadingButton>

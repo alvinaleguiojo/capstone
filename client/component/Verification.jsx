@@ -1,29 +1,34 @@
 import React, { useState, useEffect } from "react";
 import Swal from "sweetalert2";
 import { useRouter } from "next/router";
+import { useSelector } from "react-redux";
+import axios from "axios";
 
-const Verification = ({ user }) => {
-  const [show, setShow] = useState(false);
+const Verification = () => {
   const router = useRouter();
 
-  useEffect(() => {
-    !user && setShow(true);
-  }, []);
+  // // get users data from redux
+  const user = useSelector((state) => state.user.value);
 
   useEffect(() => {
-    {
-      show &&
-        Swal.fire({
-          icon: "warning",
-          title: "Warning",
-          text: "Please inform the admin to verify your account.",
-          allowOutsideClick: false,
-          //   footer: '<a href="">Why do I have this issue?</a>',
-        }).then(() => {
-          show && router.reload();
-        });
-    }
-  }, []);
+    user.length > 0 &&
+    user[0].Status === 0 &&
+      Swal.fire({
+        icon: "warning",
+        title: "Warning",
+        text: `Please inform the admin to verify your account.`,
+        allowOutsideClick: false,
+        //   footer: '<a href="">Why do I have this issue?</a>',
+      }).then(() => {
+        axios
+          .get("http://localhost:3001/logout", { withCredentials: true })
+          .then(() => {
+            router.push("/login");
+            Swal.fire("Success!", "You are now in the Login Page.", "success");
+          })
+          .catch((error) => console.log(error.message));
+      });
+  }, [router]);
 };
 
 export default Verification;

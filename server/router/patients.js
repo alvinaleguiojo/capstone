@@ -20,6 +20,7 @@ const GetAllPatientsWithImagePromise = require("../AsyncAwait/Patients/PatientsW
 const GetAllPatientsLimitPromise = require("../AsyncAwait/Patients/PatientsLimit");
 const CountDocumentsPromise = require("../AsyncAwait/Patients/CountDocuments");
 const AddPatientHistoryPromise = require("../AsyncAwait/PatientHistory/AddHistory");
+const PatientAppointmentByDatePromise = require("../AsyncAwait/Patients/PatientAppointmentsByDate");
 
 router.use(express.json());
 
@@ -110,12 +111,28 @@ router.get("/patient/:id", async (req, res) => {
   }
 });
 
-// GET Patient Profile Records By ID
+// GET Patient Appointments
 router.get("/patient/profile/records/:id", async (req, res) => {
   const PatientID = req.params.id;
   try {
     const patient = await PatientProfileRecordsPromise(PatientID);
     res.json(patient);
+  } catch (error) {
+    res.status(400).json({ message: "Invalid PatientID" });
+  }
+});
+
+// GET Patient Appointments
+router.get("/patient/appointments/:id", async (req, res) => {
+  const PatientID = req.params.id;
+  const { StartDate, EndDate } = req.query;
+  try {
+    const Medicines = await PatientAppointmentByDatePromise({
+      PatientID,
+      StartDate,
+      EndDate,
+    });
+    res.json(Medicines);
   } catch (error) {
     res.status(400).json({ message: "Invalid PatientID" });
   }

@@ -47,7 +47,7 @@ const index = ({ patients }) => {
       .then(() => {
         setTimeout(() => {
           setLoading(false);
-        }, 1000);
+        }, 500);
       });
   }, [currentPage, searchTerm]);
 

@@ -22,7 +22,7 @@ registerLicense(
 
 const store = configureStore({
   reducer: {
-    users: userApiReducer,
+    user: userApiReducer,
     medicines: medicinesRequestReducer,
   },
 });

@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import Barcode from "react-barcode";
 import { Button } from "@mui/material";
 
-const products = () => {
+const Products = () => {
   const [products, setProducts] = useState([]);
   const [productName, setProductName] = useState("");
   const [productID, setProductID] = useState("");
@@ -49,4 +49,4 @@ const products = () => {
   );
 };
 
-export default products;
+export default Products;

@@ -14,7 +14,7 @@ import { motion } from "framer-motion";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const index = ({ patients }) => {
+const Index = ({ patients }) => {
   const router = useRouter();
   const [disabled, setDisabled] = useState(true);
   const [patient, setPatient] = useState({});
@@ -263,7 +263,7 @@ const index = ({ patients }) => {
   );
 };
 
-export default index;
+export default Index;
 
 // export const getStaticProps = async () => {
 //   try {

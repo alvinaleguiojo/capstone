@@ -3,7 +3,14 @@ require("dotenv").config();
 
 const createTokens = (user) => {
   const accessToken = sign(
-    { email: user.email, _id: user._id },
+    {
+      _id: user[0].StaffID,
+      Email: user[0].Email,
+      FirstName: user[0].FirstName,
+      LastName: user[0].LastName,
+      Status: user[0].Status,
+      Role: user[0].Role
+    },
     process.env.JWT_SECRET
   );
   return accessToken;

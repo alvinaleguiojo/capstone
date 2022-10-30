@@ -45,16 +45,20 @@
 }
 
 .loginBtn {
-  background-color: #b82623;
-  color: white;
-  border: none;
-  border-radius: 20px;
+  background-color: #b82623!important;
+  color: white !important;
+  border: none!important;
+  border-radius: 20px !important;
 }
 
 .loginBtn:hover {
-  background-color: #e62e2b;
-  color: white;
-  border: none;
+  background-color: #e62e2b !important;
+  color: white!important;
+  border: none!important;
+}
+
+.btnDisabled{
+  border-radius: 20px!important;
 }
 
 .registerLink a {

@@ -37,6 +37,9 @@ import Tooltip from "@mui/material/Tooltip";
 import { TransitionGroup } from "react-transition-group";
 import Collapse from "@mui/material/Collapse";
 
+// user Verification
+import Verification from "./Verification";
+
 const Navbar = () => {
   const router = useRouter();
   const today = format(new Date(), "MMMM dd, yyyy");
@@ -45,7 +48,16 @@ const Navbar = () => {
   const [patientData, setPatientData] = useState();
   const [loading, setLoading] = useState(false);
 
-  // medicines data from redux
+  //get users data from redux
+  const user = useSelector((state) => state.user.value);
+  const userRole = [
+    "Administrator",
+    "Baranggay Nutritionist Scholar",
+    "MidWife",
+    "Baranggay Health Work",
+  ];
+
+  // get medicines data from redux
   const medicinesList = useSelector((state) => state.medicines.value);
 
   // state management for theme
@@ -81,11 +93,12 @@ const Navbar = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 1000);
+    }, 500);
   }, [router]);
 
   return (
     <>
+      <Verification />
       {loading && (
         <Box
           sx={{ width: "100%", color: "red" }}
@@ -96,7 +109,7 @@ const Navbar = () => {
       )}
       {router.route !== "/" &&
         router.route !== "/login" &&
-        (router.route !== "/register" && (
+        router.route !== "/register" && (
           <Box className={theme ? styles.DarkMode : styles.navbar}>
             <Box className={styles.logo}></Box>
             <Box className={styles.navbar__right}>
@@ -104,26 +117,20 @@ const Navbar = () => {
                 {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
                 <Box className={styles.avatar}>
                   <Typography variant="h5" component="h5">
-                    {/* {user.userData.Email.substring(0, 1).toUpperCase()} */}
+                    {user[0].Email.substring(0, 1).toUpperCase()}
                   </Typography>
                 </Box>
                 <Box className={styles.user__name}>
                   <Typography variant="h5" component="h5" color="#b82623">
-                    {/* {user.userData.Email.substring(0, 10)} */}
+                    {user[0].LastName.toUpperCase()}
                   </Typography>
                   <Typography variant="caption" component="h5" color="#b82623">
-                    Barangay Health Worker
+                    {user[0].Role === "ADMIN" && userRole[0]}
+                    {user[0].Role === "BNS" && userRole[1]}
+                    {user[0].Role === "MIDWIFE" && userRole[2]}
+                    {user[0].Role === "BHW" && userRole[2]}
                   </Typography>
                 </Box>
-
-                {/* <IconButton onClick={handleLogout}>
-                  <Image
-                    src={ArrowDown}
-                    alt="drop down"
-                    height={10}
-                    width={10}
-                  />
-                </IconButton> */}
               </Box>
               <Box className={styles.line}></Box>
 
@@ -214,7 +221,7 @@ const Navbar = () => {
             {open && !router.query.settings && <DropdownMenu />}
             {router.query.settings && <CustomModal />}
           </Box>
-        ))}
+        )}
     </>
   );
 };
@@ -338,6 +345,9 @@ function DropdownMenu() {
   const nodeRef = useRef(null);
   const router = useRouter();
 
+  //get users data from redux
+  const user = useSelector((state) => state.user.value);
+
   function calculateHeight(el) {
     const height = el.offsetHeight + 30;
     setMenuHeight(height);
@@ -365,7 +375,7 @@ function DropdownMenu() {
                 "You are now in the Login Page.",
                 "success"
               );
-            }, 1000);
+            }, 500);
           });
       }
     });
@@ -382,8 +392,10 @@ function DropdownMenu() {
             : () =>
                 (props.goToMenu && setActiveMenu(props.goToMenu)) ||
                 props.goToMenu === "settings"
-                  ? router.query._id ? router.push(`${router.query._id}?settings=services`) :router.push(`?settings=services`)
-                  : () => props.goToMenu && setActiveMenu(props.goToMenu) 
+                  ? router.query._id
+                    ? router.push(`${router.query._id}?settings=services`)
+                    : router.push(`?settings=services`)
+                  : () => props.goToMenu && setActiveMenu(props.goToMenu)
         }
       >
         <span className={styles.icon__button}>{props.leftIcon}</span>
@@ -421,16 +433,19 @@ function DropdownMenu() {
           >
             Theme
           </DropdownItem>
-          <DropdownItem
-            leftIcon={
-              <IconButton style={{ backgroundColor: "#dbdff3" }}>
-                <SettingsIcon fontSize="medium" />
-              </IconButton>
-            }
-            goToMenu="settings"
-          >
-            Settings
-          </DropdownItem>
+          {user[0].Role.includes("ADMIN") && (
+            <DropdownItem
+              leftIcon={
+                <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                  <SettingsIcon fontSize="medium" />
+                </IconButton>
+              }
+              goToMenu="settings"
+            >
+              Settings
+            </DropdownItem>
+          )}
+
           <DropdownItem
             leftIcon={
               <IconButton style={{ backgroundColor: "#dbdff3" }}>

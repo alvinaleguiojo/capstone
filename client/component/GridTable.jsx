@@ -19,6 +19,7 @@ export default function GridTable({
   maxHeight,
   firstRow,
   rowPerPage,
+  isClickable,
 }) {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(firstRow);
@@ -62,8 +63,11 @@ export default function GridTable({
                         <TableCell
                           key={column.id}
                           align={column.align}
-                          onClick={() => router.push(`/${path}/${row.PatientID}`)}
-                        > 
+                          onClick={() =>
+                            router.push(`/${path}/${row.PatientID}`)
+                          }
+                          disabled={true}
+                        >
                           {column.format && typeof value === "number"
                             ? column.format(value)
                             : value}
