@@ -167,6 +167,7 @@ const Index = ({ Medicines }) => {
                               width="100%"
                               height="100%"
                               style={{ borderRadius: "999px" }}
+                              alt="image"
                             />
                           </Link>
                         </>

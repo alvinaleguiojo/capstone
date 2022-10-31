@@ -1,20 +1,7 @@
 import React from "react";
-import Navbar from "../../component/Navbar";
-import Tabs from "../../component/Tabs";
-import Box from "@mui/material/Box";
-import contentStyles from "../../styles/Content.module.css";
-import reusableStyle from "../../styles/Reusable.module.css";
 
 const Index = () => {
-  return (
-    <Box>
-      <Navbar />
-      <Box className={contentStyles.content}>
-        <Tabs />
-        <Box className={reusableStyle.main__content}>Services</Box>
-      </Box>
-    </Box>
-  );
+  return <div>hello</div>;
 };
 
 export default Index;
