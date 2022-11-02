@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["https://www.benadryl.com.ph"],
+    domains: ["https://www.benadryl.com.ph", "salangikopu.com", "getmeds.ph", "www.benadryl.com.ph"],
   },
   swcMinify: true,
   env: {

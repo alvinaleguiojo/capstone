@@ -19,6 +19,10 @@ import Tabs from "@mui/material/Tabs";
 import Tab from "@mui/material/Tab";
 import LinearProgress from "@mui/material/LinearProgress";
 import { format } from "date-fns";
+import { Steps, Divider, Breadcrumb } from "antd";
+const { Step } = Steps;
+
+import { useSelector, useDispatch } from "react-redux";
 
 import {
   DateRangePickerComponent,
@@ -45,6 +49,31 @@ const columns = [
   {
     id: "Status",
     label: "Status",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+];
+
+// get all diagnosis from patient ID
+const diagnosiscolumns = [
+  {
+    id: "Diagnose",
+    label: "Diagnose",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "Date",
+    label: "Date",
+    minWidth: 170,
+    align: "left",
+    format: (value) => value.toLocaleString("en-US"),
+  },
+  {
+    id: "Notes",
+    label: "Additional Notes",
     minWidth: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
@@ -88,19 +117,40 @@ function createData(ServiceType, Schedule, Status) {
 }
 
 function createDataMedicines(Name, Quantity, ReleasedDate, ExpiryDate) {
-  return { Name, Quantity, ReleasedDate , ExpiryDate};
+  return { Name, Quantity, ReleasedDate, ExpiryDate };
 }
 
-const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
+function createDiagnosisData(Diagnose, Date, Notes) {
+  return { Diagnose, Date, Notes };
+}
+
+const PatientProfile = ({
+  patient,
+  Diagnosis,
+  records,
+  patientImage,
+  Medicines,
+}) => {
   const [sendMessage, setSendMessage] = useState("");
   const [medicinesData, setMedicinesData] = useState(Medicines);
   const [appointmentsData, setAppointmentsData] = useState(records);
+  const [diagnosisData, setDiagnosisData] = useState(Diagnosis);
   const router = useRouter();
   const id = router.query._id;
   const [loading, setLoading] = useState(true);
+  const [staffData, setStaffData] = useState(null);
 
   // date picker state
   const [calendar, setCalendar] = useState([]);
+
+  //get users data from redux
+  // const user = useSelector((state) => state.user.value);
+
+  const [current, setCurrent] = useState(0);
+  const onChange = (value) => {
+    console.log("onChange:", current);
+    setCurrent(value);
+  };
 
   //  date picker custom dates starts here
   const startDate = new Date(
@@ -163,25 +213,63 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
       rows.push(createData(record.ServiceType, date, record.Status));
   });
 
+  // // Create row for diagnosis
+  const diagnosisRows = [];
+  diagnosisData.map((data) => {
+    const date = new Date(data.Date).toLocaleDateString("en-us", {
+      weekday: "long",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+    });
+    return diagnosisRows.push(
+      createDiagnosisData(data.Diagnose, date, data.Notes)
+    );
+  });
+
   // pushing patients data to array
   const medicinesRows = [];
   medicinesData.map((medicine) => {
-    const ReleasedDate = new Date(medicine.ReleasedDate).toLocaleDateString("en-us", {
-      weekday: "long",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
-    const ExpiryDate = new Date(medicine.ExpiryDate).toLocaleDateString("en-us", {
-      weekday: "long",
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    const ReleasedDate = new Date(medicine.ReleasedDate).toLocaleDateString(
+      "en-us",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }
+    );
+    const ExpiryDate = new Date(medicine.ExpiryDate).toLocaleDateString(
+      "en-us",
+      {
+        weekday: "long",
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      }
+    );
     return medicinesRows.push(
-      createDataMedicines(medicine.Name, medicine.Quantity, ReleasedDate, ExpiryDate)
+      createDataMedicines(
+        medicine.Name,
+        medicine.Quantity,
+        ReleasedDate,
+        ExpiryDate
+      )
     );
   });
+
+  // Fetch current user data
+  useEffect(() => {
+    const PatientID = localStorage.getItem("StaffID");
+    axios
+      .get(`http://localhost:3001/user/${PatientID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, [router]);
 
   useEffect(() => {
     setTimeout(() => {
@@ -273,7 +361,9 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
       html:
         `<div class="diagnosis"><div class="input__wrapper"><label>Patient's Name</label><span>${patientName}</span></div>` +
         `<div class="input__wrapper"><label>Date</label><span>${today}</span></div>` +
-        `<div class="input__wrapper"><label>Physician</label><span>Current User</span></div>` +
+        `<div class="input__wrapper"><label>Physician</label><span>${
+          staffData.FirstName + " " + staffData.LastName
+        }</span></div>` +
         '<div class="input__wrapper"><label>Diagnosis</label><input id="swal-input1"></div>' +
         '<div class="input__wrapper"><label>Additional Notes</label><textarea id="swal-input2"></textarea></div></div>',
       focusConfirm: false,
@@ -297,8 +387,29 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
     });
 
     if (formValues) {
-      // Swal.fire(JSON.stringify(formValues));
-      console.log(formValues[0]);
+      const PatientID = patient[0].PatientID;
+      const StaffID = staffData.StaffID;
+      const Diagnose = formValues[0];
+      const Notes = formValues[1];
+
+      try {
+        axios
+          .post("http://localhost:3001/diagnosis/create", {
+            PatientID,
+            StaffID,
+            Diagnose,
+            Notes,
+          })
+          .then(() => {
+            setDiagnosisData([
+              { Diagnose, Date: today, Notes },
+              ...diagnosisData,
+            ]);
+            Swal.fire("Success!", "Diagnosis has been added!", "success");
+          });
+      } catch (error) {
+        console.log(error.message);
+      }
     }
   };
 
@@ -327,18 +438,26 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                 {/* left container starts here */}
                 <Box className={styles.left__main}>
                   <Box className={styles.backButton}>
-                    <span
+                    {/* <span
                       onClick={() => router.push("/patients")}
                       style={{ cursor: "pointer" }}
                     >
                       Back to Patients {">"}
                     </span>
-                    <span style={{ color: "grey" }}>Profile</span>
+                    <span style={{ color: "grey" }}>Profile</span> */}
+                    <Breadcrumb>
+                      <Breadcrumb.Item
+                        onClick={() => router.push("/patients")}
+                        style={{ cursor: "pointer", color: "black" }}
+                      >
+                        Back to Patients
+                      </Breadcrumb.Item>
+                      <Breadcrumb.Item style={{ color: "grey" }}>
+                        Profile
+                      </Breadcrumb.Item>
+                    </Breadcrumb>
                   </Box>
                   <Box className={styles.content}>
-                    {/* <Typography variant="h5" component="h5" color="#B82623">
-                    Patient&apos;s Profile
-                  </Typography> */}
                     <Box className={styles.ProfileImageContainer}>
                       {patientImage !== null ? (
                         <Image
@@ -516,11 +635,11 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                               aria-label="basic tabs example"
                             >
                               <Tab label="Appointments" {...a11yProps(0)} />
+                              <Tab label="Diagnosis" {...a11yProps(1)} />
                               <Tab
                                 label="Released Medicines"
-                                {...a11yProps(1)}
+                                {...a11yProps(2)}
                               />
-                              <Tab label="Diagnosis" {...a11yProps(2)} />
                             </Tabs>
                           </Box>
                           {loading && (
@@ -558,6 +677,35 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                             {!loading && (
                               <>
                                 <GridTable
+                                  rows={diagnosisRows}
+                                  columns={diagnosiscolumns}
+                                  // path="medicines"
+                                  maxHeight={380}
+                                  firstRow={4}
+                                  rowPerPage={[4]}
+                                  // showModal={true}
+                                />
+                                <Box
+                                  className={styles.getStartedBtn}
+                                  variant="contained"
+                                  onClick={
+                                    () => handleDiagnosis()
+                                    // localStorage.setItem(
+                                    //   "Patient",
+                                    //   JSON.stringify(patientData)
+                                    // );
+                                    // router.push(`/medicines`);
+                                  }
+                                >
+                                  Add Diagnosis
+                                </Box>
+                              </>
+                            )}
+                          </TabPanel>
+                          <TabPanel value={value} index={2}>
+                            {!loading && (
+                              <>
+                                <GridTable
                                   rows={medicinesRows}
                                   columns={releasedMedicinesColumns}
                                   path="medicines"
@@ -577,34 +725,6 @@ const PatientProfile = ({ patient, records, patientImage, Medicines }) => {
                                   }}
                                 >
                                   Release Medicine
-                                </Box>
-                              </>
-                            )}
-                          </TabPanel>
-                          <TabPanel value={value} index={2}>
-                            {!loading && (
-                              <>
-                                <GridTable
-                                  rows={medicinesRows}
-                                  columns={releasedMedicinesColumns}
-                                  path="medicines"
-                                  maxHeight={380}
-                                  firstRow={4}
-                                  rowPerPage={[4]}
-                                />
-                                <Box
-                                  className={styles.getStartedBtn}
-                                  variant="contained"
-                                  onClick={
-                                    () => handleDiagnosis()
-                                    // localStorage.setItem(
-                                    //   "Patient",
-                                    //   JSON.stringify(patientData)
-                                    // );
-                                    // router.push(`/medicines`);
-                                  }
-                                >
-                                  Add Diagnosis
                                 </Box>
                               </>
                             )}
@@ -694,6 +814,12 @@ export async function getStaticProps({ params }) {
     );
     const { Medicines } = await releasedMedicines.json();
 
+    // Patient Diagnosis
+    const patientDiagnosis = await fetch(
+      `http://localhost:3001/patient/diagnosis/${params._id}`
+    );
+    const { Diagnosis } = await patientDiagnosis.json();
+    console.log(Diagnosis);
 
     // feth patient Image
     const patientImageID = await patient[0].ImageID.toString();
@@ -709,6 +835,7 @@ export async function getStaticProps({ params }) {
         records,
         patientImage,
         Medicines,
+        Diagnosis,
       },
     };
   } catch (err) {

@@ -25,7 +25,9 @@ const crud = require("./router/crud");
 const patients = require("./router/patients");
 const Services = require("./router/services");
 const Medicines = require("./router/medicine");
+const Diagnosis = require("./router/diagnosis");
 const UploadImage = require("./router/uploadImage");
+const Notifications = require("./router/notifications");
 const twilio = require("./router/twilio");
 
 // import User Model
@@ -58,7 +60,9 @@ app.use(patients);
 app.use(Medicines);
 app.use(twilio);
 app.use(Services);
+app.use(Diagnosis);
 app.use(UploadImage);
+app.use(Notifications);
 
 // retrieving images from file folders
 app.use('/files', express.static('files'), (req, res, err) =>{

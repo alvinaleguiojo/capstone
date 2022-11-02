@@ -49,6 +49,7 @@
   color: white !important;
   border: none!important;
   border-radius: 20px !important;
+  padding: 10px !important;
 }
 
 .loginBtn:hover {
@@ -59,6 +60,7 @@
 
 .btnDisabled{
   border-radius: 20px!important;
+  padding: 10px !important;
 }
 
 .registerLink a {

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import styles from "../styles/UserManagement.module.css";
@@ -62,8 +63,10 @@ const AntSwitch = styled(Switch)(({ theme }) => ({
 
 // fetch users data from User Endpoint
 const UserManagement = () => {
+  const router = useRouter();
   const [users, setUsers] = useState([{ action: false }]);
   const [loading, setLoading] = useState(true);
+  const [staffID, setStaffID] = useState(null);
 
   useEffect(() => {
     const users = async () => {
@@ -79,7 +82,10 @@ const UserManagement = () => {
       }
     };
     users();
-  }, []);
+
+    const StaffID = localStorage.getItem("StaffID");
+    setStaffID(StaffID);
+  }, [router]);
 
   // Action options will be visible when the user state action is true else hidden
   const toggleAction = (user) => {
@@ -238,6 +244,7 @@ const UserManagement = () => {
                     <Image src={UserIcon} width="40px" height="40px" />
                     <Typography variant="body1" component="h5">
                       {user.FirstName + " " + user.LastName}
+                      {user.StaffID == staffID && " (You)"}
                     </Typography>
                   </Box>
                   {/* User position  */}
@@ -261,9 +268,16 @@ const UserManagement = () => {
                     </Typography>
                   </Box>
 
-                  <IconButton onClick={(e) => toggleAction(user)}>
-                    <MoreVertIcon style={{ color: user.action && "#B82623" }} />
-                  </IconButton>
+                  {user.StaffID != staffID && (
+                    <IconButton onClick={() => toggleAction(user)}>
+                      <MoreVertIcon
+                        style={{ color: user.action && "#B82623" }}
+                      />
+                    </IconButton>
+                  )}
+                  {user.StaffID == staffID && (
+                    <Box style={{ color: "transparent", width:"40px" }}></Box>
+                  )}
 
                   {/* display action option when user action state is true */}
                   {user.action && (

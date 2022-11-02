@@ -46,7 +46,7 @@
   background-color: #dbdff3;
   border-radius: 20px;
   border: none;
-  width: 100%;
+  width: 205px;
 }
 
 .input__username:focus {
@@ -79,6 +79,8 @@
   border: none !important;
   border-radius: 20px !important;
   margin-bottom: 20px !important;
+  padding: 10px !important;
+  margin-bottom: 10px!important;
 }
 
 .loginBtn:hover {
@@ -89,6 +91,8 @@
 
 .btnDisabled{
   border-radius: 20px !important;
+  padding: 10px !important;
+  margin-bottom: 10px!important;
 }
 
 .registerLink a {
@@ -101,6 +105,5 @@
 
 .username {
   display: flex;
-  gap: 0.5rem;
-  width: inherit;
+  justify-content: space-between;
 }

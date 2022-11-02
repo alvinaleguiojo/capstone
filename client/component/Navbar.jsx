@@ -37,6 +37,9 @@ import Tooltip from "@mui/material/Tooltip";
 import { TransitionGroup } from "react-transition-group";
 import Collapse from "@mui/material/Collapse";
 
+// date validation and manipulation functions
+import moment from "moment";
+
 // user Verification
 import Verification from "./Verification";
 
@@ -47,15 +50,21 @@ const Navbar = () => {
   const { PatientID } = router.query;
   const [patientData, setPatientData] = useState();
   const [loading, setLoading] = useState(false);
+  const [staffData, setStaffData] = useState(null);
+  const [dateTime, setDateTime] = useState(null);
 
-  //get users data from redux
-  const user = useSelector((state) => state.user.value);
   const userRole = [
     "Administrator",
     "Baranggay Nutritionist Scholar",
     "MidWife",
     "Baranggay Health Work",
   ];
+
+  // Display realtime date and time
+  setInterval(() => {
+    const currentDateTime = moment().format("MMMM DD YYYY, h:mm:ss a");
+    setDateTime(currentDateTime);
+  }, 1000);
 
   // get medicines data from redux
   const medicinesList = useSelector((state) => state.medicines.value);
@@ -65,6 +74,9 @@ const Navbar = () => {
 
   // Request Group Focus
   const [requestGroupFocus, setRequestGroupFocus] = useState(false);
+
+  // Notification Group Focus
+  const [notificationGroupFocus, setNotificationGroupFocus] = useState(false);
 
   // dropdown state
   const [open, setOpen] = useState(false);
@@ -77,16 +89,35 @@ const Navbar = () => {
     // fetch Patient dat from local storage
     const Patient = JSON.parse(localStorage.getItem("Patient"));
     setPatientData(Patient);
+
+    const PatientID = localStorage.getItem("StaffID");
+    axios
+      .get(`http://localhost:3001/user/${PatientID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }, [router]);
 
   const handleClickSettings = () => {
     setRequestGroupFocus(false);
+    setNotificationGroupFocus(false);
     setOpen(!open);
   };
 
+  // to open and close medicine list view
   const handleRequestMedicineFocus = () => {
     setOpen(false);
+    setNotificationGroupFocus(false);
     setRequestGroupFocus(!requestGroupFocus);
+  };
+
+  const handleNotificationFocus = () => {
+    setOpen(false);
+    setRequestGroupFocus(false);
+    setNotificationGroupFocus(!notificationGroupFocus);
   };
 
   useEffect(() => {
@@ -116,19 +147,20 @@ const Navbar = () => {
               <Box className={styles.user}>
                 {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
                 <Box className={styles.avatar}>
-                  <Typography variant="h5" component="h5">
-                    {user[0].Email.substring(0, 1).toUpperCase()}
+                  <Typography variant="h5" component="h5" color="#fff">
+                    {staffData &&
+                      staffData.FirstName.substring(0, 1).toUpperCase()}
                   </Typography>
                 </Box>
                 <Box className={styles.user__name}>
                   <Typography variant="h5" component="h5" color="#b82623">
-                    {user[0].LastName.toUpperCase()}
+                    {staffData && staffData.LastName.toUpperCase()}
                   </Typography>
                   <Typography variant="caption" component="h5" color="#b82623">
-                    {user[0].Role === "ADMIN" && userRole[0]}
-                    {user[0].Role === "BNS" && userRole[1]}
-                    {user[0].Role === "MIDWIFE" && userRole[2]}
-                    {user[0].Role === "BHW" && userRole[2]}
+                    {staffData && staffData.Role === "ADMIN" && userRole[0]}
+                    {staffData && staffData.Role === "BNS" && userRole[1]}
+                    {staffData && staffData.Role === "MIDWIFE" && userRole[2]}
+                    {staffData && staffData.Role === "BHW" && userRole[2]}
                   </Typography>
                 </Box>
               </Box>
@@ -142,7 +174,7 @@ const Navbar = () => {
                   </Typography>
 
                   <Typography variant="caption" component="h5" color="#b82623">
-                    {today}
+                    {dateTime}
                   </Typography>
                 </Box>
               </Box>
@@ -185,13 +217,28 @@ const Navbar = () => {
                 />
               )}
 
+              {medicinesList.length > 0 && (
+                <Box className={styles.notification__count}>
+                  <Typography variant="caption" component="h5" color="#fff">
+                    {medicinesList.length >= 9 ? "9+" : medicinesList.length}
+                  </Typography>
+                </Box>
+              )}
+
               <Tooltip title="Notification">
-                <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <IconButton
+                  style={{ backgroundColor: "#dbdff3" }}
+                  onClick={handleNotificationFocus}
+                >
                   <svg
                     viewBox="0 0 28 28"
                     alt=""
                     className={
-                      theme ? styles.header__icon__dark : styles.header__icon
+                      theme
+                        ? styles.header__icon__dark
+                        : notificationGroupFocus
+                        ? styles.header__icon_active
+                        : styles.header__icon
                     }
                     fill="currentColor"
                     height="20"
@@ -201,6 +248,8 @@ const Navbar = () => {
                   </svg>
                 </IconButton>
               </Tooltip>
+
+              {notificationGroupFocus && <Notification />}
 
               <IconButton
                 onClick={handleClickSettings}
@@ -339,14 +388,73 @@ const MedicineCart = () => {
   );
 };
 
+function Notification() {
+  const router = useRouter();
+  const [notificationData, setNotificationData] = useState([]);
+
+  useEffect(() => {
+    const StaffID = localStorage.getItem("StaffID");
+    try {
+      axios
+        .get(`http://localhost:3001/staff/notifications/${StaffID}`)
+        .then((response) => {
+          console.log(response);
+          setNotificationData(response.data.Notifications);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  }, [router]);
+
+  return (
+    <Box className={styles.Notification}>
+      <h2>Notifications</h2>
+      {notificationData.map((notification, index) => (
+        <NotificationCard key={index} data={notification} />
+      ))}
+    </Box>
+  );
+}
+
+function NotificationCard(props) {
+  const router = useRouter();
+  const dateNow = moment(props.data.Date).startOf("hour").fromNow();
+
+  return (
+    <Box
+      className={styles.notificationCard}
+      style={{
+        backgroundColor: props.data.Unread == 0 ? "#fcf2f2" : "transparent",
+        borderRadius: "5px",
+        padding: "5px",
+      }}
+      onClick={() => router.push(`?${props.data.Route}`)}
+    >
+      <span>{props.data.Type}</span>
+      <span>{props.data.Description}</span>
+      <span>{dateNow + " ago"} </span>
+    </Box>
+  );
+}
+
 function DropdownMenu() {
   const [activeMenu, setActiveMenu] = useState("main");
   const [menuHeight, setMenuHeight] = useState(null);
   const nodeRef = useRef(null);
   const router = useRouter();
+  const [staffData, setStaffData] = useState(null);
 
-  //get users data from redux
-  const user = useSelector((state) => state.user.value);
+  useEffect(() => {
+    const StaffID = localStorage.getItem("StaffID");
+    axios
+      .get(`http://localhost:3001/user/${StaffID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, [router]);
 
   function calculateHeight(el) {
     const height = el.offsetHeight + 30;
@@ -433,7 +541,7 @@ function DropdownMenu() {
           >
             Theme
           </DropdownItem>
-          {user[0].Role.includes("ADMIN") && (
+          {staffData && staffData.Role.includes("ADMIN") && (
             <DropdownItem
               leftIcon={
                 <IconButton style={{ backgroundColor: "#dbdff3" }}>

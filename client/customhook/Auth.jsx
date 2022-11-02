@@ -18,6 +18,7 @@ export default async function useAuth() {
         .then((response) => {
           // set User to to global state redux
           dispatch(addUser(response.data.userData));
+          localStorage.setItem("StaffID", response.data.userData._id);
           return response;
         })
         .catch(() => {

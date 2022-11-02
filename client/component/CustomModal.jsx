@@ -235,22 +235,41 @@ export default function CustomModal() {
       confirmButtonText: "Confirm",
       allowOutsideClick: false,
     }).then(async (result) => {
-      if (!result.isConfirmed) return ToggleMoreAction(serviceData);
-      await axios.delete(
-        `http://localhost:3001/service/delete/${serviceData.ServiceID}`
-      );
-      // here we are filtering - the idea is remove an item from the serviceData array on a button click
-      const removeItem = servicesData.filter((service) => {
-        // return the rest of the services that don't match the item we are deleting
-        return service.ServiceID !== serviceData.ServiceID;
-      });
-      // removeItem returns a new array - so now we are setting the serviceData to the new array
-      setServicesData(removeItem);
-      await Swal.fire(
-        "Success!",
-        "Service has been deleted successfully!",
-        "success"
-      );
+      try {
+        if (!result.isConfirmed) return ToggleMoreAction(serviceData);
+        await axios.delete(
+          `http://localhost:3001/service/delete/${serviceData.ServiceID}`
+        );
+        // here we are filtering - the idea is remove an item from the serviceData array on a button click
+        const removeItem = servicesData.filter((service) => {
+          // return the rest of the services that don't match the item we are deleting
+          return service.ServiceID !== serviceData.ServiceID;
+        });
+        // removeItem returns a new array - so now we are setting the serviceData to the new array
+        setServicesData(removeItem);
+        await Swal.fire(
+          "Success!",
+          "Service has been deleted successfully!",
+          "success"
+        );
+      } catch (error) {
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+
+        Toast.fire({
+          icon: "error",
+          title: "Sorry, you can not delete this service.",
+        });
+      }
     });
   };
 

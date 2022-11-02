@@ -180,7 +180,7 @@ const Index = () => {
               variant="contained"
               className={disabled ? styles.btnDisabled : styles.loginBtn}
             >
-              Submit
+              Login
             </LoadingButton>
           </FormControl>
           <Typography

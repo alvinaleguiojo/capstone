@@ -18,6 +18,7 @@ import Swal from "sweetalert2";
 import Meta from "../../../../component/Meta";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
+import { Divider, Breadcrumb } from "antd";
 
 const Index = ({ patient, Services }) => {
   const [appointment, setAppointment] = useState({});
@@ -107,7 +108,7 @@ const Index = ({ patient, Services }) => {
                 {/* left content starts here */}
                 <Box className={styles.content__left}>
                   <Box className={styles.backButton}>
-                    <span
+                    {/* <span
                       onClick={() => router.push(`/patients`)}
                       style={{ fontSize: "14px", cursor: "pointer" }}
                     >
@@ -121,7 +122,24 @@ const Index = ({ patient, Services }) => {
                     </span>
                     <span style={{ color: "grey", fontSize: "14px" }}>
                       Appointment
-                    </span>
+                    </span> */}
+                    <Breadcrumb>
+                      <Breadcrumb.Item
+                        onClick={() => router.push("/patients")}
+                        style={{ cursor: "pointer", color: "black" }}
+                      >
+                        Back to Patients
+                      </Breadcrumb.Item>
+                      <Breadcrumb.Item
+                        onClick={() => router.push(`/patients/${patientData.PatientID}`)}
+                        style={{ cursor: "pointer", color: "black" }}
+                      >
+                        Profile
+                      </Breadcrumb.Item>
+                      <Breadcrumb.Item style={{ color: "grey" }}>
+                        Set Appointment
+                      </Breadcrumb.Item>
+                    </Breadcrumb>
                   </Box>
                   <Typography variant="body2" component="h4" color="#585858">
                     First Name
@@ -206,8 +224,8 @@ const Index = ({ patient, Services }) => {
                   </Typography>
                   <textarea
                     style={{
-                      maxWidth: "380px",
-                      minWidth: "380px",
+                      maxWidth: "415px",
+                      minWidth: "415px",
                       minHeight: "100px",
                       maxHeight: "110px",
                     }}
@@ -306,7 +324,9 @@ export async function getStaticProps({ params }) {
     const res = await fetch(`http://localhost:3001/patient/${params._id}`);
     const patient = await res.json();
 
-    const serviceResponse = await fetch(`http://localhost:3001/services_enabled`);
+    const serviceResponse = await fetch(
+      `http://localhost:3001/services_enabled`
+    );
     const { Services } = await serviceResponse.json();
 
     return {

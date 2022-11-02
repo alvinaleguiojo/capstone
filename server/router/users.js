@@ -15,6 +15,8 @@ const CreateUserPromise = require("../AsyncAwait/Users/CreateUser");
 const UpdateUserPromiseByID = require("../AsyncAwait/Users/UpdateUserById");
 const UserCredentialPromise = require("../AsyncAwait/Users/UserLogin");
 
+const NewNotificationPromise = require("../AsyncAwait/Notifications/NewNotifications");
+
 router.use(cookieParser());
 require("dotenv").config();
 
@@ -74,6 +76,7 @@ router.post("/register", async (req, res) => {
   const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const { LastName, FirstName, Email, Password } = req.body;
   const EmailExist = await UserCredentialPromise(Email);
+  const Description = `Please verify username ${FirstName} ${LastName}`;
 
   EmailExist.length > 0 &&
     EmailExist[0].Email === Email &&
@@ -102,6 +105,15 @@ router.post("/register", async (req, res) => {
             secure: true,
             sameSite: "none",
           });
+
+          await NewNotificationPromise({
+            StaffID: 1,
+            Type: "New Registered User",
+            Route: "settings=user_management",
+            Unread: false,
+            Description,
+          });
+
           res.status(200).json({ message: "User added successfully" });
         }
       } catch (err) {

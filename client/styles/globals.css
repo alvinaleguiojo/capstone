@@ -260,3 +260,14 @@ secondary  */
   color: blue; 
 } 
  
+
+
+a {
+  color: inherit!important;
+  text-decoration: none;
+  background-color: transparent;
+  outline: none;
+  cursor: pointer;
+  transition: color 0.3s;
+  -webkit-text-decoration-skip: objects;
+}

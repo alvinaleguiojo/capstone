@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/globals.css";
-// import 'antd/dist/antd.css';
+import 'antd/dist/antd.css';
 import NextProgress from "next-progress";
 import Layout from "../component/Layout";
 import { configureStore } from "@reduxjs/toolkit";

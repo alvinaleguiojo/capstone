@@ -72,6 +72,8 @@
 }
 
 .right__content {
+  padding-left: 30px;
+  /* padding-right: 30px; */
   display: flex;
   flex-direction: column;
   width: 100%;

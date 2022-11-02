@@ -191,14 +191,14 @@ const Index = ({ Appointments }) => {
       datasets: [
         {
           label: "Completed",
-          data: [3, 2, 10, 5, 8, 6],
+          data: [3, 2, 10, 5, 8],
           borderColor: "rgb(8, 153, 129)",
           backgroundColor: "rgba(8, 153, 129)",
           // borderRadius: 20,
         },
         {
           label: "Cancelled",
-          data: [3, 6, 14, 10, 3, 7],
+          data: [3, 6, 14, 10, 3],
           borderColor: "rgb(184, 38, 35)",
           backgroundColor: "rgba(184, 38, 35)",
           // borderRadius: 40,
@@ -534,12 +534,12 @@ const Index = ({ Appointments }) => {
                 </Box>
 
                 {/* line */}
-                <Box
+                {/* <Box
                   width="50%"
                   height={3}
                   backgroundColor="#B82623"
                   alignSelf="center"
-                ></Box>
+                ></Box> */}
                 {/* line */}
 
                 <Box className={styles.monthly__reports}>
@@ -553,7 +553,7 @@ const Index = ({ Appointments }) => {
                     Number of Appointments
                   </Typography>
                 </Box>
-                <Box width="100%">
+                <Box style={{width:"95%"}}>
                   <Bar options={chartOptions} data={chartData} />
                 </Box>
               </Box>
