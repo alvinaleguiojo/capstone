@@ -57,7 +57,7 @@ const Index = ({ patient, Services }) => {
     e.preventDefault();
     setLoading(true);
     axios
-      .post("http://localhost:3001/appointment/create", {
+      .post(`${process.env.BaseURI}/appointment/create`, {
         ...appointment,
       })
       .then(() => {
@@ -306,7 +306,7 @@ export default Index;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/all_patients");
+    const res = await fetch(`${process.env.BaseURI}/all_patients`);
     const { Patients } = await res.json();
 
     return {
@@ -322,11 +322,11 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const res = await fetch(`http://localhost:3001/patient/${params._id}`);
+    const res = await fetch(`${process.env.BaseURI}/patient/${params._id}`);
     const patient = await res.json();
 
     const serviceResponse = await fetch(
-      `http://localhost:3001/services_enabled`
+      `${process.env.BaseURI}/services_enabled`
     );
     const { Services } = await serviceResponse.json();
 

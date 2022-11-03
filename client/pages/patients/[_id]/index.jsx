@@ -831,31 +831,31 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const res = await fetch(`http://localhost:3001/patient/${params._id}`);
+    const res = await fetch(`${process.env.BaseURI}/patient/${params._id}`);
     const patient = await res.json();
 
     // Patient Records
     const patientRecords = await fetch(
-      `http://localhost:3001/patient/profile/records/${params._id}`
+      `${process.env.BaseURI}/patient/profile/records/${params._id}`
     );
     const records = await patientRecords.json();
 
     // Get all released Medicines
     const releasedMedicines = await fetch(
-      `http://localhost:3001/medicines/${params._id}`
+      `${process.env.BaseURI}/medicines/${params._id}`
     );
     const { Medicines } = await releasedMedicines.json();
 
     // Patient Diagnosis
     const patientDiagnosis = await fetch(
-      `http://localhost:3001/patient/diagnosis/${params._id}`
+      `${process.env.BaseURI}/patient/diagnosis/${params._id}`
     );
     const { Diagnosis } = await patientDiagnosis.json();
 
     // feth patient Image
     const patientImageID = await patient[0].ImageID.toString();
     const imageRes = await fetch(
-      `http://localhost:3001/image/${patientImageID}`
+      `${process.env.BaseURI}/image/${patientImageID}`
     );
     const patientProfilePic = await imageRes.json();
     const patientImage = (await patientProfilePic[0].Image) || null;
