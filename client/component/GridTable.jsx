@@ -28,6 +28,7 @@ export default function GridTable({
   const [rowsPerPage, setRowsPerPage] = useState(firstRow);
   const router = useRouter();
   const [staffData, setStaffData] = useState(null);
+  const [rowsData, setRowsData] = useState(rows);
 
   useEffect(() => {
     const PatientID = localStorage.getItem("StaffID");
@@ -39,6 +40,13 @@ export default function GridTable({
       .catch((error) => {
         console.log(error.message);
       });
+
+    // axios.get(`http://localhost:3001/appointments`);
+    // then((response) => {
+    //   setAppointmentsData()
+    // }).catch((error) => {
+    //   console.log(error.message);
+    // });
   }, [router]);
 
   const handleChangePage = (event, newPage) => {
@@ -50,61 +58,59 @@ export default function GridTable({
     setPage(0);
   };
 
-  const handleDiagnosis = async () => {
-    // const patietnName = `${patient[0].FirstName}  ${patient[0].LastName}`;
-    const today = format(new Date(), "MMMM dd, yyyy");
-
-    const { value: formValues } = await Swal.fire({
-      title: "Diagnosis",
-      html:
-        // `<div class="diagnosis"><div class="input__wrapper"><label>Patient's Name</label><span>${patientName}</span></div>` +
-        `<div class="input__wrapper"><label>Date</label><span>${today}</span></div>` +
-        `<div class="input__wrapper"><label>Physician</label><span>${
-          staffData.FirstName + " " + staffData.LastName
-        }</span></div>` +
-        '<div class="input__wrapper"><label>Diagnosis</label><input id="swal-input1"></div>' +
-        '<div class="input__wrapper"><label>Additional Notes</label><textarea id="swal-input2"></textarea></div></div>',
-      focusConfirm: false,
-      allowOutsideClick: false,
+  const handleDiagnosis = async (row) => {
+    console.log(row)
+    const { value: updatedRole } = await Swal.fire({
+      title: "Update Appoinment Status",
+      input: "select",
+      inputOptions: {
+        Status: {
+          Pending: "Pending",
+          Ongoing: "Ongoing",
+          Completed: "Completed",
+          Cancelled: "Cancelled"
+        },
+      },
+      inputPlaceholder: row.Status,
       showCancelButton: true,
       inputValidator: (value) => {
         return new Promise((resolve) => {
-          // if (value[0] !== '') {
-          //   resolve()
-          // } else {
-          //   resolve('You need to select oranges :)')
-          // }
+          if (value) {
+            resolve();
+            axios
+              .patch(
+                `http://localhost:3001/appointment/update/${row.AppointmentID}`,
+                {
+                  ...row,
+                  Status: value,
+                }
+              )
+              .then(() => {
+                setRowsData([...rowsData, { ...row, Status: updatedRole }]);
+                const newValue = { ...row, Status: value };
+                const updatedAppointment = rowsData.map(
+                  (updateAppoinment) => {
+                    return updateAppoinment.AppointmentID === row.AppointmentID
+                      ? newValue
+                      : updateAppoinment;
+                  }
+                );
+                //setting updated appoinment status to rows data State
+                setRowsData(updatedAppointment);
+              })
+              .then(() => {
+                Swal.fire(
+                  "Success!",
+                  `Changes are saved!`,
+                  "success"
+                );
+              });
+          } else {
+            resolve("You need to select a Role");
+          }
         });
       },
-      preConfirm: () => {
-        return [
-          document.getElementById("swal-input1").value,
-          document.getElementById("swal-input2").value,
-        ];
-      },
     });
-
-    if (formValues) {
-      const PatientID = patient[0].PatientID;
-      const StaffID = staffData.StaffID;
-      const Diagnose = formValues[0];
-      const Notes = formValues[1];
-
-      try {
-        axios
-          .post("http://localhost:3001/diagnosis/create", {
-            PatientID,
-            StaffID,
-            Diagnose,
-            Notes,
-          })
-          .then(() => {
-            Swal.fire("Success!", "Diagnosis has been added!", "success");
-          });
-      } catch (error) {
-        console.log(error.message);
-      }
-    }
   };
 
   return (
@@ -125,7 +131,7 @@ export default function GridTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows
+            {rowsData
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((row, key) => {
                 return (
@@ -138,7 +144,7 @@ export default function GridTable({
                           align={column.align}
                           onClick={() => {
                             showModal
-                              ? handleDiagnosis()
+                              ? handleDiagnosis(row)
                               : router.push(`/${path}/${row.PatientID}`);
                           }}
                           disabled={true}

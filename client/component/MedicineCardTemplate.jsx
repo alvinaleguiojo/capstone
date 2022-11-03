@@ -75,12 +75,15 @@ const CardTemplate = (props) => {
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
-      <Checkbox
-        {...label}
-        checked={checked}
-        onChange={(event) => handleChange(event, props.data)}
-        disabled={props.data.Stocks > 0 ? false : true}
-      />
+      {props.staffData.Role === "BNS" && (
+        <Checkbox
+          {...label}
+          checked={checked}
+          onChange={(event) => handleChange(event, props.data)}
+          disabled={props.data.Stocks > 0 ? false : true}
+        />
+      )}
+
       <Box className={styles.imageContainer}>
         {props.loading ? (
           <Skeleton
@@ -172,18 +175,7 @@ const CardTemplate = (props) => {
             </Typography>
           </Box>
 
-          {/* <Box
-            className={styles.content}
-            style={{ display: "flex", alignItems: "center" }}
-          >
-            <Button
-              onClick={() => handleRequest(props.data)}
-              disabled={props.data.Stocks > 0 ? false : true}
-              style={{ color: props.data.Stocks > 0 && "#b82623" }}
-            >
-              <AddCircleOutlineIcon /> Select
-            </Button>
-          </Box> */}
+          {/*   */}
           <Button
             onClick={() => router.push(`/medicines/${props.data.MedicineID}`)}
             style={{ display: "flex", alignItems: "center", color: "#8a8fa0" }}

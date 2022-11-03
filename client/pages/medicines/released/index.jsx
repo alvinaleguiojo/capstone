@@ -42,7 +42,7 @@ const Index = ({ Medicines }) => {
         setPreviousPage(response.data.previous);
         setPageNumber(response.data.next);
         setData(response.data.results);
-        console.log(response);
+        console.log(response.data.results)
       })
       .then(() => {
         setTimeout(() => {

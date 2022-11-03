@@ -76,9 +76,13 @@ const Index = ({ Appointments }) => {
   const startDate = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
-    25
+    new Date().getDay() - 1
   );
-  const endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 28);
+  const endDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDay() - 1
+  );
 
   // startDate.setDate(startDate.getDate() + 30);
   // endDate.setDate(endDate.getDate() + 30);
@@ -259,7 +263,9 @@ const Index = ({ Appointments }) => {
                   <Box>
                     <Typography variant="h6" component="h6" color="#B82623">
                       {"Good " +
-                        ((hour < 12 && "Morning") || (hour < 18 && "Afternoon") || "Evening")}
+                        ((hour < 12 && "Morning") ||
+                          (hour < 18 && "Afternoon") ||
+                          "Evening")}
                     </Typography>
                     <Typography variant="body2" component="h5">
                       Have a <span>healthy</span>{" "}
@@ -317,26 +323,16 @@ const Index = ({ Appointments }) => {
                   {appointments.map((appointment) => {
                     return (
                       <Box key={appointment.AppointmentID}>
-                        {loading ? (
-                          <Skeleton
-                            animation="wave"
-                            style={{
-                              width: "100%",
-                              padding: "25px",
-                              gap: "0px",
-                            }}
-                          />
-                        ) : (
-                          <Box key={appointment.AppointmentID}>
-                            <CustomCard
-                              name={appointment.LastName}
-                              date={appointment.ServiceType}
-                              AppointmentID={appointment.AppointmentID}
-                              icon={waitingIcon}
-                              status={appointment.Status}
-                            />
-                          </Box>
-                        )}
+                        <CustomCard
+                          name={appointment.LastName}
+                          service={appointment.ServiceType}
+                          AppointmentID={appointment.AppointmentID}
+                          icon={waitingIcon}
+                          status={appointment.Status}
+                          color={appointment.Color}
+                          loading={loading}
+                          patientID = {appointment.PatientID}
+                        />
                       </Box>
                     );
                   })}
@@ -553,7 +549,7 @@ const Index = ({ Appointments }) => {
                     Number of Appointments
                   </Typography>
                 </Box>
-                <Box style={{width:"95%"}}>
+                <Box style={{ width: "95%" }}>
                   <Bar options={chartOptions} data={chartData} />
                 </Box>
               </Box>

@@ -36,19 +36,20 @@ const Index = ({ patient, Services }) => {
 
   useEffect(() => {
     let appointmentInput = Object.values(appointment).includes("");
-    !appointmentInput && Object.keys(appointment).length >= 4 && calendar
+    !appointmentInput && Object.keys(appointment).length >= 3 && calendar && 
+      appointment.ServiceID 
       ? setDisabled(false)
       : setDisabled(true);
   }, [appointment, calendar]);
 
   // set calendar and patientid to state value
   useEffect(() => {
-    const date = `${calendar.getFullYear()}-${calendar.getMonth()}-${calendar.getDate()}`;
+    // calendar.setDate(calendar.getDate() + 31);
+    // const date = `${calendar.getFullYear()}-${calendar.getMonth()}-${calendar.getDate()}`;
     setAppointment({
       ...appointment,
-      Schedule: date,
-      PatientID: parseInt(routeID),
-      Status: "Waiting",
+      Schedule: calendar,
+      PatientID: parseInt(routeID)
     });
   }, [calendar]);
 

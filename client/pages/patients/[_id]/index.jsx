@@ -21,6 +21,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import { format } from "date-fns";
 import { Steps, Divider, Breadcrumb } from "antd";
 const { Step } = Steps;
+import Tooltip from "@mui/material/Tooltip";
 
 import { useSelector, useDispatch } from "react-redux";
 
@@ -112,8 +113,8 @@ const releasedMedicinesColumns = [
   },
 ];
 
-function createData(ServiceType, Schedule, Status) {
-  return { ServiceType, Schedule, Status };
+function createData(AppointmentID, ServiceType, Schedule, Status) {
+  return { AppointmentID, ServiceType, Schedule, Status };
 }
 
 function createDataMedicines(Name, Quantity, ReleasedDate, ExpiryDate) {
@@ -156,9 +157,13 @@ const PatientProfile = ({
   const startDate = new Date(
     new Date().getFullYear(),
     new Date().getMonth(),
-    25
+    new Date().getDay() - 1
   );
-  const endDate = new Date(new Date().getFullYear(), new Date().getMonth(), 28);
+  const endDate = new Date(
+    new Date().getFullYear(),
+    new Date().getMonth(),
+    new Date().getDay() - 1
+  );
 
   const today = new Date(new Date().toDateString());
   const weekStart = new Date(
@@ -210,7 +215,14 @@ const PatientProfile = ({
       day: "numeric",
     });
     record.PatientID == id &&
-      rows.push(createData(record.ServiceType, date, record.Status));
+      rows.push(
+        createData(
+          record.AppointmentID,
+          record.ServiceType,
+          date,
+          record.Status
+        )
+      );
   });
 
   // // Create row for diagnosis
@@ -320,22 +332,34 @@ const PatientProfile = ({
     });
 
     if (text) {
-      await axios
-        .post("http://localhost:3001/sendMessagetoPatient", {
-          text,
-          phone,
-        })
-        .then(() => {
-          Swal.fire("Success!", "Appointment has been set!", "success");
-        })
-        .catch((err) =>
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-            // footer: '<a href="">Why do I have this issue?</a>',
+      try {
+        await axios
+          .post("http://localhost:3001/sendMessagetoPatient", {
+            text,
+            phone,
           })
-        );
+          .then((res) => {
+            console.log(res);
+            Swal.fire("Success!", "Appointment has been set!", "success");
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error.response.data.message}`,
+              // footer: '<a href="">Why do I have this issue?</a>',
+            });
+          });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err.message}`,
+          // footer: '<a href="">Why do I have this issue?</a>',
+        });
+      }
     }
     if (text == "") {
       Swal.fire({
@@ -526,18 +550,20 @@ const PatientProfile = ({
                           >
                             {patientData.Phone}
                           </Typography>
-                          <Button
-                            onClick={() => {
-                              handleMessageModal(patientData.Phone);
-                            }}
-                          >
-                            <Image
-                              src={MessageIcon}
-                              alt="user profile"
-                              height={25}
-                              width={25}
-                            />
-                          </Button>
+                          <Tooltip title="Phone Number should start with +63">
+                            <Button
+                              onClick={() => {
+                                handleMessageModal(patientData.Phone);
+                              }}
+                            >
+                              <Image
+                                src={MessageIcon}
+                                alt="user profile"
+                                height={25}
+                                width={25}
+                              />
+                            </Button>
+                          </Tooltip>
                         </Box>
                       </Box>
                       {/* contact end here */}
@@ -594,7 +620,7 @@ const PatientProfile = ({
                           endDate={endDate}
                           format="MMM-dd-yyyy"
                           change={getDateRange}
-                          width={180}
+                          width={190}
                         >
                           <PresetsDirective>
                             <PresetDirective
@@ -658,6 +684,7 @@ const PatientProfile = ({
                                   maxHeight={380}
                                   firstRow={4}
                                   rowPerPage={[4]}
+                                  showModal={true}
                                 />
                                 <Box
                                   className={styles.getStartedBtn}
@@ -685,20 +712,22 @@ const PatientProfile = ({
                                   rowPerPage={[4]}
                                   // showModal={true}
                                 />
-                                <Box
-                                  className={styles.getStartedBtn}
-                                  variant="contained"
-                                  onClick={
-                                    () => handleDiagnosis()
-                                    // localStorage.setItem(
-                                    //   "Patient",
-                                    //   JSON.stringify(patientData)
-                                    // );
-                                    // router.push(`/medicines`);
-                                  }
-                                >
-                                  Add Diagnosis
-                                </Box>
+                                {staffData.Role == "MIDWIFE" && (
+                                  <Box
+                                    className={styles.getStartedBtn}
+                                    variant="contained"
+                                    onClick={
+                                      () => handleDiagnosis()
+                                      // localStorage.setItem(
+                                      //   "Patient",
+                                      //   JSON.stringify(patientData)
+                                      // );
+                                      // router.push(`/medicines`);
+                                    }
+                                  >
+                                    Add Diagnosis
+                                  </Box>
+                                )}
                               </>
                             )}
                           </TabPanel>
@@ -713,19 +742,22 @@ const PatientProfile = ({
                                   firstRow={4}
                                   rowPerPage={[4]}
                                 />
-                                <Box
-                                  className={styles.getStartedBtn}
-                                  variant="contained"
-                                  onClick={() => {
-                                    localStorage.setItem(
-                                      "Patient",
-                                      JSON.stringify(patientData)
-                                    );
-                                    router.push(`/medicines`);
-                                  }}
-                                >
-                                  Release Medicine
-                                </Box>
+
+                                {staffData.Role == "BNS" && (
+                                  <Box
+                                    className={styles.getStartedBtn}
+                                    variant="contained"
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "Patient",
+                                        JSON.stringify(patientData)
+                                      );
+                                      router.push(`/medicines`);
+                                    }}
+                                  >
+                                    Release Medicine
+                                  </Box>
+                                )}
                               </>
                             )}
                           </TabPanel>
@@ -819,7 +851,6 @@ export async function getStaticProps({ params }) {
       `http://localhost:3001/patient/diagnosis/${params._id}`
     );
     const { Diagnosis } = await patientDiagnosis.json();
-    console.log(Diagnosis);
 
     // feth patient Image
     const patientImageID = await patient[0].ImageID.toString();

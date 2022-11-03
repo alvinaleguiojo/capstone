@@ -26,12 +26,26 @@ const Index = ({ Medicines }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageNumber, setPageNumber] = useState(0);
   const [previousPage, setPreviousPage] = useState(0);
+  const [staffData, setStaffData] = useState(null);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
   }, [data]);
+
+  // fetch user data
+  useEffect(() => {
+    const StaffID = localStorage.getItem("StaffID");
+    axios
+      .get(`http://localhost:3001/user/${StaffID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  }, [router]);
 
   useEffect(() => {
     axios
@@ -42,7 +56,6 @@ const Index = ({ Medicines }) => {
         setPreviousPage(response.data.previous);
         setPageNumber(response.data.next);
         setData(response.data.results);
-        console.log(response);
       })
       .then(() => {
         setTimeout(() => {
@@ -111,14 +124,16 @@ const Index = ({ Medicines }) => {
                     </Typography>
                   </Box>
                 </Box>
-                <Box className={MedicineStyles.AddMedicine}>
-                  <Button
-                    onClick={() => router.push("/medicines/register")}
-                    style={{ color: "#b82623" }}
-                  >
-                    Add New Medicine
-                  </Button>
-                </Box>
+                {staffData && staffData.Role === "BNS" && (
+                  <Box className={MedicineStyles.AddMedicine}>
+                    <Button
+                      onClick={() => router.push("/medicines/register")}
+                      style={{ color: "#b82623" }}
+                    >
+                      Add New Medicine
+                    </Button>
+                  </Box>
+                )}
               </Box>
             </Box>
             <Box className={styles.search}>
@@ -138,6 +153,7 @@ const Index = ({ Medicines }) => {
 
             {/* Medicine cards here */}
             {data.map((request, index) => {
+              request.Availability == 1;
               return (
                 <Box className={styles.medicine__list} key={request.MedicineID}>
                   <MedicineCardTemplate
@@ -145,6 +161,7 @@ const Index = ({ Medicines }) => {
                     loading={loading}
                     id={request.id}
                     data={request}
+                    staffData={staffData || []}
                   />
                 </Box>
               );

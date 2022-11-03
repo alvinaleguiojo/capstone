@@ -71,9 +71,6 @@ router.patch("/user/update/:id", async (req, res) => {
 
 // create new User
 router.post("/register", async (req, res) => {
-  const today = new Date();
-  today.setDate(today.getDate() + 31);
-  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const { LastName, FirstName, Email, Password } = req.body;
   const EmailExist = await UserCredentialPromise(Email);
   const Description = `Please verify username ${FirstName} ${LastName}`;
@@ -91,7 +88,6 @@ router.post("/register", async (req, res) => {
           Email,
           Password: hash,
           Role: "BHW",
-          CreatedDate: date,
           Status: false,
         });
         const response = await newStaff;

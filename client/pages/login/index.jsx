@@ -188,7 +188,7 @@ const Index = () => {
             component="h4"
             className={styles.registerLink}
           >
-            Don't have an account? <Link href="/register">Register</Link>
+            Don&apos;t have an account? <Link href="/register">Register</Link>
           </Typography>
         </Box>
       </Box>

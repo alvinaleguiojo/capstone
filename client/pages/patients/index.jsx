@@ -163,7 +163,7 @@ const Index = ({ patients }) => {
                   <Button
                     className={styles.page}
                     onClick={NextPage}
-                    disabled={patientData.length <= 1 ? true : false}
+                    disabled={patientData.length <= 4 ? true : false}
                   >
                     Next
                   </Button>

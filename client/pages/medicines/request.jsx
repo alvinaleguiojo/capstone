@@ -15,6 +15,7 @@ import Swal from "sweetalert2";
 import Link from "next/link";
 import axios from "axios";
 import { format } from "date-fns";
+import { Steps, Divider, Breadcrumb } from "antd";
 
 const Request = () => {
   // medicines data from redux
@@ -94,17 +95,30 @@ const Request = () => {
         <Box className={reusableStyle.main__content}>
           <Box className={styles.request}>
             <Box className={styles.left__container}>
+              <Breadcrumb>
+                <Breadcrumb.Item
+                  onClick={() => router.push("/medicines")}
+                  style={{ cursor: "pointer", color: "black" }}
+                >
+                  Back to Medicines List
+                </Breadcrumb.Item>
+                <Breadcrumb.Item style={{ color: "grey" }}>
+                  Selected Item{medicinesList.length > 1 && "s"}
+                </Breadcrumb.Item>
+              </Breadcrumb>
               <Box className={styles.cards}>
                 {medicinesList.map((medicine, index) => (
-                  <RequestCard data={medicine} />
+                  <div key={medicine.MedicineID}>
+                    <RequestCard data={medicine} />
+                  </div>
                 ))}
               </Box>
               {medicinesList.length <= 0 && (
                 <div>
                   <h3>No medicine selected</h3>
-                  <Link href="/medicines">
+                  {/* <Link href="/medicines">
                     Click here to go back Medicine list
-                  </Link>
+                  </Link> */}
                 </div>
               )}
             </Box>
@@ -125,7 +139,7 @@ const Request = () => {
                     Date
                   </Typography>
                   <Typography variant="h6" component="h6" color="#b82623 ">
-                 {  format(new Date(), "MMMM dd, yyyy")}
+                    {format(new Date(), "MMMM dd, yyyy")}
                   </Typography>
                 </Box>
               </Box>

@@ -9,7 +9,7 @@ const GetAllAppointmentsPromise = require("../AsyncAwait/Appointments/AllAppoint
 const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboardAppointments");
 const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/AppointmentsByDateRange");
 const GetAllAppointmentswithPatientsPromise = require("../AsyncAwait/Appointments/AppointmentswithPatients");
-
+const UpdateAppointmentPromiseByID = require("../AsyncAwait/Appointments/UpdateAppointment");
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
@@ -75,18 +75,19 @@ router.delete("/delete/:id", async (req, res) => {
 
 // create new Appointment
 router.post("/appointment/create", async (req, res) => {
-  const today = new Date();
-  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
-  const { PatientID, Schedule, ServiceID, Status, Notes } = req.body;
+  const { PatientID, Schedule, ServiceID, Notes } = req.body;
+  const date = new Date(Schedule);
+  date.setDate(date.getDate() + 30);
+  const appointmentSchedule = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+
   try {
     await CreateAppointmentsPromise({
       PatientID,
-      Schedule,
+      Schedule: appointmentSchedule,
       ServiceID,
-      Status,
+      Status: "Pending",
       Notes,
-      CreatedDate: date,
-      isAllDay: true
+      isAllDay: true,
     });
     res.status(200).json({ message: "Appointment added successfully" });
   } catch (err) {
@@ -95,22 +96,16 @@ router.post("/appointment/create", async (req, res) => {
 });
 
 // update appointment's data
-router.patch("/update/:id", async (req, res) => {
+router.patch("/appointment/update/:id", async (req, res) => {
+  console.log(req.params.id)
   try {
-    await Appointments.findById(req.body.id)
-      .then((appointsData) => {
-        appointsData.firstname = req.body.firstname;
-        appointsData.lastname = req.body.lastname;
-        appointsData.save();
-        res.send("successfully updated");
-        console.log("successfully updated");
-        res.status(200).json({ message: "data has been updated successfully" });
-      })
-      .catch((err) => {
-        res.status(400).json({ message: "field is required" });
-      });
+    await UpdateAppointmentPromiseByID({
+      AppointmentID: req.params.id,
+      Status: req.body.Status,
+    });
+    res.status(200).json({ message: "Appointment Updated successfully" });
   } catch (err) {
-    console.log(err);
+    console.log(err.message);
   }
 });
 

@@ -69,7 +69,7 @@ const Tabs = () => {
         <Link href="/appointments">Appointments</Link>
       </Box>
 
-      <Box
+      {/* <Box
         className={
           router.route.includes("reports")
             ? theme
@@ -80,7 +80,7 @@ const Tabs = () => {
       >
         <Box className={styles.vertical__line}></Box>
         <Link href="/reports">Reports</Link>
-      </Box>
+      </Box> */}
 
       {/* <Box
         className={router.route == "/appointments" ? styles.active : styles.tab}

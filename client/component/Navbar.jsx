@@ -57,7 +57,7 @@ const Navbar = () => {
     "Administrator",
     "Baranggay Nutritionist Scholar",
     "MidWife",
-    "Baranggay Health Work",
+    "Baranggay Health Worker",
   ];
 
   // Display realtime date and time
@@ -90,9 +90,9 @@ const Navbar = () => {
     const Patient = JSON.parse(localStorage.getItem("Patient"));
     setPatientData(Patient);
 
-    const PatientID = localStorage.getItem("StaffID");
+    const StaffID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${PatientID}`)
+      .get(`http://localhost:3001/user/${StaffID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -142,7 +142,10 @@ const Navbar = () => {
         router.route !== "/login" &&
         router.route !== "/register" && (
           <Box className={theme ? styles.DarkMode : styles.navbar}>
-            <Box className={styles.logo}></Box>
+            <Box
+              className={styles.logo}
+              onClick={() => router.push("/dashboard")}
+            ></Box>
             <Box className={styles.navbar__right}>
               <Box className={styles.user}>
                 {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
@@ -160,7 +163,7 @@ const Navbar = () => {
                     {staffData && staffData.Role === "ADMIN" && userRole[0]}
                     {staffData && staffData.Role === "BNS" && userRole[1]}
                     {staffData && staffData.Role === "MIDWIFE" && userRole[2]}
-                    {staffData && staffData.Role === "BHW" && userRole[2]}
+                    {staffData && staffData.Role === "BHW" && userRole[3]}
                   </Typography>
                 </Box>
               </Box>
@@ -179,32 +182,34 @@ const Navbar = () => {
                 </Box>
               </Box>
             </Box>
+
             <Box className={styles.header__icons}>
-              {medicinesList.length > 0 && (
+              {medicinesList.length > 0 && staffData.Role === "BNS" && (
                 <Box className={styles.request__count}>
                   <Typography variant="caption" component="h5" color="#fff">
                     {medicinesList.length >= 9 ? "9+" : medicinesList.length}
                   </Typography>
                 </Box>
               )}
-
-              <Tooltip title="Medicine Cart">
-                <IconButton
-                  onClick={handleRequestMedicineFocus}
-                  style={{ backgroundColor: "#dbdff3" }}
-                >
-                  <MedicalServicesIcon
-                    fontSize="small"
-                    className={
-                      theme
-                        ? styles.header__icon__dark
-                        : requestGroupFocus
-                        ? styles.header__icon_active
-                        : styles.header__icon
-                    }
-                  />
-                </IconButton>
-              </Tooltip>
+              {staffData && staffData.Role === "BNS" && (
+                <Tooltip title="Medicine Cart">
+                  <IconButton
+                    onClick={handleRequestMedicineFocus}
+                    style={{ backgroundColor: "#dbdff3" }}
+                  >
+                    <MedicalServicesIcon
+                      fontSize="small"
+                      className={
+                        theme
+                          ? styles.header__icon__dark
+                          : requestGroupFocus
+                          ? styles.header__icon_active
+                          : styles.header__icon
+                      }
+                    />
+                  </IconButton>
+                </Tooltip>
+              )}
 
               {requestGroupFocus && (
                 <MedicineCart
@@ -217,13 +222,13 @@ const Navbar = () => {
                 />
               )}
 
-              {medicinesList.length > 0 && (
+              {/* {medicinesList.length > 0 && (
                 <Box className={styles.notification__count}>
                   <Typography variant="caption" component="h5" color="#fff">
                     {medicinesList.length >= 9 ? "9+" : medicinesList.length}
                   </Typography>
                 </Box>
-              )}
+              )} */}
 
               <Tooltip title="Notification">
                 <IconButton
@@ -531,7 +536,7 @@ function DropdownMenu() {
           >
             Profile
           </DropdownItem>
-          <DropdownItem
+          {/* <DropdownItem
             leftIcon={
               <IconButton style={{ backgroundColor: "#dbdff3" }}>
                 <DarkModeIcon fontSize="medium" />
@@ -540,7 +545,7 @@ function DropdownMenu() {
             goToMenu="theme"
           >
             Theme
-          </DropdownItem>
+          </DropdownItem> */}
           {staffData && staffData.Role.includes("ADMIN") && (
             <DropdownItem
               leftIcon={
@@ -550,7 +555,7 @@ function DropdownMenu() {
               }
               goToMenu="settings"
             >
-              Settings
+             Management Settings
             </DropdownItem>
           )}
 
