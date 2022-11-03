@@ -15,7 +15,7 @@ import Image from "next/image";
 import axios from "axios";
 import Swal from "sweetalert2";
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect(process.env.BaseURI);
 
 const Index = () => {
   // redirect to dashboard when current user is authenticated
@@ -60,7 +60,7 @@ const Index = () => {
     axios.defaults.withCredentials = true;
     axios
       .post(
-        "http://localhost:3001/register",
+        `${process.env.BaseURI}/register`,
         {
           ...user,
         },

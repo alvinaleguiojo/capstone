@@ -72,7 +72,7 @@ const Index = () => {
     e.preventDefault();
     try {
       const newMedicine = await axios.post(
-        "http://localhost:3001/medicine/register",
+        `${process.env.BaseURI}/medicine/register`,
         {
           ...medicine,
         }
@@ -129,7 +129,7 @@ const Index = () => {
     try {
       setLoading(true);
       const response = await axios.delete(
-        `http://localhost:3001/delete_file/${filename}`
+        `${process.env.BaseURI}/delete_file/${filename}`
       );
 
       setLoading(false);
@@ -152,7 +152,7 @@ const Index = () => {
       let formData = new FormData();
       formData.append("file", file.data);
 
-      const response = await fetch("http://localhost:3001/upload_file", {
+      const response = await fetch(`${process.env.BaseURI}/upload_file`, {
         method: "POST",
         body: formData,
       });

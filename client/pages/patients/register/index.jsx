@@ -115,7 +115,7 @@ const Index = () => {
   // saving image to local storage
   const handleSave = () => {
     axios
-      .post("http://localhost:3001/image/upload", {
+      .post(`${process.env.BaseURI}/image/upload`, {
         imageURL,
       })
       .then(async (response) => {

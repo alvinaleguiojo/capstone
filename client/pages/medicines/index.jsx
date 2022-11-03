@@ -38,7 +38,7 @@ const Index = ({ Medicines }) => {
   useEffect(() => {
     const StaffID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${StaffID}`)
+      .get(`${process.env.BaseURI}/user/${StaffID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -50,7 +50,7 @@ const Index = ({ Medicines }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3001/medicines?page=${currentPage}&limit=5&LIKE=${searchTerm}`
+        `${process.env.BaseURI}/medicines?page=${currentPage}&limit=5&LIKE=${searchTerm}`
       )
       .then((response) => {
         setPreviousPage(response.data.previous);
@@ -200,7 +200,7 @@ export default Index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch(`http://localhost:3001/medicineswithimage`);
+    const res = await fetch(`${process.env.BaseURI}/medicineswithimage`);
     const { Medicines } = await res.json();
 
     return {

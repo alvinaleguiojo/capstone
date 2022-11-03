@@ -98,8 +98,8 @@ router.post("/register", async (req, res) => {
             withCredentials: true,
             httpOnly: true,
             maxAge: 60 * 60 * 24 * 30 * 1000,
-            secure: true,
-            sameSite: "none",
+            // secure: true,
+            // sameSite: "none",
           });
 
           await NewNotificationPromise({
@@ -136,8 +136,8 @@ router.post("/login", async (req, res) => {
         maxAge: 60 * 60 * 24 * 30 * 1000,
         httpOnly: true,
         withCredentials: true,
-        secure: true,
-        sameSite: "none",
+        // secure: true,
+        // sameSite: "none",
       });
       res.json("Logged In");
     }

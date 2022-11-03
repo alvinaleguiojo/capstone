@@ -146,10 +146,11 @@ export default Index;
 
 export const getStaticProps = async ({ context }) => {
   try {
-    const res = await fetch("http://localhost:3001/appointmentswithpatients");
+    const res = await fetch(`${process.env.BaseURI}/appointmentswithpatients`);
+    console.log()
     const { Appointments } = await res.json();
 
-    const serviceRes = await fetch("http://localhost:3001/services");
+    const serviceRes = await fetch(`${process.env.BaseURI}/services`);
     const { Services } = await serviceRes.json();
 
     return {

@@ -144,7 +144,7 @@ const Index = ({ Appointments }) => {
 
       axios
         .get(
-          `http://localhost:3001/appointments_daterange?StartDate=${StartDate}&EndDate=${EndDate}`
+          `${process.env.BaseURI}/appointments_daterange?StartDate=${StartDate}&EndDate=${EndDate}`
         )
         .then((response) => {
           setAppointments(response.data.Appointments);
@@ -567,7 +567,7 @@ export default Index;
 
 export const getStaticProps = async () => {
   try {
-    const res = await fetch(`http://localhost:3001/appointments/today`);
+    const res = await fetch(`${process.env.BaseURI}/appointments/today`);
     const { Appointments } = await res.json();
 
     return {

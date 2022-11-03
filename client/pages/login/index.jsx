@@ -15,7 +15,7 @@ import Checkbox from "@mui/material/Checkbox";
 import axios from "axios";
 import Swal from "sweetalert2";
 import io from "socket.io-client";
-const socket = io.connect("http://localhost:3001");
+const socket = io.connect(process.env.BaseURI);
 
 const Index = () => {
   const router = useRouter();
@@ -72,7 +72,7 @@ const Index = () => {
     setLoading(true);
     axios
       .post(
-        "http://localhost:3001/login",
+        `${process.env.BaseURI}/login`,
         {
           ...user,
         },

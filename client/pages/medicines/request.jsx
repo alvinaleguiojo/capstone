@@ -34,7 +34,7 @@ const Request = () => {
   }, [router]);
 
   const PatientSearchModal = async () => {
-    const ipAPI = "http://localhost:3001/all_patients";
+    const ipAPI = `${process.env.BaseURI}/all_patients`;
 
     const inputValue = fetch(ipAPI)
       .then((response) => response.json())
@@ -62,7 +62,7 @@ const Request = () => {
     const PatientID = patientID;
     try {
       const releaseNew = await axios.post(
-        "http://localhost:3001/medicine/release",
+        `${process.env.BaseURI}/medicine/release`,
         {
           medicinesList,
           PatientID,

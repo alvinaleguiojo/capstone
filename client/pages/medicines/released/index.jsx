@@ -36,7 +36,7 @@ const Index = ({ Medicines }) => {
   useEffect(() => {
     axios
       .get(
-        `http://localhost:3001/medicines/released?page=${currentPage}&limit=5&LIKE=${searchTerm}`
+        `${process.env.BaseURI}/medicines/released?page=${currentPage}&limit=5&LIKE=${searchTerm}`
       )
       .then((response) => {
         setPreviousPage(response.data.previous);
@@ -175,7 +175,7 @@ export default Index;
 export const getStaticProps = async () => {
   try {
     const res = await fetch(
-      `http://localhost:3001/medicines/released/nopagination`
+      `${process.env.BaseURI}/medicines/released/nopagination`
     );
     const { Medicines } = await res.json();
 

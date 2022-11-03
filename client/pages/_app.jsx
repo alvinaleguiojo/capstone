@@ -43,7 +43,7 @@ function MyApp({ Component, pageProps }) {
   useEffect(() => {
     try {
       axios
-        .get("http://localhost:3001", { withCredentials: true })
+        .get(`${process.env.BaseURI}`, { withCredentials: true })
         .then((response) => {
           console.log(response);
           return setAuthenticated(true);

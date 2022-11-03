@@ -92,7 +92,7 @@ const Navbar = () => {
 
     const StaffID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${StaffID}`)
+      .get(`${process.env.BaseURI}/user/${StaffID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -401,7 +401,7 @@ function Notification() {
     const StaffID = localStorage.getItem("StaffID");
     try {
       axios
-        .get(`http://localhost:3001/staff/notifications/${StaffID}`)
+        .get(`${process.env.BaseURI}/staff/notifications/${StaffID}`)
         .then((response) => {
           console.log(response);
           setNotificationData(response.data.Notifications);
@@ -452,7 +452,7 @@ function DropdownMenu() {
   useEffect(() => {
     const StaffID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${StaffID}`)
+      .get(`${process.env.BaseURI}/user/${StaffID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -479,7 +479,7 @@ function DropdownMenu() {
     }).then((result) => {
       if (result.isConfirmed) {
         axios
-          .get("http://localhost:3001/logout", { withCredentials: true })
+          .get(`${process.env.BaseURI}/logout`, { withCredentials: true })
           .then(() => {
             setTimeout(() => {
               router.push("/login");

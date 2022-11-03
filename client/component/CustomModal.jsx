@@ -100,7 +100,7 @@ export default function CustomModal() {
   //fetch service data
   useEffect(() => {
     axios
-      .get("http://localhost:3001/services")
+      .get(`${process.env.BaseURI}/services`)
       .then((response) => {
         // set loading to false when data is available
         setTimeout(() => {
@@ -139,7 +139,7 @@ export default function CustomModal() {
     if (Toast) {
       //passing data to an API call Update Service
       axios.patch(
-        `http://localhost:3001/service/update/${serviceData.ServiceID}`,
+        `${process.env.BaseURI}/service/update/${serviceData.ServiceID}`,
         {
           Availability: newValue.Availability,
           ServiceType: newValue.ServiceType,
@@ -154,7 +154,7 @@ export default function CustomModal() {
 
   const submitNewService = () => {
     axios
-      .post("http://localhost:3001/service/create", {
+      .post(`${process.env.BaseURI}/service/create`, {
         ...addService,
       })
       .then(() => {
@@ -210,7 +210,7 @@ export default function CustomModal() {
     newService &&
       axios
         .patch(
-          `http://localhost:3001/service/update/${serviceData.ServiceID}`,
+          `${process.env.BaseURI}/service/update/${serviceData.ServiceID}`,
           {
             Availability: serviceData.Availability,
             ServiceType: newService,
@@ -238,7 +238,7 @@ export default function CustomModal() {
       try {
         if (!result.isConfirmed) return ToggleMoreAction(serviceData);
         await axios.delete(
-          `http://localhost:3001/service/delete/${serviceData.ServiceID}`
+          `${process.env.BaseURI}/service/delete/${serviceData.ServiceID}`
         );
         // here we are filtering - the idea is remove an item from the serviceData array on a button click
         const removeItem = servicesData.filter((service) => {

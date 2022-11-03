@@ -57,7 +57,7 @@ const Index = ({ Medicines }) => {
     try {
       setLoading(true);
       const response = await axios.delete(
-        `http://localhost:3001/delete_file/${filename}`
+        `${process.env.BaseURI}/delete_file/${filename}`
       );
 
       setLoading(false);
@@ -80,7 +80,7 @@ const Index = ({ Medicines }) => {
       let formData = new FormData();
       formData.append("file", file.data);
 
-      const response = await fetch("http://localhost:3001/upload_file", {
+      const response = await fetch(`${process.env.BaseURI}/upload_file`, {
         method: "POST",
         body: formData,
       });
@@ -465,7 +465,7 @@ export default Index;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/allmedicines");
+    const res = await fetch(`${process.env.BaseURI}/allmedicines`);
     const { Medicines } = await res.json();
 
     return {
@@ -483,7 +483,7 @@ export async function getStaticProps({ params }) {
   try {
     // Get all released Medicines
     const releasedMedicines = await fetch(
-      `http://localhost:3001/medicine/detail/${params._id}`
+      `${process.env.BaseURI}/medicine/detail/${params._id}`
     );
     const { Medicines } = await releasedMedicines.json();
 

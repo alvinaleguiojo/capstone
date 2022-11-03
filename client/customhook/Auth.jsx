@@ -14,7 +14,7 @@ export default async function useAuth() {
   useEffect(() => {
     try {
       axios
-        .get("http://localhost:3001", { withCredentials: true })
+        .get(`${process.env.BaseURI}`, { withCredentials: true })
         .then((response) => {
           // set User to to global state redux
           dispatch(addUser(response.data.userData));

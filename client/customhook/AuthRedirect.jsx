@@ -9,7 +9,7 @@ export default async function useAuthRedirect() {
     async function dashboard() {
       try {
         await axios
-          .get("http://localhost:3001", { withCredentials: true })
+          .get(`${process.env.BaseURI}`, { withCredentials: true })
           .then((response) => {
             router.push("/dashboard");
             return response;

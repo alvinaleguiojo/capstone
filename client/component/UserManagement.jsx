@@ -71,7 +71,7 @@ const UserManagement = () => {
   useEffect(() => {
     const users = async () => {
       try {
-        const res = await axios.get("http://localhost:3001/users");
+        const res = await axios.get(`${process.env.BaseURI}/users`);
         const { Users } = await res.data;
         setUsers(Users);
         setTimeout(() => {
@@ -119,7 +119,7 @@ const UserManagement = () => {
     if (Toast) {
       //passing data to an API call Update Service
       await axios
-        .patch(`http://localhost:3001/user/update/${user.StaffID}`, {
+        .patch(`${process.env.BaseURI}/user/update/${user.StaffID}`, {
           ...user,
           Status: userStatus.Status,
         })
@@ -153,7 +153,7 @@ const UserManagement = () => {
           if (value) {
             resolve();
             axios
-              .patch(`http://localhost:3001/user/update/${user.StaffID}`, {
+              .patch(`${process.env.BaseURI}/user/update/${user.StaffID}`, {
                 ...user,
                 Role: value,
               })
@@ -191,7 +191,7 @@ const UserManagement = () => {
       confirmButtonText: "Confirm",
     }).then((result) => {
       if (result.isConfirmed) {
-        axios.delete(`http://localhost:3001/user/delete/${user.StaffID}`);
+        axios.delete(`${process.env.BaseURI}/user/delete/${user.StaffID}`);
         // here we are filtering - the idea is remove an item from the serviceData array on a button click
         const removeItem = users.filter((deleteUser) => {
           // return the rest of the services that don't match the item we are deleting

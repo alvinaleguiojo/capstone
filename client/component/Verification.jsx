@@ -21,7 +21,7 @@ const Verification = () => {
         //   footer: '<a href="">Why do I have this issue?</a>',
       }).then(() => {
         axios
-          .get("http://localhost:3001/logout", { withCredentials: true })
+          .get(`${process.env.BaseURI}/logout`, { withCredentials: true })
           .then(() => {
             router.push("/login");
             Swal.fire("Success!", "You are now in the Login Page.", "success");

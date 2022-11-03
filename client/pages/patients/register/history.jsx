@@ -67,7 +67,7 @@ const Index = ({ patients }) => {
       if (result.isConfirmed) {
         setDisabled(true);
         try {
-          await axios.post("http://localhost:3001/patient/register", {
+          await axios.post(`${process.env.BaseURI}/patient/register`, {
             ...patient,
             ...history,
           });

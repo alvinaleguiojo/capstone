@@ -33,7 +33,7 @@ export default function GridTable({
   useEffect(() => {
     const PatientID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${PatientID}`)
+      .get(`${process.env.BaseURI}/user/${PatientID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -79,7 +79,7 @@ export default function GridTable({
             resolve();
             axios
               .patch(
-                `http://localhost:3001/appointment/update/${row.AppointmentID}`,
+                `${process.env.BaseURI}/appointment/update/${row.AppointmentID}`,
                 {
                   ...row,
                   Status: value,
