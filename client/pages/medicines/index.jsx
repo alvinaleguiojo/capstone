@@ -108,7 +108,7 @@ const Index = ({ Medicines }) => {
                     onClick={() => router.push("/medicines")}
                   >
                     <Typography variant="h5" component="h5" color="#B82623">
-                      Medicine Inventory
+                      Inventory
                     </Typography>
                   </Box>
                   <Box
@@ -120,7 +120,19 @@ const Index = ({ Medicines }) => {
                     onClick={() => router.push("/medicines/released")}
                   >
                     <Typography variant="h5" component="h5" color="#B82623">
-                      Released Medicine
+                      Released
+                    </Typography>
+                  </Box>
+                  <Box
+                    className={
+                      router.route == "/medicines/reports"
+                        ? MedicineStyles.active
+                        : MedicineStyles.tab
+                    }
+                    onClick={() => router.push("/medicines/reports")}
+                  >
+                    <Typography variant="h5" component="h5" color="#B82623">
+                      Reports
                     </Typography>
                   </Box>
                 </Box>

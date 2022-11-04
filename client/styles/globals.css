@@ -1,16 +1,16 @@
 @import url("https://cdn.syncfusion.com/ej2/material.css");
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,500;1,600;1,800&family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,500;1,600;1,800&family=Red+Hat+Display:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 html,
 body {
   padding: 0;
   margin: 0;
-  font-family: 'Red Hat Display', sans-serif!important;
+  font-family: "Red Hat Display", sans-serif !important;
   height: 100vh;
   width: 100vw;
 }
 .js-licensing {
-  visibility: none!important;
+  visibility: none !important;
 }
 
 input:focus {
@@ -221,49 +221,46 @@ secondary  */
   background-color: #b82623 !important;
 }
 
-
 /* calendar styles for appointments */
-.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper.e-input-focus::before, 
-.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper.e-input-focus::after, 
-.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper::before, 
-.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper::after, 
-.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-success):not(.e-warning):not(.e-error), 
-.e-calendar-blue.e-input-group.e-control-wrapper.e-input-focus:not(.e-float-icon-left):not(.e-success):not(.e-warning):not(.e-error), 
-.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-float-input)::before, 
-.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-float-input)::after { 
-  background: none; 
-  border: none; 
-  transition: none; 
-} 
-/* To change the selected day's and today's color*/ 
- 
-.e-calendar-blue .e-calendar .e-content td.e-selected span.e-day, 
-.e-calendar-blue .e-calendar .e-content td.e-today.e-selected span.e-day { 
-  background: blue; 
-  color: white; 
-} 
-.e-calendar-blue .e-calendar .e-content td.e-today span.e-day { 
-  color: blue; 
-  border: none; 
-  box-shadow: none; 
-} 
-/* To change the Today button and date icon color*/ 
- 
-.e-calendar-blue.e-date-wrapper 
-  span.e-input-group-icon.e-date-icon.e-icons.e-active, 
-.e-calendar-blue .e-btn.e-flat.e-primary, 
-.e-calendar-blue .e-css.e-btn.e-flat.e-primary { 
-  color: blue; 
-} 
-.e-calendar-blue .e-btn.e-flat.e-primary::hover { 
-  background: rgb(19 112 219 / 17%); 
-  color: blue; 
-} 
- 
+.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper.e-input-focus::before,
+.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper.e-input-focus::after,
+.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper::before,
+.e-calendar-blue.e-input-group.e-control-wrapper.e-date-wrapper::after,
+.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-success):not(.e-warning):not(.e-error),
+.e-calendar-blue.e-input-group.e-control-wrapper.e-input-focus:not(.e-float-icon-left):not(.e-success):not(.e-warning):not(.e-error),
+.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-float-input)::before,
+.e-calendar-blue.e-input-group:not(.e-float-icon-left):not(.e-float-input)::after {
+  background: none;
+  border: none;
+  transition: none;
+}
+/* To change the selected day's and today's color*/
 
+.e-calendar-blue .e-calendar .e-content td.e-selected span.e-day,
+.e-calendar-blue .e-calendar .e-content td.e-today.e-selected span.e-day {
+  background: blue;
+  color: white;
+}
+.e-calendar-blue .e-calendar .e-content td.e-today span.e-day {
+  color: blue;
+  border: none;
+  box-shadow: none;
+}
+/* To change the Today button and date icon color*/
+
+.e-calendar-blue.e-date-wrapper
+  span.e-input-group-icon.e-date-icon.e-icons.e-active,
+.e-calendar-blue .e-btn.e-flat.e-primary,
+.e-calendar-blue .e-css.e-btn.e-flat.e-primary {
+  color: blue;
+}
+.e-calendar-blue .e-btn.e-flat.e-primary::hover {
+  background: rgb(19 112 219 / 17%);
+  color: blue;
+}
 
 a {
-  color: inherit!important;
+  color: inherit !important;
   text-decoration: none;
   background-color: transparent;
   outline: none;

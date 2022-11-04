@@ -184,32 +184,33 @@ const Navbar = () => {
             </Box>
 
             <Box className={styles.header__icons}>
-              {medicinesList.length > 0 && staffData.Role === "BNS" && (
+              {medicinesList.length > 0 && (
                 <Box className={styles.request__count}>
                   <Typography variant="caption" component="h5" color="#fff">
                     {medicinesList.length >= 9 ? "9+" : medicinesList.length}
                   </Typography>
                 </Box>
               )}
-              {staffData && staffData.Role === "BNS" && (
-                <Tooltip title="Medicine Cart">
-                  <IconButton
-                    onClick={handleRequestMedicineFocus}
-                    style={{ backgroundColor: "#dbdff3" }}
-                  >
-                    <MedicalServicesIcon
-                      fontSize="small"
-                      className={
-                        theme
-                          ? styles.header__icon__dark
-                          : requestGroupFocus
-                          ? styles.header__icon_active
-                          : styles.header__icon
-                      }
-                    />
-                  </IconButton>
-                </Tooltip>
-              )}
+              {(staffData && staffData.Role === "BNS") ||
+                (staffData && staffData.Role === "ADMIN" && (
+                  <Tooltip title="Medicine Cart">
+                    <IconButton
+                      onClick={handleRequestMedicineFocus}
+                      style={{ backgroundColor: "#dbdff3" }}
+                    >
+                      <MedicalServicesIcon
+                        fontSize="small"
+                        className={
+                          theme
+                            ? styles.header__icon__dark
+                            : requestGroupFocus
+                            ? styles.header__icon_active
+                            : styles.header__icon
+                        }
+                      />
+                    </IconButton>
+                  </Tooltip>
+                ))}
 
               {requestGroupFocus && (
                 <MedicineCart
@@ -555,7 +556,7 @@ function DropdownMenu() {
               }
               goToMenu="settings"
             >
-             Management Settings
+              Management Settings
             </DropdownItem>
           )}
 

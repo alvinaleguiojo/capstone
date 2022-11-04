@@ -274,7 +274,7 @@ const PatientProfile = ({
   useEffect(() => {
     const PatientID = localStorage.getItem("StaffID");
     axios
-      .get(`http://localhost:3001/user/${PatientID}`)
+      .get(`${process.env.BaseURI}/user/${PatientID}`)
       .then((response) => {
         setStaffData(response.data.result[0]);
       })
@@ -298,8 +298,8 @@ const PatientProfile = ({
       const EndDate = `${end.getFullYear()}-${end.getMonth()}-${end.getDate()}`;
 
       const URLs = [
-        `http://localhost:3001/medicines/date/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
-        `http://localhost:3001/patient/appointments/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
+        `${process.env.BaseURI}/medicines/date/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
+        `${process.env.BaseURI}/patient/appointments/${router.query._id}?StartDate=${StartDate}&EndDate=${EndDate}`,
       ];
 
       // map every url to the promise of the fetch
@@ -334,7 +334,7 @@ const PatientProfile = ({
     if (text) {
       try {
         await axios
-          .post("http://localhost:3001/sendMessagetoPatient", {
+          .post(`${process.env.BaseURI}/sendMessagetoPatient`, {
             text,
             phone,
           })
@@ -418,7 +418,7 @@ const PatientProfile = ({
 
       try {
         axios
-          .post("http://localhost:3001/diagnosis/create", {
+          .post(`${process.env.BaseURI}/diagnosis/create`, {
             PatientID,
             StaffID,
             Diagnose,
@@ -712,7 +712,7 @@ const PatientProfile = ({
                                   rowPerPage={[4]}
                                   // showModal={true}
                                 />
-                                {staffData.Role == "MIDWIFE" && (
+                                {staffData.Role == "MIDWIFE" || staffData.Role == "ADMIN" && (
                                   <Box
                                     className={styles.getStartedBtn}
                                     variant="contained"
@@ -743,7 +743,7 @@ const PatientProfile = ({
                                   rowPerPage={[4]}
                                 />
 
-                                {staffData.Role == "BNS" && (
+                                {staffData.Role == "BNS" || staffData.Role == "ADMIN" && (
                                   <Box
                                     className={styles.getStartedBtn}
                                     variant="contained"
@@ -815,7 +815,7 @@ export default PatientProfile;
 
 export async function getStaticPaths() {
   try {
-    const res = await fetch("http://localhost:3001/all_patients");
+    const res = await fetch(`${process.env.BaseURI}/all_patients`);
     const { Patients } = await res.json();
 
     return {

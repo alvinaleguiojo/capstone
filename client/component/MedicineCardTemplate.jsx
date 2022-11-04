@@ -75,7 +75,7 @@ const CardTemplate = (props) => {
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
-      {props.staffData.Role === "BNS" && (
+      {props.staffData.Role === "BNS" || props.staffData.Role == "ADMIN"&& (
         <Checkbox
           {...label}
           checked={checked}

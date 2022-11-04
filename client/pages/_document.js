@@ -1,30 +1,28 @@
-import React from 'react'
-import Document, {Html, Head, Main, NextScript} from 'next/document'
-import loader from "../component/Loader"
+import React from "react";
+import Document, { Html, Head, Main, NextScript } from "next/document";
+import loader from "../component/Loader";
 
 class MyDocument extends Document {
-    render() {
-        return (
-            <Html>
-                <Head/>
-                <head>
-                    <style>
-                        {loader}
-                    </style>
-                </head>
-                <body>
-                <div id={'globalLoader'}>
-                     <div className="loader">
-                        <div/>
-                        <div/>
-                    </div>
-                </div>
-                <Main/>
-                <NextScript/>
-                </body>
-            </Html>
-        )
-    }
+  render() {
+    return (
+      <Html>
+        <Head>
+          <style>{loader}</style>
+        </Head>
+
+        <body>
+          <div id={"globalLoader"}>
+            <div className="loader">
+              <div />
+              <div />
+            </div>
+          </div>
+          <Main />
+          <NextScript />
+        </body>
+      </Html>
+    );
+  }
 }
 
-export default MyDocument
+export default MyDocument;

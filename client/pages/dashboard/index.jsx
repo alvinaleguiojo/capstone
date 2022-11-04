@@ -191,7 +191,7 @@ const Index = ({ Appointments }) => {
   //All Appointments charts
   useEffect(() => {
     setChartData({
-      labels: [],
+      labels: ["Completed", "Cancelled"],
       datasets: [
         {
           label: "Completed",
@@ -362,7 +362,7 @@ const Index = ({ Appointments }) => {
                     color="#B82623"
                     className={styles.header__cell}
                   >
-                    Reports
+                    Today&apos;s Reports
                   </Typography>
 
                   <Box className={styles.monthly__filter}>
@@ -373,7 +373,7 @@ const Index = ({ Appointments }) => {
                     >
                       <Image src={arrowDown} height={15} width={15} />
                     </IconButton> */}
-                    <DateRangePickerComponent
+                    {/* <DateRangePickerComponent
                       placeholder=" Select Date"
                       startDate={startDate}
                       endDate={endDate}
@@ -408,7 +408,7 @@ const Index = ({ Appointments }) => {
                           end={yearEnd}
                         ></PresetDirective>
                       </PresetsDirective>
-                    </DateRangePickerComponent>
+                    </DateRangePickerComponent> */}
                   </Box>
 
                   {/* calendar  */}
@@ -499,7 +499,7 @@ const Index = ({ Appointments }) => {
                         color: "#B82623",
                       }}
                     >
-                      123
+                      20
                     </Typography>
                   </Box>
                   <Box
@@ -524,7 +524,7 @@ const Index = ({ Appointments }) => {
                         color: "#B82623",
                       }}
                     >
-                      123
+                      5
                     </Typography>
                   </Box>
                 </Box>
