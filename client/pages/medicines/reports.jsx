@@ -11,22 +11,31 @@ import MedicineStyles from "../../styles/Medicines.module.css";
 import recordStyles from "../../styles/Records.module.css";
 import Typography from "@mui/material/Typography";
 import axios from "axios";
-
+import ReactLoading from "react-loading";
 import useAuth from "../../customhook/Auth";
-
 import dynamic from "next/dynamic";
 const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
-
+import Skeleton from "@mui/material/Skeleton";
 import {
   DateRangePickerComponent,
   PresetsDirective,
   PresetDirective,
 } from "@syncfusion/ej2-react-calendars";
 
-const Index = () => {
+const Index = ({ Medicines, ReleasedMedicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
   const router = useRouter();
+  const [loading, setLoading] = useState(true);
   const [calendar, setCalendar] = useState([]);
+  const [medicinesData, setMedicines] = useState(Medicines);
+  const [releasedMedicinesData, setReleasedMedicinesData] =
+    useState(ReleasedMedicines);
+  const [inStocksCount, setInstocksCount] = useState(0);
+
+  // set loading state
+  setTimeout(() => {
+    setLoading(false);
+  }, 1000);
 
   //  date picker custom dates starts here
   const startDate = new Date(
@@ -80,43 +89,61 @@ const Index = () => {
   );
 
   // productsList state
-  const [productList, setProductList] = useState({
-    series: [
-      {
-        data: [10, 4, 35, 20, 10, 20, 42, 25, 15, 33],
-      },
-    ],
-    options: {
-      chart: {
-        type: "bar",
-        height: 10,
-        toolbar: { show: false },
-      },
-      plotOptions: {
-        bar: {
-          borderRadius: 4,
-          horizontal: true,
+  const [productList, setProductList] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+    const medicineNames = medicinesData.map((data) => {
+      return data.Name;
+    });
+    // mapping all the product Stocks value from medicinesData
+    const medicineStocks = medicinesData.map((data) => {
+      return data.Stocks;
+    });
+
+    // mapping all the relesased products from releasedMedicinesData
+    const medicineReleased = releasedMedicinesData.map((data) => {
+      return data.Quantity;
+    });
+
+    console.log(medicineReleased);
+
+    setProductList({
+      series: [
+        {
+          name: "Stocks",
+          data: medicineStocks,
+        },
+        {
+          name: "Relesed",
+          data: [10, 20, 30, 20, 50, 13, 50],
+        },
+        {
+          name: "Expired",
+          data: [10, 20, 30, 20, 50, 13, 50],
+        },
+      ],
+      options: {
+        chart: {
+          type: "bar",
+          height: 200,
+          toolbar: { show: false },
+        },
+        plotOptions: {
+          bar: {
+            borderRadius: 4,
+            horizontal: true,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        xaxis: {
+          categories: medicineNames,
         },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      xaxis: {
-        categories: [
-          "Biogesic",
-          "Salbutamol",
-          "Diphenhydramine",
-          "Tramadol",
-          "Abarelix",
-          "Biogesic",
-          "Salbutamol",
-          "Diphenhydramine",
-          "Tramadol",
-          "Abarelix",
-        ],
-      },
-    },
-  });
+    });
+  }, [medicinesData]);
 
   // products state
   const [productsDataSource, setProductsDataSource] = useState({
@@ -362,6 +389,7 @@ const Index = () => {
             {/* end tabs here */}
 
             <Box
+              className={MedicineStyles.container__date__picker}
               style={{
                 width: "200px",
                 alignSelf: "flex-end",
@@ -407,57 +435,145 @@ const Index = () => {
 
             {/* categories starts here */}
             <Typography variant="h6" component="h6" color="#B82623">
-              Reports
+              Overall Reports
             </Typography>
             <Box className={MedicineStyles.catergories}>
               <Box className={MedicineStyles.category}>
-                <span>
-                  Products <strong>{100}</strong>
-                </span>
-                <ApexCharts
-                  options={productsDataSource.options}
-                  series={productsDataSource.series}
-                  type="area"
-                  height={150}
-                  width={280}
-                />
+                {loading ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {/* <ReactLoading type="balls" color="#B82623" /> */}
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <span>
+                      Products <strong>{medicinesData.length}</strong>
+                    </span>
+                    <ApexCharts
+                      options={productsDataSource.options}
+                      series={productsDataSource.series}
+                      type="area"
+                      height={150}
+                      width={280}
+                    />
+                  </>
+                )}
               </Box>
 
               <Box className={MedicineStyles.category}>
-                <span>
-                  In-Stocks <strong>{60}</strong>
-                </span>
-                <ApexCharts
-                  options={inStocksDataSource.options}
-                  series={inStocksDataSource.series}
-                  type="area"
-                  height={150}
-                  width={270}
-                />
+                {loading ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {/* <ReactLoading type="balls" color="#B82623" /> */}
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <span>
+                      In-Stocks <strong>{inStocksCount}</strong>
+                    </span>
+                    <ApexCharts
+                      options={inStocksDataSource.options}
+                      series={inStocksDataSource.series}
+                      type="area"
+                      height={150}
+                      width={270}
+                    />
+                  </>
+                )}
               </Box>
               <Box className={MedicineStyles.category}>
-                <span>
-                  Expired <strong>{5}</strong>
-                </span>
-                <ApexCharts
-                  options={expiredDataSource.options}
-                  series={expiredDataSource.series}
-                  type="area"
-                  height={150}
-                  width={270}
-                />
+                {loading ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {/* <ReactLoading type="balls" color="#B82623" /> */}
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <span>
+                      Expired <strong>{5}</strong>
+                    </span>
+                    <ApexCharts
+                      options={expiredDataSource.options}
+                      series={expiredDataSource.series}
+                      type="area"
+                      height={150}
+                      width={270}
+                    />
+                  </>
+                )}
               </Box>
               <Box className={MedicineStyles.category}>
-                <span>
-                  Released <strong>{50}</strong>
-                </span>
-                <ApexCharts
-                  options={releasedDataSource.options}
-                  series={releasedDataSource.series}
-                  type="area"
-                  height={150}
-                  width={270}
-                />
+                {loading ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {/* <ReactLoading type="balls" color="#B82623" /> */}
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <span>
+                      Released <strong>{releasedMedicinesData.length}</strong>
+                    </span>
+                    <ApexCharts
+                      options={releasedDataSource.options}
+                      series={releasedDataSource.series}
+                      type="area"
+                      height={150}
+                      width={270}
+                    />
+                  </>
+                )}
               </Box>
             </Box>
             {/* categories ends here */}
@@ -467,12 +583,19 @@ const Index = () => {
               <Typography variant="h6" component="h6" color="#B82623">
                 Product List
               </Typography>
-              <ApexCharts
-                options={productList.options}
-                series={productList.series}
-                type="bar"
-                height={350}
-              />
+
+              {loading ? (
+                <Box style={{ alignSelf: "center" }}>
+                  <ReactLoading type="balls" color="#B82623" />
+                </Box>
+              ) : (
+                <ApexCharts
+                  options={productList.options}
+                  series={productList.series}
+                  type="bar"
+                  height={350}
+                />
+              )}
             </Box>
           </Box>
           {/* product list data */}
@@ -483,3 +606,24 @@ const Index = () => {
 };
 
 export default Index;
+
+export const getStaticProps = async () => {
+  try {
+    const res = await fetch(`${process.env.BaseURI}/allmedicines`);
+    const resReleased = await fetch(
+      `${process.env.BaseURI}/medicines/released/nopagination`
+    );
+    const { Medicines } = await res.json();
+    const responseReleased = await resReleased.json();
+    const ReleasedMedicines = await responseReleased.Medicines;
+
+    return {
+      props: {
+        Medicines,
+        ReleasedMedicines,
+      },
+    };
+  } catch (error) {
+    console.log("please check your internet connection", error);
+  }
+};

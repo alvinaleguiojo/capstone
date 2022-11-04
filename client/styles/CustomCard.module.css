@@ -11,6 +11,10 @@
   height: 50px;
   border-radius: 5px;
   padding-left: 15px;
+  cursor: pointer;
+}
+.card:hover{
+  background-color: rgb(219, 223, 243, 0.3);
 }
 
 

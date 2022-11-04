@@ -38,7 +38,7 @@ const CustomCard = ({
       ) : (
         <Box
           className={theme ? styles.card__dark : styles.card}
-          // onClick={() => router.push(`/patients/${patientID}`)}
+          onClick={() => router.push(`/patients/${patientID}`)}
         >
           <Typography
             variant="body2"
@@ -67,12 +67,18 @@ const CustomCard = ({
               variant="body2"
               component="h6"
               className={styles.card__cell}
-              color={
-                (status == "Completed" && "#02c923") ||
-                (status == "Ongoing" && "#DB9B04") ||
-                (status == "Pending" && "#B82623") ||
-                (status == "Waiting" && "#B82623")
-              }
+              style={{
+                backgroundColor:
+                  (status == "Completed" && "rgb(8, 153, 129)") ||
+                  (status == "Ongoing" && "#00ad0e") ||
+                  (status == "Pending" && "#ce8900") ||
+                  (status == "Waiting" && "#B82623") ||
+                  (status == "Cancelled" && "#B82623"),
+                borderRadius: "10px",
+                color: "#fff",
+                width: "80px",
+                textAlign: "center",
+              }}
             >
               {status}
             </Typography>

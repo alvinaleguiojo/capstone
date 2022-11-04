@@ -569,6 +569,7 @@ export const getStaticProps = async () => {
   try {
     const res = await fetch(`${process.env.BaseURI}/appointments/today`);
     const { Appointments } = await res.json();
+    console.log(Appointments)
 
     return {
       props: {
