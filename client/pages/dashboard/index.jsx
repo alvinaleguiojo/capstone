@@ -21,8 +21,11 @@ import userIcon from "../../assets/image/User.svg";
 import completedIcon from "../../assets/image/Task Completed.svg";
 import cancelIcon from "../../assets/image/Cancel.svg";
 import NoAppointments from "../../assets/image/NoAppointments.svg";
-
+import ReactLoading from "react-loading";
 import CustomCard from "../../component/CustomCard";
+
+import dynamic from "next/dynamic";
+const ApexCharts = dynamic(() => import("react-apexcharts"), { ssr: false });
 
 import {
   DateRangePickerComponent,
@@ -57,6 +60,7 @@ const Index = ({ Appointments }) => {
   const [toggleCalendar, setToggleCalendar] = useState(false);
   const [calendar, setCalendar] = useState([]);
   const [appointments, setAppointments] = useState(Appointments || []);
+  const [appointmentsDataSource, setAppointmentsDataSource] = useState({});
 
   const hour = new Date().getHours();
   const dateFormat = "MMM/dd/yyyy";
@@ -88,6 +92,33 @@ const Index = ({ Appointments }) => {
   // endDate.setDate(endDate.getDate() + 30);
 
   const today = new Date(new Date().toDateString());
+
+  // to get the current week days
+  const startOfWeek = moment().startOf("week").toDate();
+  const endOfWeek = moment().endOf("week").toDate();
+  const yesterday = moment().subtract(1, "days").calendar();
+  const Mon = moment().day(1);
+  let Monday = new Date(Mon);
+  Monday = moment(Monday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Tue = moment().day(2);
+  let Tuesday = new Date(Tue);
+  Tuesday = moment(Tuesday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Wed = moment().day(3);
+  let Wednesday = new Date(Wed);
+  Wednesday = moment(Wednesday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Thu = moment().day(4);
+  let Thursday = new Date(Thu);
+  Thursday = moment(Thursday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Fri = moment().day(5);
+  let Friday = new Date(Fri);
+  Friday = moment(Friday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Sat = moment().day(6);
+  let Saturday = new Date(Sat);
+  Saturday = moment(Saturday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
+  const Weekdays = [
+    `${Monday}, ${Tuesday}, ${Wednesday}, ${Thursday}, ${Friday}, ${Saturday}`,
+  ];
+
   const weekStart = new Date(
     new Date(
       new Date().setDate(new Date().getDate() - ((new Date().getDay() + 7) % 7))
@@ -124,6 +155,62 @@ const Index = ({ Appointments }) => {
   );
 
   //date picker custom dates ends here
+
+  useEffect(() => {
+    setAppointmentsDataSource({
+      series: [
+        {
+          name: "Completed",
+          data: [15, 18, 22, 17, 19, 20],
+        },
+        {
+          name: "Cancelled",
+          data: [7, 8, 8, 9, 7, 12],
+        },
+      ],
+      options: {
+        chart: {
+          type: "bar",
+          height: 350,
+          toolbar: { show: false },
+        },
+        plotOptions: {
+          bar: {
+            horizontal: false,
+            columnWidth: "55%",
+            endingShape: "rounded",
+          },
+        },
+        colors: ["#099880", "#b82623"],
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          show: true,
+          width: 2,
+          colors: ["transparent"],
+        },
+        xaxis: {
+          categories: [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday],
+        },
+        yaxis: {
+          // title: {
+          //   text: "$ (thousands)",
+          // },
+        },
+        fill: {
+          opacity: 1,
+        },
+        tooltip: {
+          y: {
+            // formatter: function (val) {
+            //   return "$ " + val + " thousands";
+            // },
+          },
+        },
+      },
+    });
+  }, [appointments]);
 
   useEffect(() => {
     // fetch color scheme from local storage
@@ -331,7 +418,7 @@ const Index = ({ Appointments }) => {
                           status={appointment.Status}
                           color={appointment.Color}
                           loading={loading}
-                          patientID = {appointment.PatientID}
+                          patientID={appointment.PatientID}
                         />
                       </Box>
                     );
@@ -362,7 +449,7 @@ const Index = ({ Appointments }) => {
                     color="#B82623"
                     className={styles.header__cell}
                   >
-                    Today&apos;s Reports
+                    Reports
                   </Typography>
 
                   <Box className={styles.monthly__filter}>
@@ -425,108 +512,160 @@ const Index = ({ Appointments }) => {
                   )}
                 </Box>
                 <Box className={styles.report__cards}>
-                  <Box
-                    className={
-                      theme ? styles.report__card__dark : styles.report__card
-                    }
-                  >
-                    <Image src={treatmentIcon} title="icon" />
-                    <Typography
-                      variant="caption"
-                      component="h6"
-                      color="#5A5959"
+                  {loading ? (
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="120px"
+                      height="150px"
+                      style={{ borderRadius: "10px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  ) : (
+                    <Box
+                      className={
+                        theme ? styles.report__card__dark : styles.report__card
+                      }
                     >
-                      Patients
-                    </Typography>
+                      <Image src={treatmentIcon} title="icon" />
+                      <Typography
+                        variant="caption"
+                        component="h6"
+                        color="#5A5959"
+                      >
+                        Patients
+                      </Typography>
 
-                    <Typography
-                      variant="h4"
-                      component="h4"
-                      style={{
-                        backgroundColor: "#B82623",
-                        width: "100%",
-                        textAlign: "center",
-                        color: "white",
-                      }}
-                    >
-                      {appointments.length}
-                    </Typography>
-                  </Box>
-                  <Box
-                    className={
-                      theme ? styles.report__card__dark : styles.report__card
-                    }
-                  >
-                    <Image src={userIcon} title="icon" height={50} width={50} />
-                    <Typography
-                      variant="caption"
-                      component="h6"
-                      color="#5A5959"
-                    >
-                      Appointments
-                    </Typography>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        style={{
+                          backgroundColor: "#B82623",
+                          width: "100%",
+                          textAlign: "center",
+                          color: "white",
+                        }}
+                      >
+                        {appointments.length}
+                      </Typography>
+                    </Box>
+                  )}
 
-                    <Typography
-                      variant="h4"
-                      component="h4"
-                      style={{
-                        textAlign: "center",
-                        color: "#B82623",
-                      }}
+                  {loading ? (
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="120px"
+                      height="150px"
+                      style={{ borderRadius: "10px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  ) : (
+                    <Box
+                      className={
+                        theme ? styles.report__card__dark : styles.report__card
+                      }
                     >
-                      {appointments.length}
-                    </Typography>
-                  </Box>
-                  <Box
-                    className={
-                      theme ? styles.report__card__dark : styles.report__card
-                    }
-                  >
-                    <Image src={completedIcon} title="icon" />
-                    <Typography
-                      variant="caption"
-                      component="h6"
-                      color="#5A5959"
-                    >
-                      Completed
-                    </Typography>
+                      <Image
+                        src={userIcon}
+                        title="icon"
+                        height={50}
+                        width={50}
+                      />
+                      <Typography
+                        variant="caption"
+                        component="h6"
+                        color="#5A5959"
+                      >
+                        Appointments
+                      </Typography>
 
-                    <Typography
-                      variant="h4"
-                      component="h4"
-                      style={{
-                        textAlign: "center",
-                        color: "#B82623",
-                      }}
-                    >
-                      20
-                    </Typography>
-                  </Box>
-                  <Box
-                    className={
-                      theme ? styles.report__card__dark : styles.report__card
-                    }
-                  >
-                    <Image src={cancelIcon} title="icon" />
-                    <Typography
-                      variant="caption"
-                      component="h6"
-                      color="#5A5959"
-                    >
-                      Cancelled
-                    </Typography>
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        style={{
+                          textAlign: "center",
+                          color: "#B82623",
+                        }}
+                      >
+                        {appointments.length}
+                      </Typography>
+                    </Box>
+                  )}
 
-                    <Typography
-                      variant="h4"
-                      component="h4"
-                      style={{
-                        textAlign: "center",
-                        color: "#B82623",
-                      }}
+                  {loading ? (
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="120px"
+                      height="150px"
+                      style={{ borderRadius: "10px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  ) : (
+                    <Box
+                      className={
+                        theme ? styles.report__card__dark : styles.report__card
+                      }
                     >
-                      5
-                    </Typography>
-                  </Box>
+                      <Image src={completedIcon} title="icon" />
+                      <Typography
+                        variant="caption"
+                        component="h6"
+                        color="#5A5959"
+                      >
+                        Completed
+                      </Typography>
+
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        style={{
+                          textAlign: "center",
+                          color: "#B82623",
+                        }}
+                      >
+                        20
+                      </Typography>
+                    </Box>
+                  )}
+
+                  {loading ? (
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="120px"
+                      height="150px"
+                      style={{ borderRadius: "10px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  ) : (
+                    <Box
+                      className={
+                        theme ? styles.report__card__dark : styles.report__card
+                      }
+                    >
+                      <Image src={cancelIcon} title="icon" />
+                      <Typography
+                        variant="caption"
+                        component="h6"
+                        color="#5A5959"
+                      >
+                        Cancelled
+                      </Typography>
+
+                      <Typography
+                        variant="h4"
+                        component="h4"
+                        style={{
+                          textAlign: "center",
+                          color: "#B82623",
+                        }}
+                      >
+                        5
+                      </Typography>
+                    </Box>
+                  )}
                 </Box>
 
                 {/* line */}
@@ -539,18 +678,46 @@ const Index = ({ Appointments }) => {
                 {/* line */}
 
                 <Box className={styles.monthly__reports}>
-                  <Typography
+                  {/* <Typography
                     variant="h6"
                     component="h6"
                     color="#B82623"
                     // className={styles.header__cell}
                     // width="100%"
                   >
-                    Number of Appointments
-                  </Typography>
+                   This Week
+                  </Typography> */}
                 </Box>
-                <Box style={{ width: "95%" }}>
-                  <Bar options={chartOptions} data={chartData} />
+                <Box
+                  style={{
+                    display: "flex",
+                    justifyContent: "center",
+                    width: "100%",
+                    height: "100%",
+                  }}
+                >
+                  {loading ? (
+                    <Box
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                      }}
+                    >
+                      <ReactLoading type="balls" color="#B82623" />
+                    </Box>
+                  ) : null}
+
+                  {/* <Bar options={chartOptions} data={chartData} /> */}
+                  {!loading ? (
+                    <ApexCharts
+                      options={appointmentsDataSource.options}
+                      series={appointmentsDataSource.series}
+                      type="bar"
+                      height={300}
+                      width={600}
+                    />
+                  ) : null}
                 </Box>
               </Box>
             </Box>
@@ -569,7 +736,6 @@ export const getStaticProps = async () => {
   try {
     const res = await fetch(`${process.env.BaseURI}/appointments/today`);
     const { Appointments } = await res.json();
-    console.log(Appointments)
 
     return {
       props: {

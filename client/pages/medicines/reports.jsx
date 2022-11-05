@@ -102,11 +102,11 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     });
 
     // mapping all the relesased products from releasedMedicinesData
-    const medicineReleased = releasedMedicinesData.map((data) => {
-      return data.Quantity;
-    });
+    // const medicineReleased = releasedMedicinesData.map((data) => {
+    //   return data.Quantity;
+    // });
 
-    console.log(medicineReleased);
+    // console.log(medicineReleased);
 
     setProductList({
       series: [
@@ -115,7 +115,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
           data: medicineStocks,
         },
         {
-          name: "Relesed",
+          name: "Released",
           data: [10, 20, 30, 20, 50, 13, 50],
         },
         {
@@ -128,6 +128,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
           type: "bar",
           height: 200,
           toolbar: { show: false },
+          stacked: true,
         },
         plotOptions: {
           bar: {
@@ -135,6 +136,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
             horizontal: true,
           },
         },
+        colors: ["#099880", "#c1a00b", "#b82623"],
         dataLabels: {
           enabled: false,
         },
@@ -179,7 +181,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
         },
       },
       xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May"],
+        categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
       },
     },
   });
@@ -385,16 +387,8 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   </Box>
                 </Box>
               </Box>
-            </Box>
-            {/* end tabs here */}
-
-            <Box
-              className={MedicineStyles.container__date__picker}
-              style={{
-                width: "200px",
-                alignSelf: "flex-end",
-              }}
-            >
+              <Box
+              className={MedicineStyles.container__date__picker} >
               <DateRangePickerComponent
                 placeholder=" Select Date"
                 startDate={startDate}
@@ -432,6 +426,8 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                 </PresetsDirective>
               </DateRangePickerComponent>
             </Box>
+            </Box>
+            {/* end tabs here */}
 
             {/* categories starts here */}
             <Typography variant="h6" component="h6" color="#B82623">
@@ -460,7 +456,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                 ) : (
                   <>
                     <span>
-                      Products <strong>{medicinesData.length}</strong>
+                      Out-of-Stocks <strong>{2}</strong>
                     </span>
                     <ApexCharts
                       options={productsDataSource.options}
@@ -495,7 +491,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                 ) : (
                   <>
                     <span>
-                      In-Stocks <strong>{inStocksCount}</strong>
+                      In-Stocks <strong>{100}</strong>
                     </span>
                     <ApexCharts
                       options={inStocksDataSource.options}
