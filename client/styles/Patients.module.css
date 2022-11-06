@@ -78,9 +78,10 @@
   width: 100%;
   overflow-y: scroll;
   scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
 }
-.patients::-webkit-scrollbar { /* WebKit */
+.patients::-webkit-scrollbar {
+  /* WebKit */
   width: 0;
   height: 0;
 }
@@ -362,4 +363,21 @@
 
 .search__input:focus {
   outline: none;
+}
+
+/* scrollable div container */
+.scrollableDiv {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 382px;
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+.scrollableDiv::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
 }

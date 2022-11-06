@@ -704,7 +704,7 @@ const Index = ({ Appointments }) => {
                         alignItems: "center",
                       }}
                     >
-                      <ReactLoading type="balls" color="#B82623" />
+                      <ReactLoading type="balls" color="#d9dae0" />
                     </Box>
                   ) : null}
 

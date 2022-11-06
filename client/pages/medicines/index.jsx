@@ -136,7 +136,7 @@ const Index = ({ Medicines }) => {
                     </Typography>
                   </Box>
                 </Box>
-                {staffData && staffData.Role === "BNS" && (
+                {staffData && staffData.Role === "BNS" || staffData && staffData.Role==="ADMIN" && (
                   <Box className={MedicineStyles.AddMedicine}>
                     <Button
                       onClick={() => router.push("/medicines/register")}
@@ -196,7 +196,7 @@ const Index = ({ Medicines }) => {
               <Button
                 className={styles.page}
                 onClick={NextPage}
-                disabled={data.length <= 1 ? true : false}
+                disabled={data.length <= 4 ? true : false}
               >
                 Next
               </Button>
@@ -210,7 +210,7 @@ const Index = ({ Medicines }) => {
 
 export default Index;
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const res = await fetch(`${process.env.BaseURI}/medicineswithimage`);
     const { Medicines } = await res.json();

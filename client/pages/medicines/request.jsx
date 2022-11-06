@@ -9,13 +9,14 @@ import reusableStyle from "../../styles/Reusable.module.css";
 import styles from "../../styles/RequestMedicine.module.css";
 import { Button } from "@mui/material";
 import RequestCard from "../../component/RequestCard";
-import { useSelector } from "react-redux";
 import SearchPatient from "../../component/SearchPatient";
 import Swal from "sweetalert2";
 import Link from "next/link";
 import axios from "axios";
 import { format } from "date-fns";
 import { Steps, Divider, Breadcrumb } from "antd";
+import { useSelector, useDispatch } from "react-redux";
+import { deleteMedicineRequest } from "../../features/Medicines";
 
 const Request = () => {
   // medicines data from redux
@@ -25,6 +26,9 @@ const Request = () => {
   const [patient, setPatient] = useState(null);
   const [patientID, setPatientID] = useState(null);
   const [note, setNote] = useState(null);
+
+  // initialize the dispatch action
+  const dispatch = useDispatch();
 
   useEffect(() => {
     // fetch Patient dat from local storage
@@ -59,6 +63,10 @@ const Request = () => {
   };
 
   const handleReleaseMedicine = async () => {
+    await medicinesList.map((medicine) =>
+      dispatch(deleteMedicineRequest({ id: medicine.MedicineID }))
+    );
+
     const PatientID = patientID;
     try {
       const releaseNew = await axios.post(

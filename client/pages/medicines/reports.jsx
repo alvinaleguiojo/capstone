@@ -31,6 +31,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
   const [releasedMedicinesData, setReleasedMedicinesData] =
     useState(ReleasedMedicines);
   const [inStocksCount, setInstocksCount] = useState(0);
+  const [dataSource, setDataSource] = useState([]);
 
   // set loading state
   setTimeout(() => {
@@ -90,6 +91,59 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
 
   // productsList state
   const [productList, setProductList] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+    const medicineNames = medicinesData.map((data) => {
+      return data.Name;
+    });
+    // mapping all the product Stocks value from medicinesData
+    const medicineStocks = medicinesData.map((data) => {
+      return data.Stocks;
+    });
+
+    setDataSource({
+      series: [
+        {
+          name: "Stocks",
+          data: [10, 41, 35],
+        },
+  
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: "straight",
+        },
+        title: {
+          text: "Product Trends by Month",
+          align: "left",
+        },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: [
+            "Jan",
+            "Feb",
+            "Mar"
+          ],
+        },
+      },
+    });
+  }, []);
 
   useEffect(() => {
     // mapping all the product name from medicinesData
@@ -387,45 +441,44 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   </Box>
                 </Box>
               </Box>
-              <Box
-              className={MedicineStyles.container__date__picker} >
-              <DateRangePickerComponent
-                placeholder=" Select Date"
-                startDate={startDate}
-                endDate={endDate}
-                format="MMM-dd-yyyy"
-                change={getDateRange}
-              >
-                <PresetsDirective>
-                  <PresetDirective
-                    label="Today"
-                    start={today}
-                    end={today}
-                  ></PresetDirective>
+              <Box className={MedicineStyles.container__date__picker}>
+                <DateRangePickerComponent
+                  placeholder=" Select Date"
+                  startDate={startDate}
+                  endDate={endDate}
+                  format="MMM-dd-yyyy"
+                  change={getDateRange}
+                >
+                  <PresetsDirective>
+                    <PresetDirective
+                      label="Today"
+                      start={today}
+                      end={today}
+                    ></PresetDirective>
 
-                  <PresetDirective
-                    label="This Week"
-                    start={weekStart}
-                    end={weekEnd}
-                  ></PresetDirective>
-                  <PresetDirective
-                    label="This Month"
-                    start={monthStart}
-                    end={monthEnd}
-                  ></PresetDirective>
-                  <PresetDirective
-                    label="Last Month"
-                    start={lastStart}
-                    end={lastEnd}
-                  ></PresetDirective>
-                  <PresetDirective
-                    label="Last Year"
-                    start={yearStart}
-                    end={yearEnd}
-                  ></PresetDirective>
-                </PresetsDirective>
-              </DateRangePickerComponent>
-            </Box>
+                    <PresetDirective
+                      label="This Week"
+                      start={weekStart}
+                      end={weekEnd}
+                    ></PresetDirective>
+                    <PresetDirective
+                      label="This Month"
+                      start={monthStart}
+                      end={monthEnd}
+                    ></PresetDirective>
+                    <PresetDirective
+                      label="Last Month"
+                      start={lastStart}
+                      end={lastEnd}
+                    ></PresetDirective>
+                    <PresetDirective
+                      label="Last Year"
+                      start={yearStart}
+                      end={yearEnd}
+                    ></PresetDirective>
+                  </PresetsDirective>
+                </DateRangePickerComponent>
+              </Box>
             </Box>
             {/* end tabs here */}
 
@@ -433,6 +486,35 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
             <Typography variant="h6" component="h6" color="#B82623">
               Overall Reports
             </Typography>
+
+            {/* {loading ? (
+              <Box
+                style={{
+                  alignSelf: "center",
+                  height: "100%",
+                  width: "100%",
+                }}
+              > */}
+            
+                {/* <Skeleton
+                  animation="wave"
+                  variant="rectangular"
+                  width="100%"
+                  height="100%"
+                  style={{ borderRadius: "5px" }}
+                  sx={{ bgcolor: "grey.200" }}
+                />
+              </Box>
+            ) : (
+              <ApexCharts
+                options={dataSource.options}
+                series={dataSource.series}
+                type="area"
+                height={450}
+                width="100%"
+              />
+            )} */}
+
             <Box className={MedicineStyles.catergories}>
               <Box className={MedicineStyles.category}>
                 {loading ? (
@@ -582,7 +664,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
 
               {loading ? (
                 <Box style={{ alignSelf: "center" }}>
-                  <ReactLoading type="balls" color="#B82623" />
+                  <ReactLoading type="balls" color="#d9dae0" />
                 </Box>
               ) : (
                 <ApexCharts

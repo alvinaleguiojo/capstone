@@ -170,7 +170,7 @@ const Index = ({ Medicines }) => {
               <Button
                 className={styles.page}
                 onClick={NextPage}
-                disabled={data.length <= 1 ? true : false}
+                disabled={data.length <= 4 ? true : false}
               >
                 Next
               </Button>

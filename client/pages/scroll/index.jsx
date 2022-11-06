@@ -14,15 +14,18 @@ import { Button } from "@mui/material";
 import CardTemplate from "../../component/CardTemplate";
 import SearchIcon from "../../assets/image/search.svg";
 import axios from "axios";
+import InfiniteScroll from "react-infinite-scroll-component";
+import ReactLoading from "react-loading";
 
 const Index = ({ patients }) => {
   const router = useRouter();
-  const [patientData, setPatientData] = useState(patients);
+  const [patientData, setPatientData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [pageNumber, setPageNumber] = useState(0);
+  const [pageNumber, setPageNumber] = useState(1);
   const [previousPage, setPreviousPage] = useState(0);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
+  const [hasMore, setHasMore] = useState(true);
 
   const [theme, setTheme] = useState(false);
 
@@ -35,38 +38,52 @@ const Index = ({ patients }) => {
   // fetch patient Data
 
   useEffect(() => {
+    setLoading(true);
+    const abortController = new AbortController();
     axios
       .get(
-        `${process.env.BaseURI}/patients?page=${currentPage}&limit=5&LIKE=${searchTerm}`
+        `${process.env.BaseURI}/patients?page=${currentPage}&limit=6&LIKE=${searchTerm}`,
+        { signal: abortController.signal }
       )
       .then((response) => {
-        setPreviousPage(response.data.previous);
-        setPageNumber(response.data.next);
-        setPatientData(response.data.results);
-      })
-      .then(() => {
         setTimeout(() => {
           setLoading(false);
-        }, 500);
+          !searchTerm &&
+            setPatientData((prev) => [...prev, ...response.data.results]);
+          searchTerm && setPatientData(response.data.results);
+        }, 1000);
+      })
+      .catch((error) => {
+        if (!abortController.signal.aborted) {
+          console.log(error.message);
+        }
       });
+
+    return () => {
+      abortController.abort();
+    };
   }, [currentPage, searchTerm]);
 
-  // go back to previous page
-  const PreviousPage = () => {
-    setLoading(true);
-    setCurrentPage(previousPage.page);
+  const handleScroll = () => {
+    const scrollableDiv = document.getElementById("scrollableDiv");
+    if (
+      scrollableDiv.offsetHeight + scrollableDiv.scrollTop + 1 >=
+      scrollableDiv.scrollHeight
+    ) {
+      setCurrentPage((prev) => prev + 1);
+    }
   };
 
-  // to trigger the next page
-  const NextPage = () => {
-    setLoading(true);
-    setCurrentPage(pageNumber.page);
-  };
+  useEffect(() => {
+    const scrollableDiv = document.getElementById("scrollableDiv");
+    scrollableDiv.addEventListener("scroll", handleScroll);
+    return () => scrollableDiv.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // handling search terms
   const handleSearch = (e) => {
+    e.preventDefault();
     setCurrentPage(1);
-    setLoading(true);
     setSearchTerm(e.target.value);
   };
 
@@ -104,7 +121,7 @@ const Index = ({ patients }) => {
                   <Typography variant="h5" component="h5" color="#B82623">
                     All Patients
                   </Typography>
-                  <Button className={styles.addPatient}  onClick={AddPatient}>
+                  <Button className={styles.addPatient} onClick={AddPatient}>
                     Add New Patient
                   </Button>
                 </Box>
@@ -126,48 +143,37 @@ const Index = ({ patients }) => {
                   />
                 </Box>
 
-                {/* fetch all patient data */}
-                {patientData.map((patient, key) => {
-                  return (
-                    <Box
-                      key={key}
-                      onClick={() =>
-                        router.push(`/patients/${patient.PatientID}`)
-                      }
-                    >
-                      <CardTemplate
-                        loading={loading}
-                        profilePicture={patient.Image}
-                        Name={`${patient.FirstName} ${patient.LastName}`}
-                        Address={`${patient.Street} ${patient.Baranggay} ${patient.City}`}
-                        Phone={patient.Phone}
-                      />
-                    </Box>
-                  );
-                })}
+                <div id="scrollableDiv" className={styles.scrollableDiv}>
+                  {patientData.map((patient, key) => {
+                    return (
+                      <Box
+                        key={key}
+                        onClick={() =>
+                          router.push(`/patients/${patient.PatientID}`)
+                        }
+                      >
+                        <CardTemplate
+                          //   loading={loading}
+                          profilePicture={patient.Image}
+                          Name={`${patient.FirstName} ${patient.LastName}`}
+                          Address={`${patient.Street} ${patient.Baranggay} ${patient.City}`}
+                          Phone={patient.Phone}
+                        />
+                      </Box>
+                    );
+                  })}
+                  {loading && (
+                    <div style={{ display: "flex", justifyContent: "center" }}>
+                      <ReactLoading type="balls" color="#d9dae0" />
+                    </div>
+                  )}
+                </div>
+
                 {patientData.length <= 0 && (
                   <Typography variant="h5" component="h5" color="#B82623">
                     No words or phrases found
                   </Typography>
                 )}
-
-                <Box className={styles.pagination}>
-                  <Button
-                    className={styles.page}
-                    onClick={PreviousPage}
-                    disabled={currentPage <= 1 ? true : false}
-                  >
-                    Previous
-                  </Button>
-
-                  <Button
-                    className={styles.page}
-                    onClick={NextPage}
-                    disabled={patientData.length <= 4 ? true : false}
-                  >
-                    Next
-                  </Button>
-                </Box>
               </Box>
             </Box>
           </Box>
@@ -177,10 +183,9 @@ const Index = ({ patients }) => {
   );
 };
 
-export default  Index;
+export default Index;
 
 export const getStaticProps = async ({ context }) => {
- 
   try {
     const res = await fetch(`${process.env.BaseURI}/patientswithimage`);
     const { Patients } = await res.json();
@@ -189,7 +194,7 @@ export const getStaticProps = async ({ context }) => {
       props: {
         patients: Patients,
       },
-    };  
+    };
   } catch (error) {
     console.log("please check your internet connection", error);
   }
