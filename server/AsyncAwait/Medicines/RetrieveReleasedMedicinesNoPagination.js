@@ -10,7 +10,7 @@ const RetrieveReleasedMedicinesNoPagition = () => {
       INNER JOIN ReleasedMedicines
       on ReleasedMedicines.MedicineID = Medicines.MedicineID
       INNER join Images
-      on Images.ImageID = Medicines.ImageID`,
+      on Images.ImageID = Medicines.ImageID ORDER BY ReleasedDate DESC`,
       (error, Medicines) => {
         error && reject(error);
         return resolve(Medicines);

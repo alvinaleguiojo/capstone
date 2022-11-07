@@ -9,6 +9,7 @@ import { CookiesProvider } from "react-cookie";
 import "react-calendar/dist/Calendar.css";
 import userApiReducer from "../features/Users";
 import medicinesRequestReducer from "../features/Medicines";
+import termsReducer from "../features/TermsCondition";
 import Navbar from "../component/Navbar";
 import axios from "axios";
 import { useRouter } from "next/router";
@@ -24,6 +25,7 @@ const store = configureStore({
   reducer: {
     user: userApiReducer,
     medicines: medicinesRequestReducer,
+    terms: termsReducer
   },
 });
 

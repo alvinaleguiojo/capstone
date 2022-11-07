@@ -111,6 +111,11 @@ const Index = () => {
     });
   };
 
+  const onFormSubmit = (e) => {
+    e.preventDefault();
+    handleSubmit();
+  };
+
   return (
     <>
       <Meta
@@ -137,52 +142,59 @@ const Index = () => {
             </Typography>
           </Box>
 
-          <FormControl
-            sx={{ marginTop: "20px", marginBottom: "20px", gap: "0.5rem" }}
-          >
-            <Typography variant="body2" component="h4" color="#585858">
-              EMAIL ADDRESS
-            </Typography>
-            <input
-              className={styles.input}
-              required={true}
-              type="email"
-              name="email"
-              onChange={(e) =>
-                setUser({ ...user, Email: e.target.value.toLocaleLowerCase() })
-              }
-              value={user.Email || ""}
-            />
-
-            <Typography variant="body2" component="h4" color="#585858">
-              PASSWORD
-            </Typography>
-            <input
-              className={styles.input}
-              required={true}
-              type="password"
-              name="password"
-              onChange={(e) => setUser({ ...user, Password: e.target.value })}
-              value={user.Password || ""}
-            />
-
-            <Box className={styles.remember__me}>
-              <FormControlLabel
-                control={<Checkbox value={false} />}
-                label="Remember me"
-              />
-            </Box>
-
-            <LoadingButton
-              onClick={handleSubmit}
-              loading={loading}
-              disabled={disabled}
-              variant="contained"
-              className={disabled ? styles.btnDisabled : styles.loginBtn}
+          <form onSubmit={onFormSubmit} className={styles.form}>
+            <FormControl
+              sx={{ marginTop: "20px", marginBottom: "20px", gap: "0.5rem", width:"100%" }}
             >
-              Login
-            </LoadingButton>
-          </FormControl>
+              <Typography variant="body2" component="h4" color="#585858">
+                EMAIL ADDRESS
+              </Typography>
+              <input
+                className={styles.input}
+                required={true}
+                type="email"
+                name="email"
+                onChange={(e) =>
+                  setUser({
+                    ...user,
+                    Email: e.target.value.toLocaleLowerCase(),
+                  })
+                }
+                value={user.Email || ""}
+              />
+
+              <Typography variant="body2" component="h4" color="#585858">
+                PASSWORD
+              </Typography>
+              <input
+                className={styles.input}
+                required={true}
+                type="password"
+                name="password"
+                onChange={(e) => setUser({ ...user, Password: e.target.value })}
+                value={user.Password || ""}
+              />
+
+              <Box className={styles.remember__me}>
+                <FormControlLabel
+                  control={<Checkbox value={false} />}
+                  label="Remember me"
+                />
+              </Box>
+
+              <LoadingButton
+                onClick={handleSubmit}
+                loading={loading}
+                disabled={disabled}
+                variant="contained"
+                className={disabled ? styles.btnDisabled : styles.loginBtn}
+                type="submit"
+              >
+                Login
+              </LoadingButton>
+            </FormControl>
+          </form>
+
           <Typography
             variant="body2"
             component="h4"

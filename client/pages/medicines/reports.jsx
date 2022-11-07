@@ -93,6 +93,8 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
   const [productList, setProductList] = useState({});
 
   useEffect(() => {
+    const abortController = new AbortController();
+
     // mapping all the product name from medicinesData
     const medicineNames = medicinesData.map((data) => {
       return data.Name;
@@ -108,7 +110,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
           name: "Stocks",
           data: [10, 41, 35],
         },
-  
       ],
       options: {
         chart: {
@@ -135,17 +136,19 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
           },
         },
         xaxis: {
-          categories: [
-            "Jan",
-            "Feb",
-            "Mar"
-          ],
+          categories: ["Jan", "Feb", "Mar"],
         },
       },
     });
+
+    return () => {
+      abortController.abort();
+    };
   }, []);
 
   useEffect(() => {
+    const abortController = new AbortController();
+    console.log("abort");
     // mapping all the product name from medicinesData
     const medicineNames = medicinesData.map((data) => {
       return data.Name;
@@ -155,12 +158,15 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
       return data.Stocks;
     });
 
-    // mapping all the relesased products from releasedMedicinesData
-    // const medicineReleased = releasedMedicinesData.map((data) => {
-    //   return data.Quantity;
-    // });
+    // mapping all released medicines
+    const releasedQuantities = releasedMedicinesData.map((released, index) => {
+      return released.Quantity;
+    }, 0);
 
-    // console.log(medicineReleased);
+    const sum = releasedQuantities.reduce((accumulate, value) => {
+      return accumulate + value;
+    }, 0);
+    console.log(sum);
 
     setProductList({
       series: [
@@ -170,11 +176,11 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
         },
         {
           name: "Released",
-          data: [10, 20, 30, 20, 50, 13, 50],
+          data: [10, 5, 15, 6, 5, 3],
         },
         {
           name: "Expired",
-          data: [10, 20, 30, 20, 50, 13, 50],
+          data: [1, 2 , 1, 1, 1],
         },
       ],
       options: {
@@ -199,13 +205,17 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
         },
       },
     });
+
+    return () => {
+      abortController.abort();
+    };
   }, [medicinesData]);
 
   // products state
   const [productsDataSource, setProductsDataSource] = useState({
     series: [
       {
-        name: "Products",
+        name: "Out-of-Stocks",
         data: [10, 4, 35, 20, 10],
       },
     ],
@@ -335,51 +345,67 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
   });
 
   //Released state Datasource
-  const [releasedDataSource, setReleasedDataSource] = useState({
-    series: [
-      {
-        name: "Released Medicines",
-        data: [10, 41, 35, 51, 49],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
+  const [releasedDataSource, setReleasedDataSource] = useState();
+  const [releasedSum, setReleasedSum] = useState(0);
+
+  useEffect(() => {
+    // mapping all released medicines quantity
+    const releasedQuantities = releasedMedicinesData.map((released, index) => {
+      return released.Quantity;
+    });
+
+    const sum = releasedQuantities.reduce((accumulate, value) => {
+      return accumulate + value;
+    }, 0);
+
+    setReleasedSum(sum);
+
+    setReleasedDataSource({
+      series: [
+        {
+          name: "Released Medicines",
+          data: [10, 15, 10, 5, 4],
+        },
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: { show: false },
+        },
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: "#bf9d04",
+            shadeTo: "light",
+            shadeIntensity: 0.65,
+          },
+        },
+        dataLabels: {
           enabled: false,
         },
-        toolbar: { show: false },
-      },
-      theme: {
-        monochrome: {
-          enabled: true,
-          color: "#bf9d04",
-          shadeTo: "light",
-          shadeIntensity: 0.65,
+        stroke: {
+          curve: "straight",
+        },
+        //   title: {
+        //     text: "Product Trends by Month",
+        //     align: "left",
+        //   },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: ["Jan", "Feb", "Mar", "Apr", "May"],
         },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      //   title: {
-      //     text: "Product Trends by Month",
-      //     align: "left",
-      //   },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May"],
-      },
-    },
-  });
+    });
+  }, [releasedMedicinesData]);
 
   // get value from date picker
   const getDateRange = (e) => {
@@ -495,8 +521,8 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   width: "100%",
                 }}
               > */}
-            
-                {/* <Skeleton
+
+            {/* <Skeleton
                   animation="wave"
                   variant="rectangular"
                   width="100%"
@@ -641,7 +667,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                 ) : (
                   <>
                     <span>
-                      Released <strong>{releasedMedicinesData.length}</strong>
+                      Released <strong>{releasedSum}</strong>
                     </span>
                     <ApexCharts
                       options={releasedDataSource.options}

@@ -6,10 +6,9 @@ const ReleasedMedicinePromise = ({
   Quantity,
   PatientID,
   MedicineID,
-  ReleasedDate,
   Note
 }) => {
-  const newUser = `INSERT INTO ReleasedMedicines (Quantity, PatientID, MedicineID, Note, ReleasedDate ) VALUES (${Quantity}, ${PatientID}, ${MedicineID}, '${Note}', '${ReleasedDate}')`;
+  const newUser = `INSERT INTO ReleasedMedicines (Quantity, PatientID, MedicineID, Note ) VALUES (${Quantity}, ${PatientID}, ${MedicineID}, '${Note}')`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, ReleasedMedicine) => {
       error && reject(error);

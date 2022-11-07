@@ -156,8 +156,6 @@ router.post("/medicine/register", async (req, res) => {
 // Add new Release Medicine
 router.post("/medicine/release", async (req, res) => {
   const data = req.body.medicinesList;
-  const today = new Date();
-  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const Note = req.body.note;
   const PatientID = req.body.PatientID;
 
@@ -169,7 +167,6 @@ router.post("/medicine/release", async (req, res) => {
         Quantity,
         PatientID,
         MedicineID,
-        ReleasedDate: date,
         Note,
       });
       res.status(200).json({ message: "Medicine has been released" });
@@ -253,7 +250,7 @@ router.get("/medicine/detail/:id", async (req, res) => {
       MedicineID: req.params.id,
     });
     res.status(200).json({ Medicines: resultElements });
-  } catch (error) {
+  } catch (error) { 
     console.log(error);
     res.sendStatus(500);
   }

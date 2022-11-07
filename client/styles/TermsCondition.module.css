@@ -1,0 +1,61 @@
+.agree {
+  background-color: #b82623 !important;
+}
+.agree:hover {
+  background-color: #d62e2b !important;
+}
+
+.disagree {
+  color: #b82623 !important;
+  border: solid 1px #b82623 !important;
+}
+.disagree:hover {
+  color: #b82623 !important;
+  border: solid 1px #b82623 !important;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.contents {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  max-height: 450px;
+  inset: 10px 20px 30px 40px;
+}
+
+.contents::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+.popup__settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 10px;
+  position: absolute;
+  translate: -130px 40px;
+  top: -200px;
+  width: 100vw;
+  height: 668px;
+  background-color: rgba(0, 0, 0, 0.253);
+  z-index: 2;
+}
+
+.terms__conditions {
+  background-color: #fff;
+  width: 80%;
+  height: 90%;
+  border-radius: 10px;
+  padding-top: 20px;
+  padding-left: 30px;
+  padding-right: 30px;
+  padding-bottom: 20px;
+}

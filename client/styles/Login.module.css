@@ -39,6 +39,7 @@
   background-color: #dbdff3;
   border-radius: 20px;
   border: none;
+  width: inherit;
 }
 .input:focus {
   outline: solid 2px #b82623;

@@ -8,6 +8,7 @@ const nextConfig = {
       "getmeds.ph",
       "www.benadryl.com.ph",
       "http://localhost",
+       "localhost"
     ],
   },
   swcMinify: true,

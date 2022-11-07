@@ -164,7 +164,7 @@ const Index = ({ patients }) => {
                   })}
                   {loading && (
                     <div style={{ display: "flex", justifyContent: "center" }}>
-                      <ReactLoading type="balls" color="#d9dae0" />
+                      <ReactLoading type="balls" color="#d9dae0" height={50} width={50}/>
                     </div>
                   )}
                 </div>

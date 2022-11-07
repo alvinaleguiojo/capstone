@@ -15,7 +15,10 @@ import Image from "next/image";
 import axios from "axios";
 import Swal from "sweetalert2";
 import io from "socket.io-client";
+import TermsConditions from "../../component/TermsConditions";
 const socket = io.connect(process.env.BaseURI);
+import { termsModal } from "../../features/TermsCondition";
+import { useSelector, useDispatch } from "react-redux";
 
 const Index = () => {
   // redirect to dashboard when current user is authenticated
@@ -28,6 +31,11 @@ const Index = () => {
   const [terms, setTerms] = useState(false);
   const [privacy, setPrivacy] = useState(false);
   const [serverResponse, setServerResponse] = useState("");
+  const [modal, setModal] = useState(false);
+
+  // terms redux
+  const dispatch = useDispatch();
+  const TemsConditionModal = useSelector((state) => state.terms.value);
 
   // received a response from the server telling the email is not valid or not exist
   useEffect(() => {
@@ -229,10 +237,19 @@ const Index = () => {
                     onChange={(e) => setTerms(e.target.checked)}
                   />
                 }
-                label="I AGREE WITH THE TERMS OF CONDITIONS"
+                // label="I AGREE WITH THE TERMS OF CONDITIONS"
               />
+              <label
+                onClick={() => {
+                  dispatch(termsModal());
+                }}
+              >
+                I AGREE WITH THE TERMS OF CONDITIONS
+              </label>
 
-              <FormControlLabel
+              {TemsConditionModal && <TermsConditions />}
+
+              {/* <FormControlLabel
                 control={
                   <Checkbox
                     checked={privacy}
@@ -240,7 +257,7 @@ const Index = () => {
                   />
                 }
                 label="I AGREE WITH THE PRIVACY POLICY"
-              />
+              /> */}
             </Box>
           </FormControl>
 

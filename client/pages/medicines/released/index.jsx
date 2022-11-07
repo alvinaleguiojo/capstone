@@ -15,6 +15,7 @@ import axios from "axios";
 import { Button } from "@mui/material";
 import useAuth from "../../../customhook/Auth";
 import ReleasedMedicine from "../../../component/ReleasedMedicine";
+import ReactLoading from "react-loading";
 
 const Index = ({ Medicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
@@ -34,22 +35,46 @@ const Index = ({ Medicines }) => {
   }, [data]);
 
   useEffect(() => {
+    setLoading(true);
+    const abortController = new AbortController();
     axios
       .get(
-        `${process.env.BaseURI}/medicines/released?page=${currentPage}&limit=5&LIKE=${searchTerm}`
+        `${process.env.BaseURI}/medicines/released?page=${currentPage}&limit=5&LIKE=${searchTerm}`,
+        { signal: abortController.signal }
       )
       .then((response) => {
-        setPreviousPage(response.data.previous);
-        setPageNumber(response.data.next);
-        setData(response.data.results);
-        console.log(response.data.results);
-      })
-      .then(() => {
         setTimeout(() => {
           setLoading(false);
-        }, 500);
+          !searchTerm && setData((prev) => [...prev, ...response.data.results]);
+          searchTerm && setData(response.data.results);
+        }, 1000);
+      })
+      .catch((error) => {
+        if (!abortController.signal.aborted) {
+          console.log(error.message);
+        }
       });
+
+    return () => {
+      abortController.abort();
+    };
   }, [currentPage, searchTerm]);
+
+  const handleScroll = () => {
+    const scrollableDiv = document.getElementById("scrollableDiv");
+    if (
+      scrollableDiv.offsetHeight + scrollableDiv.scrollTop + 1 >=
+      scrollableDiv.scrollHeight
+    ) {
+      setCurrentPage((prev) => prev + 1);
+    }
+  };
+
+  useEffect(() => {
+    const scrollableDiv = document.getElementById("scrollableDiv");
+    scrollableDiv.addEventListener("scroll", handleScroll);
+    return () => scrollableDiv.removeEventListener("scroll", handleScroll);
+  }, []);
 
   // go back to previous page
   const PreviousPage = () => {
@@ -65,8 +90,8 @@ const Index = ({ Medicines }) => {
 
   // hamdling search terms
   const handleSearch = (e) => {
+    e.preventDefault();
     setCurrentPage(1);
-    setLoading(true);
     setSearchTerm(e.target.value);
   };
 
@@ -95,7 +120,7 @@ const Index = ({ Medicines }) => {
                     onClick={() => router.push("/medicines")}
                   >
                     <Typography variant="h5" component="h5" color="#B82623">
-                       Inventory
+                      Inventory
                     </Typography>
                   </Box>
                   <Box
@@ -107,7 +132,7 @@ const Index = ({ Medicines }) => {
                     onClick={() => router.push("/medicines/released")}
                   >
                     <Typography variant="h5" component="h5" color="#B82623">
-                      Released 
+                      Released
                     </Typography>
                   </Box>
                   <Box
@@ -141,24 +166,39 @@ const Index = ({ Medicines }) => {
             </Box>
 
             {/* Medicine cards here */}
-            {data.map((request, index) => {
-              return (
-                <Box className={styles.medicine__list} key={request.ReleasedID}>
-                  <ReleasedMedicine
+            <div id="scrollableDiv" className={styles.scrollableDiv}>
+              {data.map((request, index) => {
+                return (
+                  <Box
+                    className={styles.medicine__list}
                     key={request.ReleasedID}
-                    loading={loading}
-                    data={request}
+                  >
+                    <ReleasedMedicine
+                      key={request.ReleasedID}
+                      // loading={loading}
+                      data={request}
+                    />
+                  </Box>
+                );
+              })}
+              {loading && (
+                <div style={{ display: "flex", justifyContent: "center" }}>
+                  <ReactLoading
+                    type="balls"
+                    color="#d9dae0"
+                    height={50}
+                    width={50}
                   />
-                </Box>
-              );
-            })}
+                </div>
+              )}
+            </div>
             {data.length <= 0 && (
               <Typography variant="h5" component="h5" color="#B82623">
                 No words or phrases found
               </Typography>
             )}
 
-            <Box className={styles.pagination}>
+            {/* <Box className={styles.pagination}>
               <Button
                 className={styles.page}
                 onClick={PreviousPage}
@@ -174,7 +214,7 @@ const Index = ({ Medicines }) => {
               >
                 Next
               </Button>
-            </Box>
+            </Box> */}
           </Box>
         </Box>
       </Box>
