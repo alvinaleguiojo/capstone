@@ -21,6 +21,8 @@ import {
   PresetsDirective,
   PresetDirective,
 } from "@syncfusion/ej2-react-calendars";
+import { SignalCellularNullSharp } from "@mui/icons-material";
+import moment from "moment";
 
 const Index = ({ Medicines, ReleasedMedicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
@@ -166,7 +168,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     const sum = releasedQuantities.reduce((accumulate, value) => {
       return accumulate + value;
     }, 0);
-    console.log(sum);
 
     setProductList({
       series: [
@@ -180,7 +181,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
         },
         {
           name: "Expired",
-          data: [1, 2 , 1, 1, 1],
+          data: [1, 2, 1, 1, 1],
         },
       ],
       options: {
@@ -212,137 +213,181 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
   }, [medicinesData]);
 
   // products state
-  const [productsDataSource, setProductsDataSource] = useState({
-    series: [
-      {
-        name: "Out-of-Stocks",
-        data: [10, 4, 35, 20, 10],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
+  const [outOfStocksDataSource, setOutOfStocksDataSource] = useState({});
+  const [outOfStocksCount, setOutOfStockCount] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+    const OutOfStocksResults = medicinesData.filter((data) => {
+      const Stocks = data.Stocks === 0;
+      return Stocks;
+    });
+
+    setOutOfStockCount(OutOfStocksResults);
+
+    setOutOfStocksDataSource({
+      series: [
+        {
+          name: "Out-of-Stocks",
+          data: [10, 20, 30, 23, 5],
+        },
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: { show: false },
+        },
+        dataLabels: {
           enabled: false,
         },
-        toolbar: { show: false },
-      },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      //   title: {
-      //     text: "Product Trends by Month",
-      //     align: "left",
-      //   },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
+        stroke: {
+          curve: "straight",
+        },
+        //   title: {
+        //     text: "Product Trends by Month",
+        //     align: "left",
+        //   },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
         },
       },
-      xaxis: {
-        categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
-      },
-    },
-  });
+    });
+  }, []);
 
   // In-stocks state
-  const [inStocksDataSource, setInstocksDataSource] = useState({
-    series: [
-      {
-        name: "In-Stocks",
-        data: [10, 27, 42, 26, 49],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
+  const [inStocksDataSource, setInstocksDataSource] = useState();
+  const [inStocks, setInstocks] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+    const today = moment().format("YYYY-MM-DD");
+
+    const InStocksResults = medicinesData.filter((data) => {
+      const Stocks = data.Stocks > 0 && data.ExpiryDate > today;
+      return Stocks;
+    });
+
+    setInstocks(InStocksResults);
+
+    setInstocksDataSource({
+      series: [
+        {
+          name: "In-Stocks",
+          data: [10, 27, 42, 26, 49],
+        },
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: { show: false },
+        },
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: "rgb(8, 153, 129)",
+            shadeTo: "light",
+            shadeIntensity: 0.65,
+          },
+        },
+        dataLabels: {
           enabled: false,
         },
-        toolbar: { show: false },
-      },
-      theme: {
-        monochrome: {
-          enabled: true,
-          color: "rgb(8, 153, 129)",
-          shadeTo: "light",
-          shadeIntensity: 0.65,
+        stroke: {
+          curve: "straight",
+        },
+        //   title: {
+        //     text: "Product Trends by Month",
+        //     align: "left",
+        //   },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: ["Jan", "Feb", "Mar", "Apr", "May"],
         },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      //   title: {
-      //     text: "Product Trends by Month",
-      //     align: "left",
-      //   },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May"],
-      },
-    },
-  });
+    });
+  }, []);
 
   // Expire state Datasource
-  const [expiredDataSource, setExpireDataSource] = useState({
-    series: [
-      {
-        name: "Expired Medicines",
-        data: [10, 41, 21, 51, 49],
-      },
-    ],
-    options: {
-      chart: {
-        height: 350,
-        type: "line",
-        zoom: {
+  const [expiredDataSource, setExpireDataSource] = useState({});
+  const [expiredStocks, setExpiredStocks] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+
+    const today = moment().format("YYYY-MM-DD");
+
+    const ExpiredStocksResults = medicinesData.filter((data) => {
+      const Stocks = data.ExpiryDate < today;
+      return Stocks;
+    });
+
+    setExpiredStocks(ExpiredStocksResults);
+
+    setExpireDataSource({
+      series: [
+        {
+          name: "Expired Medicines",
+          data: [10, 41, 21, 51, 49],
+        },
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "area",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: { show: false },
+        },
+        theme: {
+          monochrome: {
+            enabled: true,
+            color: "#b82623",
+            shadeTo: "light",
+            shadeIntensity: 0.65,
+          },
+        },
+        dataLabels: {
           enabled: false,
         },
-        toolbar: { show: false },
-      },
-      theme: {
-        monochrome: {
-          enabled: true,
-          color: "#b82623",
-          shadeTo: "light",
-          shadeIntensity: 0.65,
+        stroke: {
+          curve: "straight",
+        },
+        //   title: {
+        //     text: "Product Trends by Month",
+        //     align: "left",
+        //   },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          categories: ["Jan", "Feb", "Mar", "Apr", "May"],
         },
       },
-      dataLabels: {
-        enabled: false,
-      },
-      stroke: {
-        curve: "straight",
-      },
-      //   title: {
-      //     text: "Product Trends by Month",
-      //     align: "left",
-      //   },
-      grid: {
-        row: {
-          colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
-          opacity: 0.5,
-        },
-      },
-      xaxis: {
-        categories: ["Jan", "Feb", "Mar", "Apr", "May"],
-      },
-    },
-  });
+    });
+  }, []);
 
   //Released state Datasource
   const [releasedDataSource, setReleasedDataSource] = useState();
@@ -370,7 +415,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
       options: {
         chart: {
           height: 350,
-          type: "line",
+          type: "area",
           zoom: {
             enabled: false,
           },
@@ -406,6 +451,97 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
       },
     });
   }, [releasedMedicinesData]);
+
+  const [productsDataSource, setProductsDataSource] = useState({});
+  const [productsOnhand, setProductsOnHand] = useState({});
+
+  useEffect(() => {
+    // mapping all the product name from medicinesData
+    const productsOnHand = medicinesData.filter((data) => {
+      const Stocks = data.Stocks !== 0;
+      return Stocks;
+    });
+
+    setProductsOnHand(productsOnHand);
+
+    // mapping all released medicines quantity
+    const products = medicinesData.map((product) => {
+      return product.Stocks;
+    });
+
+    const abortController = new AbortController();
+    setProductsDataSource({
+      series: [
+        {
+          name: "Products Analytics",
+          data: products,
+        },
+      ],
+      options: {
+        chart: {
+          height: 350,
+          type: "line",
+          zoom: {
+            enabled: false,
+          },
+          toolbar: { show: false },
+        },
+        dataLabels: {
+          enabled: false,
+        },
+        stroke: {
+          curve: "smooth",
+        },
+        //   title: {
+        //     text: "Product Trends by Month",
+        //     align: "left",
+        //   },
+        grid: {
+          row: {
+            colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
+            opacity: 0.5,
+          },
+        },
+        xaxis: {
+          // categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+        },
+      },
+    });
+    return () => {
+      abortController.abort();
+    };
+  }, []);
+
+  const [servicesDataSource, setServicesDataSource] = useState({});
+  useEffect(() => {
+    const abortController = new AbortController();
+    setServicesDataSource({
+      series: [44, 55, 13, 43],
+      options: {
+        chart: {
+          width: 380,
+          type: "pie",
+        },
+        labels: ["Out-of-Stocks", "In-Stocks", "Expired", "Released"],
+        responsive: [
+          {
+            breakpoint: 480,
+            options: {
+              chart: {
+                width: 200,
+              },
+              legend: {
+                position: "bottom",
+              },
+            },
+          },
+        ],
+      },
+    });
+    return () => {
+      abortController.abort();
+    };
+  }, []);
 
   // get value from date picker
   const getDateRange = (e) => {
@@ -542,7 +678,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
             )} */}
 
             <Box className={MedicineStyles.catergories}>
-              <Box className={MedicineStyles.category}>
+              <Box className={MedicineStyles.category__header}>
                 {loading ? (
                   <Box
                     style={{
@@ -563,21 +699,22 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   </Box>
                 ) : (
                   <>
-                    <span>
-                      Out-of-Stocks <strong>{2}</strong>
-                    </span>
-                    <ApexCharts
-                      options={productsDataSource.options}
-                      series={productsDataSource.series}
+                    {/* <ApexCharts
+                      options={outOfStocksDataSource.options}
+                      series={outOfStocksDataSource.series}
                       type="area"
                       height={150}
                       width={280}
-                    />
+                    /> */}
+                    <Typography variant="h2" component="h2" color="#B82623">
+                      {outOfStocksCount.length}
+                    </Typography>
+                    <span>Out-of-Stocks Products</span>
                   </>
                 )}
               </Box>
 
-              <Box className={MedicineStyles.category}>
+              <Box className={MedicineStyles.category__header}>
                 {loading ? (
                   <Box
                     style={{
@@ -598,20 +735,21 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   </Box>
                 ) : (
                   <>
-                    <span>
-                      In-Stocks <strong>{100}</strong>
-                    </span>
-                    <ApexCharts
+                    {/* <ApexCharts
                       options={inStocksDataSource.options}
                       series={inStocksDataSource.series}
                       type="area"
                       height={150}
                       width={270}
-                    />
+                    /> */}
+                    <Typography variant="h2" component="h2" color="#B82623">
+                      {inStocks.length}
+                    </Typography>
+                    <span>In-Stocks Products</span>
                   </>
                 )}
               </Box>
-              <Box className={MedicineStyles.category}>
+              <Box className={MedicineStyles.category__header}>
                 {loading ? (
                   <Box
                     style={{
@@ -632,20 +770,69 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                   </Box>
                 ) : (
                   <>
-                    <span>
-                      Expired <strong>{5}</strong>
-                    </span>
-                    <ApexCharts
+                    {/* <ApexCharts
                       options={expiredDataSource.options}
                       series={expiredDataSource.series}
                       type="area"
                       height={150}
                       width={270}
-                    />
+                    /> */}
+                    <Typography variant="h2" component="h2" color="#B82623">
+                      {expiredStocks.length}
+                    </Typography>
+                    <span>Expired Products</span>
                   </>
                 )}
               </Box>
-              <Box className={MedicineStyles.category}>
+              <Box className={MedicineStyles.category__header}>
+                {loading ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    {/* <ApexCharts
+                      options={releasedDataSource.options}
+                      series={releasedDataSource.series}
+                      type="area"
+                      height={150}
+                      width={270}
+                    /> */}
+                    <Typography variant="h2" component="h2" color="#B82623">
+                      {releasedSum}
+                    </Typography>
+                    <span>Total Released Products By Quantity</span>
+                  </>
+                )}
+              </Box>
+            </Box>
+            {/* categories ends here */}
+
+            <Box
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <Box
+                className={MedicineStyles.category}
+                style={{ width: "49.4%", height: "300px" }}
+              >
                 {loading ? (
                   <Box
                     style={{
@@ -667,20 +854,61 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                 ) : (
                   <>
                     <span>
-                      Released <strong>{releasedSum}</strong>
+                      Products Onhand <strong>{productsOnhand.length}</strong>
                     </span>
                     <ApexCharts
-                      options={releasedDataSource.options}
-                      series={releasedDataSource.series}
+                      options={productsDataSource.options}
+                      series={productsDataSource.series}
                       type="area"
-                      height={150}
-                      width={270}
+                      height="100%"
+                      width="100%"
+                    />
+                  </>
+                )}
+              </Box>
+
+              <Box
+                className={MedicineStyles.category}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "flex-start",
+                  width: "49.4%",
+                  height: "300px",
+                }}
+              >
+                {loading && servicesDataSource != null ? (
+                  <Box
+                    style={{
+                      alignSelf: "center",
+                      height: "100%",
+                      width: "100%",
+                    }}
+                  >
+                    {/* <ReactLoading type="balls" color="#B82623" /> */}
+                    <Skeleton
+                      animation="wave"
+                      variant="rectangular"
+                      width="100%"
+                      height="100%"
+                      style={{ borderRadius: "5px" }}
+                      sx={{ bgcolor: "grey.200" }}
+                    />
+                  </Box>
+                ) : (
+                  <>
+                    <span>Percentage</span>
+                    <ApexCharts
+                      options={servicesDataSource.options}
+                      series={servicesDataSource.series}
+                      type="pie"
+                      height={250}
+                      // width={380}
                     />
                   </>
                 )}
               </Box>
             </Box>
-            {/* categories ends here */}
 
             {/* product list data */}
             <Box className={MedicineStyles.product__list}>
@@ -711,7 +939,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
 
 export default Index;
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const res = await fetch(`${process.env.BaseURI}/allmedicines`);
     const resReleased = await fetch(

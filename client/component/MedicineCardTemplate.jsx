@@ -9,13 +9,14 @@ import { addMedicineRequest } from "../features/Medicines";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import Checkbox from "@mui/material/Checkbox";
 import { deleteMedicineRequest } from "../features/Medicines";
-
 const label = { inputProps: { "aria-label": "Checkbox demo" } };
+import moment from "moment";
 
 const CardTemplate = (props) => {
   const router = useRouter();
   const [theme, setTheme] = useState(false);
   const [medicineIDs, setMedicineIDs] = useState([]);
+  const today = moment().format("YYYY-MM-DD");
 
   const [checked, setChecked] = useState(false);
 
@@ -75,14 +76,15 @@ const CardTemplate = (props) => {
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
-      {props.staffData.Role === "BNS" || props.staffData.Role == "ADMIN"&& (
-        <Checkbox
-          {...label}
-          checked={checked}
-          onChange={(event) => handleChange(event, props.data)}
-          disabled={props.data.Stocks > 0 ? false : true}
-        />
-      )}
+      {props.staffData.Role === "BNS" ||
+        (props.staffData.Role == "ADMIN" && (
+          <Checkbox
+            {...label}
+            checked={checked}
+            onChange={(event) => handleChange(event, props.data)}
+            disabled={props.data.Stocks > 0 ? false : true}
+          />
+        ))}
 
       <Box className={styles.imageContainer}>
         {props.loading ? (
@@ -165,7 +167,7 @@ const CardTemplate = (props) => {
             <Typography variant="caption" component="h5">
               Expiry Date
             </Typography>
-            <Typography variant="body1" component="h5">
+            <Typography variant="body1" component="h5" style={{color: props.data.ExpiryDate < today && "red"}}>
               {new Date(props.data.ExpiryDate).toLocaleDateString("en-us", {
                 // weekday: "long",
                 year: "numeric",

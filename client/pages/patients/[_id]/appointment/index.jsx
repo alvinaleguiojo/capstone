@@ -36,8 +36,10 @@ const Index = ({ patient, Services }) => {
 
   useEffect(() => {
     let appointmentInput = Object.values(appointment).includes("");
-    !appointmentInput && Object.keys(appointment).length >= 3 && calendar && 
-      appointment.ServiceID 
+    !appointmentInput &&
+    Object.keys(appointment).length >= 3 &&
+    calendar &&
+    appointment.ServiceID
       ? setDisabled(false)
       : setDisabled(true);
   }, [appointment, calendar]);
@@ -49,7 +51,7 @@ const Index = ({ patient, Services }) => {
     setAppointment({
       ...appointment,
       Schedule: calendar,
-      PatientID: parseInt(routeID)
+      PatientID: parseInt(routeID),
     });
   }, [calendar]);
 
@@ -132,7 +134,9 @@ const Index = ({ patient, Services }) => {
                         Back to Patients
                       </Breadcrumb.Item>
                       <Breadcrumb.Item
-                        onClick={() => router.push(`/patients/${patientData.PatientID}`)}
+                        onClick={() =>
+                          router.push(`/patients/${patientData.PatientID}`)
+                        }
                         style={{ cursor: "pointer", color: "black" }}
                       >
                         Profile
@@ -285,7 +289,9 @@ const Index = ({ patient, Services }) => {
                       onClick={handleSubmit}
                       loading={loading}
                       variant="contained"
-                      className={styles.btn__appointment}
+                      className={
+                        disabled ? styles.disabled : styles.btn__appointment
+                      }
                       disabled={disabled}
                     >
                       Set Appointment
@@ -335,6 +341,7 @@ export async function getStaticProps({ params }) {
         patient,
         Services,
       },
+      revalidate: 1,
     };
   } catch (err) {
     console.log("Fetching data error or please your internet connection", err);

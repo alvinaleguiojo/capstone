@@ -244,13 +244,13 @@
 }
 
 .page {
-  padding: 5px;
-  border: solid #e4e4e4 1px;
-  color: #b82623;
+  padding: 5px!important;
+  border: solid #e4e4e4 1px!important;
+  color: #b82623!important;
 }
 .page:hover {
-  background-color: #b82623;
-  color: #fff;
+  background-color: #b82623!important;
+  color: #fff!important;
 }
 
 .photo {

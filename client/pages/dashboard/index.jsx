@@ -732,7 +732,7 @@ const Index = ({ Appointments }) => {
 
 export default Index;
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const res = await fetch(`${process.env.BaseURI}/appointments/today`);
     const { Appointments } = await res.json();

@@ -12,10 +12,9 @@ const RegisterMedicinePromise = ({
   Dosage,
   Description,
   Availability,
-  DateEntry,
   ImageID,
 }) => {
-  const newUser = `INSERT INTO Medicines (Name, Stocks, Unit, Size, ExpiryDate , Manufacturer, Dosage, Description,  Availability,  DateEntry , ImageID) VALUES ('${Name}', ${Stocks}, '${Unit}', ${Size}, '${ExpiryDate}', '${Manufacturer}', '${Dosage}', '${Description}', ${Availability}, '${DateEntry}', ${ImageID})`;
+  const newUser = `INSERT INTO Medicines (Name, Stocks, Unit, Size, ExpiryDate , Manufacturer, Dosage, Description,  Availability, ImageID) VALUES ('${Name}', ${Stocks}, '${Unit}', ${Size}, '${ExpiryDate}', '${Manufacturer}', '${Dosage}', '${Description}', ${Availability}, ${ImageID})`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, newCreatedMedicine) => {
       error && reject(error);

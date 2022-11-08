@@ -4,13 +4,13 @@
 }
 
 .btn__appointment {
-  background-color: white;
-  color: #b82623;
+  background-color: white!important;
+  color: #b82623!important;
 }
 
 .btn__appointment:hover {
-  background-color: #b82623;
-  color: #fff;
+  background-color: #b82623!important;
+  color: #fff!important;
 }
 
 .content__left,

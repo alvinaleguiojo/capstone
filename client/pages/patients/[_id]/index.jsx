@@ -868,6 +868,7 @@ export async function getStaticProps({ params }) {
         Medicines,
         Diagnosis,
       },
+      revalidate: 1,
     };
   } catch (err) {
     console.log(

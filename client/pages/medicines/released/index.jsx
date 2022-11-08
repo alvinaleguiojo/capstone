@@ -171,11 +171,11 @@ const Index = ({ Medicines }) => {
                 return (
                   <Box
                     className={styles.medicine__list}
-                    key={request.ReleasedID}
+                    key={index}
                   >
                     <ReleasedMedicine
                       key={request.ReleasedID}
-                      // loading={loading}
+                      loading={loading}
                       data={request}
                     />
                   </Box>
@@ -224,7 +224,7 @@ const Index = ({ Medicines }) => {
 
 export default Index;
 
-export const getStaticProps = async () => {
+export const getServerSideProps = async () => {
   try {
     const res = await fetch(
       `${process.env.BaseURI}/medicines/released/nopagination`

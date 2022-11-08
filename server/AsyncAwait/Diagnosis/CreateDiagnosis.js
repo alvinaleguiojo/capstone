@@ -5,11 +5,10 @@ const connection = require("../../db/connection");
 const CreateDiagnosisPromise = ({
   PatientID,
   StaffID,
-  CurrentDate,
   Diagnose,
   Notes
 }) => {
-  const newDiagnosis = `INSERT INTO Diagnosis (Diagnose, StaffID, Date, PatientID, Notes) VALUES ('${Diagnose}', ${StaffID}, '${CurrentDate}', ${PatientID}, '${Notes}')`;
+  const newDiagnosis = `INSERT INTO Diagnosis (Diagnose, StaffID, PatientID, Notes) VALUES ('${Diagnose}', ${StaffID}, ${PatientID}, '${Notes}')`;
   return new Promise((resolve, reject) => {
     connection.query(newDiagnosis, (error, Diagnosis) => {
       error && reject(error);

@@ -19,6 +19,7 @@ import {
 } from "@syncfusion/ej2-react-schedule";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Typography from "@mui/material/Typography";
+import Meta from "../../component/Meta";
 
 const Index = ({ appointments, services }) => {
   const [appointmentsData, setAppointmentsData] = useState([]);
@@ -62,6 +63,11 @@ const Index = ({ appointments, services }) => {
 
   return (
     <Box>
+      <Meta
+        title="Capstone | Appointments"
+        description="add or update Appointments here"
+        keywords="Capstone project, health center, baranggay"
+      />
       <Box className={contentStyles.content}>
         <Tabs />
         <Box
@@ -144,10 +150,10 @@ const Index = ({ appointments, services }) => {
 
 export default Index;
 
-export const getStaticProps = async ({ context }) => {
+export const getServerSideProps = async ({ context }) => {
   try {
     const res = await fetch(`${process.env.BaseURI}/appointmentswithpatients`);
-    console.log()
+    console.log();
     const { Appointments } = await res.json();
 
     const serviceRes = await fetch(`${process.env.BaseURI}/services`);

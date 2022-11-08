@@ -176,7 +176,11 @@ const Request = () => {
                 </form>
               </Box>
               <Button
-                className={styles.btn__submitReleased}
+                className={
+                  medicinesList.length <= 0
+                    ? styles.disabled
+                    : styles.btn__submitReleased
+                }
                 variant="outlined"
                 disabled={medicinesList.length <= 0 && true}
                 onClick={() => handleReleaseMedicine()}

@@ -136,16 +136,17 @@ const Index = ({ Medicines }) => {
                     </Typography>
                   </Box>
                 </Box>
-                {staffData && staffData.Role === "BNS" || staffData && staffData.Role==="ADMIN" && (
-                  <Box className={MedicineStyles.AddMedicine}>
-                    <Button
-                      onClick={() => router.push("/medicines/register")}
-                      style={{ color: "#b82623" }}
-                    >
-                      Add New Medicine
-                    </Button>
-                  </Box>
-                )}
+                {(staffData && staffData.Role === "BNS") ||
+                  (staffData && staffData.Role === "ADMIN" && (
+                    <Box className={MedicineStyles.AddMedicine}>
+                      <Button
+                        onClick={() => router.push("/medicines/register")}
+                        style={{ color: "#b82623" }}
+                      >
+                        Add New Medicine
+                      </Button>
+                    </Box>
+                  ))}
               </Box>
             </Box>
             <Box className={styles.search}>
@@ -165,7 +166,6 @@ const Index = ({ Medicines }) => {
 
             {/* Medicine cards here */}
             {data.map((request, index) => {
-              request.Availability == 1;
               return (
                 <Box className={styles.medicine__list} key={request.MedicineID}>
                   <MedicineCardTemplate
@@ -186,7 +186,7 @@ const Index = ({ Medicines }) => {
 
             <Box className={styles.pagination}>
               <Button
-                className={styles.page}
+                className={currentPage <= 1 ? styles.disabled : styles.page}
                 onClick={PreviousPage}
                 disabled={currentPage <= 1 ? true : false}
               >
@@ -194,7 +194,7 @@ const Index = ({ Medicines }) => {
               </Button>
 
               <Button
-                className={styles.page}
+                className={data.length <= 4 ? styles.disabled : styles.page}
                 onClick={NextPage}
                 disabled={data.length <= 4 ? true : false}
               >

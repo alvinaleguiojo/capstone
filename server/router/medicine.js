@@ -117,8 +117,6 @@ const releasedMedicinespaginatedData = () => {
 
 // Add new Patient
 router.post("/medicine/register", async (req, res) => {
-  const today = new Date();
-  const date = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   const {
     Name,
     Stocks,
@@ -129,7 +127,6 @@ router.post("/medicine/register", async (req, res) => {
     Dosage,
     Description,
     ImageID,
-    Availability,
   } = req.body;
 
   try {
@@ -143,7 +140,6 @@ router.post("/medicine/register", async (req, res) => {
       Dosage,
       Description,
       Availability: true,
-      DateEntry: date,
       ImageID,
     });
     res.status(200).json({ message: "Medicine added successfully" });
@@ -250,7 +246,7 @@ router.get("/medicine/detail/:id", async (req, res) => {
       MedicineID: req.params.id,
     });
     res.status(200).json({ Medicines: resultElements });
-  } catch (error) { 
+  } catch (error) {
     console.log(error);
     res.sendStatus(500);
   }

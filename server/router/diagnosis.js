@@ -32,15 +32,11 @@ router.get("/patient/diagnosis/:id", async (req, res) => {
 // Add New Diagnosis
 router.post("/diagnosis/create", async (req, res) => {
   const { PatientID, StaffID, Diagnose, Notes } = req.body;
-  const today = new Date();
-  today.setDate(today.getDate() + 31);
-  const CurrentDate = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
 
   try {
     await CreateDiagnosisPromise({
       PatientID,
       StaffID,
-      CurrentDate,
       Diagnose,
       Notes,
     });

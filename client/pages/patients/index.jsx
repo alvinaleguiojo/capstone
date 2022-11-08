@@ -104,7 +104,7 @@ const Index = ({ patients }) => {
                   <Typography variant="h5" component="h5" color="#B82623">
                     All Patients
                   </Typography>
-                  <Button className={styles.addPatient}  onClick={AddPatient}>
+                  <Button className={styles.addPatient} onClick={AddPatient}>
                     Add New Patient
                   </Button>
                 </Box>
@@ -153,7 +153,7 @@ const Index = ({ patients }) => {
 
                 <Box className={styles.pagination}>
                   <Button
-                    className={styles.page}
+                    className={currentPage <= 1 ? styles.disabled : styles.page}
                     onClick={PreviousPage}
                     disabled={currentPage <= 1 ? true : false}
                   >
@@ -161,7 +161,9 @@ const Index = ({ patients }) => {
                   </Button>
 
                   <Button
-                    className={styles.page}
+                    className={
+                      patientData.length <= 4 ? styles.disabled : styles.page
+                    }
                     onClick={NextPage}
                     disabled={patientData.length <= 4 ? true : false}
                   >
@@ -177,10 +179,9 @@ const Index = ({ patients }) => {
   );
 };
 
-export default  Index;
+export default Index;
 
-export const getStaticProps = async ({ context }) => {
- 
+export const getServerSideProps = async ({ context }) => {
   try {
     const res = await fetch(`${process.env.BaseURI}/patientswithimage`);
     const { Patients } = await res.json();
@@ -189,7 +190,7 @@ export const getStaticProps = async ({ context }) => {
       props: {
         patients: Patients,
       },
-    };  
+    };
   } catch (error) {
     console.log("please check your internet connection", error);
   }

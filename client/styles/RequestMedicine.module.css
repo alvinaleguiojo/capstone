@@ -91,10 +91,10 @@
 }
 
 .btn__submitReleased {
-  color: #b82623;
-  border: 1px solid #b82623;
+  color: #b82623!important;
+  border: 1px solid #b82623!important;
 }
 
 .btn__submitReleased:hover {
-  border: 1px solid #b82623;
+  border: 1px solid #b82623!important;
 }
