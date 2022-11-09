@@ -23,6 +23,8 @@ const RetrieveReleasedMedicinesByIDPromise = require("../AsyncAwait/Medicines/Re
 const ReleasedMedicinesCountDocumentsPromise = require("../AsyncAwait/Medicines/ReleasedMedicinesCountDocument");
 const RetrieveReleasedMedicinesNoPagition = require("../AsyncAwait/Medicines/RetrieveReleasedMedicinesNoPagination");
 const MedicinesByDateIDPromise = require("../AsyncAwait/Medicines/ReleasedByDate");
+const UpdateStocksPromise = require("../AsyncAwait/Medicines/UpdateMedicineStocks");
+const UpdateStocksExpiryDatePromise = require("../AsyncAwait/Medicines/UpdateStockAndExpiryDate");
 
 // get all medicines
 // router.get("/medicines", paginatedResults(Medicines), (req, res) => {
@@ -165,12 +167,43 @@ router.post("/medicine/release", async (req, res) => {
         MedicineID,
         Note,
       });
+
+      const RetrievedMedicine = await RetrieveMedicinesByIDPromise({
+        MedicineID,
+      });
+      const NewStocks = RetrievedMedicine[0].Stocks - Quantity;
+      await UpdateStocksPromise({ MedicineID, NewStocks });
+
       res.status(200).json({ message: "Medicine has been released" });
     } catch (err) {
       console.log(err.message);
       res.status(400).json({ message: "Invalid data entry" });
     }
   });
+});
+
+// Update the Stocks
+router.patch("/midicine/stocks/update/:id", async (req, res) => {
+  const { Stocks, ExpiryDate } = req.body;
+  const MedicineID = req.params.id;
+  const NewStocks = Stocks;
+
+  console.log(MedicineID);
+  console.log(NewStocks);
+  console.log(ExpiryDate);
+  try {
+    await UpdateStocksExpiryDatePromise({
+      MedicineID,
+      NewStocks,
+      ExpiryDate,
+    });
+    res.status(200).json({ message: "Medicine has been updated" });
+  } catch (error) {
+    console.log(error.message);
+    res
+      .status(400)
+      .json({ message: "Please change the expiry date and stocks" });
+  }
 });
 
 // Get All Medicine with Paginated results

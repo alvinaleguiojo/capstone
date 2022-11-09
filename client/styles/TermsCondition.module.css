@@ -51,11 +51,10 @@
 
 .terms__conditions {
   background-color: #fff;
-  width: 80%;
+  width: 60%;
   height: 90%;
   border-radius: 10px;
-  padding-top: 20px;
   padding-left: 30px;
   padding-right: 30px;
-  padding-bottom: 20px;
+  padding-top: 10px;
 }

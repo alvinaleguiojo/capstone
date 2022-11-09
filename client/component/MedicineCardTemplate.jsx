@@ -82,7 +82,7 @@ const CardTemplate = (props) => {
             {...label}
             checked={checked}
             onChange={(event) => handleChange(event, props.data)}
-            disabled={props.data.Stocks > 0 ? false : true}
+            disabled={props.data.Stocks > 0 && props.data.ExpiryDate > today ? false : true}
           />
         ))}
 
@@ -144,10 +144,10 @@ const CardTemplate = (props) => {
               variant="body1"
               component="h5"
               style={{
-                color: props.data.Availability == 1 ? "rgb(7, 199, 7)" : "red",
+                color: props.data.Stocks == 0 ? "red" : "rgb(7, 199, 7)",
               }}
             >
-              {props.data.Availability === 1 ? "In-Stocks" : "Out-of-Stocks"}
+              {props.data.Stocks >= 1 ? "In-Stocks" : "Out-of-Stocks"}
             </Typography>
           </Box>
 
@@ -167,7 +167,11 @@ const CardTemplate = (props) => {
             <Typography variant="caption" component="h5">
               Expiry Date
             </Typography>
-            <Typography variant="body1" component="h5" style={{color: props.data.ExpiryDate < today && "red"}}>
+            <Typography
+              variant="body1"
+              component="h5"
+              style={{ color: props.data.ExpiryDate < today && "red" }}
+            >
               {new Date(props.data.ExpiryDate).toLocaleDateString("en-us", {
                 // weekday: "long",
                 year: "numeric",

@@ -57,9 +57,14 @@ const Index = ({ appointments, services }) => {
     console.log("services", newService);
   }, []);
 
-  // const popupOpen = (args) => {
-  //   args.cancel = true;
-  // };
+  const popupOpen = (args) => {
+    let isEmptyCell =
+      args.target.classList.contains("e-work-cells") ||
+      args.target.classList.contains("e-header-cells"); // checking whether the cell is empty or not
+    if ((args.type === "QuickInfo" || args.type === "Editor") && isEmptyCell) {
+      args.cancel = true;
+    }
+  };
 
   return (
     <Box>
@@ -114,7 +119,7 @@ const Index = ({ appointments, services }) => {
               selectedDate={
                 new Date(new Date().getFullYear(), new Date().getMonth())
               }
-              // popupOpen={popupOepn}
+              popupOpen={popupOpen}
             >
               <ResourcesDirective>
                 <ResourceDirective

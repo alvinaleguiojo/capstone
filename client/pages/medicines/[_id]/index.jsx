@@ -21,6 +21,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 import axios from "axios";
 import Swal from "sweetalert2";
 import Link from "next/link";
+import moment from "moment";
 
 const Index = ({ Medicines }) => {
   const router = useRouter();
@@ -96,6 +97,46 @@ const Index = ({ Medicines }) => {
     } catch (error) {
       console.log(error.message);
     }
+  };
+
+  // update medicine
+  const handleUpdateSubmit = async (e) => {
+    e.preventDefault();
+    const Toast = await Swal.mixin({
+      toast: true,
+      position: "top-end",
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener("mouseenter", Swal.stopTimer);
+        toast.addEventListener("mouseleave", Swal.resumeTimer);
+      },
+    });
+    axios
+      .patch(
+        `${process.env.BaseURI}/midicine/stocks/update/${medicine[0].MedicineID}`,
+        { ...medicine }
+      )
+      .then(() => {
+        setDisabled(true);
+        Toast.fire({
+          icon: "success",
+          title: "Changes are saved",
+        });
+      })
+      .catch((error) => {
+        setDisabled(true);
+        console.log(error.message);
+        Toast.fire({
+          icon: "error",
+          title: "Please UPDATE the Expiry Date and Stocks",
+        });
+      });
+  };
+
+  const handleEdit = () => {
+    setDisabled(false);
   };
 
   return (
@@ -272,8 +313,12 @@ const Index = ({ Medicines }) => {
                             }
                             type="number"
                             name="Stocks"
-                            value={medicine[0].Stocks || ""}
-                            disabled={true}
+                            value={
+                              disabled
+                                ? medicine[0].Stocks || ""
+                                : medicine.Stocks
+                            }
+                            disabled={disabled}
                           />
                         </Box>
                         <Box style={{ width: "30%" }}>
@@ -342,19 +387,21 @@ const Index = ({ Medicines }) => {
                                 ExpiryDate: e.target.value,
                               })
                             }
-                            type="text"
+                            type={disabled ? "text" : "date"}
                             name="Expiry Date"
                             value={
-                              new Date(
-                                medicine[0].ExpiryDate
-                              ).toLocaleDateString("en-us", {
-                                // weekday: "long",
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                              }) || ""
+                              disabled
+                                ? new Date(
+                                    medicine[0].ExpiryDate
+                                  ).toLocaleDateString("en-us", {
+                                    // weekday: "long",
+                                    year: "numeric",
+                                    month: "long",
+                                    day: "numeric",
+                                  }) || ""
+                                : medicine.ExpireDate
                             }
-                            disabled={true}
+                            disabled={disabled}
                           />
                         </Box>
 
@@ -438,19 +485,35 @@ const Index = ({ Medicines }) => {
                     </Box>
                   </Box>
                 </motion.div>
-                <Box className={styles.buttonRegister}>
+                <Box
+                  className={styles.buttonRegister}
+                  style={{ display: "flex", gap: "0.5rem" }}
+                >
                   <Button style={{ color: "#b82623" }} onClick={handleBack}>
                     Back
                   </Button>
-                  {/* <Button
-                    disabled={disabled}
+
+                  {!disabled && (
+                    <Button
+                      variant="outlined"
+                      style={{ color: "#b82623", border: "1px solid #b82623" }}
+                      onClick={()=>setDisabled(true)}
+                    >
+                      Cancel
+                    </Button>
+                  )}
+
+                  <Button
+                    // disabled={disabled}
                     className={
                       disabled ? styles.proceedBtnDisabled : styles.proceedBtn
                     }
-                    onClick={(e) => handleSubmitMedicine(e)}
+                    onClick={(e) =>
+                      disabled ? handleEdit(e) : handleUpdateSubmit(e)
+                    }
                   >
-                    Add Medicine
-                  </Button> */}
+                    {disabled ? "Edit" : "Save"}
+                  </Button>
                 </Box>
               </Box>
               {/* </Box> */}

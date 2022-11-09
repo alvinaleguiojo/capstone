@@ -1,4 +1,4 @@
-import React, { useState , useEffect} from "react";
+import React, { useState, useEffect } from "react";
 import styles from "../styles/TermsCondition.module.css";
 import Box from "@mui/material/Box";
 import CloseIcon from "@mui/icons-material/Close";
@@ -11,9 +11,9 @@ import { useSelector, useDispatch } from "react-redux";
 const TermsConditions = () => {
   const [disabled, setDisabled] = useState(true);
 
-   // terms redux
-   const dispatch = useDispatch();
-   const TemsConditionModal = useSelector((state) => state.terms.value);
+  // terms redux
+  const dispatch = useDispatch();
+  const TemsConditionModal = useSelector((state) => state.terms.value);
 
   const handleScroll = () => {
     const scrollableDiv = document.getElementById("scrollableDiv");
@@ -42,23 +42,23 @@ const TermsConditions = () => {
           </Typography>
           <span>
             Please read these Terms and Conditions (“Terms” or “Terms and
-            Conditions”) carefully before using www.baranggayhealthcenter.com (the “Website”
-            or “Site”) and any features or services offered through the Website
-            (“Services”) operated by Baranggay Health Center or any of its subsidiaries or
-            affiliated entities (“us”, “we”, or “our”). our access to and the
-            use of the Website and its Services is conditioned on your
-            acceptance of and compliance with these Terms. These Terms apply to
-            all visitors, users and others who access or use the Website. By
-            accessing or using www.baranggayhealthcenter.com you agree to be bound by these
-            Terms, as may be updated by us from time to time. You should check
-            this page regularly to take notice of any changes we may have made
-            to the Terms. If you do not agree with any of the terms, please exit
-            the Website promptly. Your use of this Website also requires you to
-            comply with, and to ensure compliance with, all laws, ordinances and
-            regulations applicable to your activities on our sites and services.
-            Unless expressly permitted by supplemental terms, this site is
-            intended for general audiences 18 years of age and older. Access by
-            anyone younger is not authorized.
+            Conditions”) carefully before using www.baranggayhealthcenter.com
+            (the “Website” or “Site”) and any features or services offered
+            through the Website (“Services”) operated by Baranggay Health Center
+            or any of its subsidiaries or affiliated entities (“us”, “we”, or
+            “our”). our access to and the use of the Website and its Services is
+            conditioned on your acceptance of and compliance with these Terms.
+            These Terms apply to all visitors, users and others who access or
+            use the Website. By accessing or using www.baranggayhealthcenter.com
+            you agree to be bound by these Terms, as may be updated by us from
+            time to time. You should check this page regularly to take notice of
+            any changes we may have made to the Terms. If you do not agree with
+            any of the terms, please exit the Website promptly. Your use of this
+            Website also requires you to comply with, and to ensure compliance
+            with, all laws, ordinances and regulations applicable to your
+            activities on our sites and services. Unless expressly permitted by
+            supplemental terms, this site is intended for general audiences 18
+            years of age and older. Access by anyone younger is not authorized.
           </span>
 
           <Typography variant="body1" component="h3">
@@ -136,14 +136,15 @@ const TermsConditions = () => {
             You shall indemnify and hold us harmless from and against any and
             all losses, damages, settlements, liabilities, costs, charges,
             assessments and expenses, as well as third party claims and causes
-            of action, including, without limitation, attorneys&apos; fees, arising
-            out of any breach by you of any of these Terms and Conditions, or
-            any use by you of the Site or Service. You shall provide us with
-            such assistance, without charge, as we may request in connection
-            with any such defense, including, without limitation, providing us
-            with such information, documents, records and reasonable access to
-            you, as we deem necessary. You shall not settle any third party
-            claim or waive any defense without our prior written consent.
+            of action, including, without limitation, attorneys&apos; fees,
+            arising out of any breach by you of any of these Terms and
+            Conditions, or any use by you of the Site or Service. You shall
+            provide us with such assistance, without charge, as we may request
+            in connection with any such defense, including, without limitation,
+            providing us with such information, documents, records and
+            reasonable access to you, as we deem necessary. You shall not settle
+            any third party claim or waive any defense without our prior written
+            consent.
           </span>
 
           <Typography variant="body1" component="h3">
@@ -191,10 +192,17 @@ const TermsConditions = () => {
             className={disabled ? styles.disabled : styles.agree}
             disabled={disabled}
             variant="contained"
+            onClick={() => {
+              dispatch(termsModal(false));
+            }}
           >
             I AGREE
           </Button>
-          <Button className={styles.disagree} variant="outlined" onClick={()=>dispatch(termsModal())}>
+          <Button
+            className={styles.disagree}
+            variant="outlined"
+            onClick={() => dispatch(termsModal(false))}
+          >
             I DISAGREE
           </Button>
         </Box>

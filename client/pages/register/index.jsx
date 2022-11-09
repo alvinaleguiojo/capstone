@@ -36,6 +36,10 @@ const Index = () => {
   // terms redux
   const dispatch = useDispatch();
   const TemsConditionModal = useSelector((state) => state.terms.value);
+  
+  useEffect(() => {
+    setModal(false)
+  },[modal])
 
   // received a response from the server telling the email is not valid or not exist
   useEffect(() => {
@@ -229,7 +233,13 @@ const Index = () => {
               }
             />
 
-            <Box className={styles.terms}>
+            <Box
+              className={styles.terms}
+              onClick={() => {
+                setModal(true);
+                dispatch(termsModal());
+              }}
+            >
               <FormControlLabel
                 control={
                   <Checkbox
@@ -237,17 +247,17 @@ const Index = () => {
                     onChange={(e) => setTerms(e.target.checked)}
                   />
                 }
-                // label="I AGREE WITH THE TERMS OF CONDITIONS"
+                label="I AGREE WITH THE TERMS OF CONDITIONS"
               />
-              <label
+              {/* <label
                 onClick={() => {
                   dispatch(termsModal());
                 }}
               >
                 I AGREE WITH THE TERMS OF CONDITIONS
-              </label>
+              </label> */}
 
-              {TemsConditionModal && <TermsConditions />}
+              {modal && <TermsConditions />}
 
               {/* <FormControlLabel
                 control={
