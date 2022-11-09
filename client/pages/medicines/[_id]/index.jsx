@@ -555,6 +555,7 @@ export async function getStaticProps({ params }) {
       props: {
         Medicines,
       },
+      revalidate: 1,
     };
   } catch (err) {
     console.log(
