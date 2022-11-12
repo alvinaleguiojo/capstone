@@ -353,7 +353,7 @@ export async function getStaticPaths() {
       paths: Patients.map((patient) => {
         return { params: { _id: patient.PatientID.toString() } };
       }),
-      fallback: false,
+      fallback: 'blocking',
     };
   } catch (err) {
     console.log("Ops path in invaid!");

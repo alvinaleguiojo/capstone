@@ -181,7 +181,11 @@ const Index = ({ patients }) => {
 
 export default Index;
 
-export const getServerSideProps = async ({ context }) => {
+export const getServerSideProps = async (context) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "s-maxage=20, stale-while-revalidate=60"
+  );
   try {
     const res = await fetch(`${process.env.BaseURI}/patientswithimage`);
     const { Patients } = await res.json();

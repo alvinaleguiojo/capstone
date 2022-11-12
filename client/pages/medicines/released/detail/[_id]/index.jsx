@@ -375,7 +375,9 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="City"
-                            value={medicine[0].Manufacturer || "No Data Available"}
+                            value={
+                              medicine[0].Manufacturer || "No Data Available"
+                            }
                             disabled={true}
                           />
                         </Box>
@@ -472,7 +474,7 @@ export async function getStaticPaths() {
       paths: Medicines.map((medicine) => {
         return { params: { _id: medicine.MedicineID.toString() } };
       }),
-      fallback: false,
+      fallback: 'blocking',
     };
   } catch (err) {
     console.log("Ops path in invaid!");
@@ -491,6 +493,7 @@ export async function getStaticProps({ params }) {
       props: {
         Medicines,
       },
+      revalidate: 1,
     };
   } catch (err) {
     console.log(

@@ -293,7 +293,7 @@ export async function getStaticPaths() {
           },
         };
       }),
-      fallback: false,
+      fallback: 'blocking',
     };
   } catch (err) {
     console.log("Ops path in invaid!");

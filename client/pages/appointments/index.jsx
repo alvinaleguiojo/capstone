@@ -154,7 +154,11 @@ const Index = ({ appointments, services }) => {
 
 export default Index;
 
-export const getServerSideProps = async ({ context }) => {
+export const getServerSideProps = async (context) => {
+  context.res.setHeader(
+    "Cache-Control",
+    "s-maxage=20, stale-while-revalidate=60"
+  );
   try {
     const res = await fetch(`${process.env.BaseURI}/appointmentswithpatients`);
     const { Appointments } = await res.json();
