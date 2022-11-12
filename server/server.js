@@ -9,29 +9,26 @@ const { Server } = require("socket.io");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
-const fs = require("fs");
-const path = require("path");
-const url = require("url");
 
 //import MYSQL DB connection
 const connection = require("./db/connection");
 
 //import routes
 const index = require("./router/index");
-const appointments = require("./router/appointments");
-const users = require("./router/users");
+const Appointments = require("./router/appointments");
+const Users = require("./router/users");
 const search = require("./router/search");
 const crud = require("./router/crud");
 const patients = require("./router/patients");
 const Services = require("./router/services");
 const Medicines = require("./router/medicine");
-const Diagnosis = require("./router/diagnosis");
 const UploadImage = require("./router/uploadImage");
-const Notifications = require("./router/notifications");
 const twilio = require("./router/twilio");
+const Diagnosis = require("./router/diagnosis");
+const Certificates = require("./router/certificate");
+const Notifications = require("./router/notifications");
 
 // import User Model
-const Users = require("./model/user");
 const UserCredentialPromise = require("./AsyncAwait/Users/UserLogin");
 
 // TESTING MYSQL Connection
@@ -52,21 +49,22 @@ app.use(express.json());
 app.use(cookieParser());
 // app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(index);
-app.use(appointments);
-app.use(users);
+app.use(Appointments);
+app.use(Users);
 app.use(search);
 app.use(crud);
 app.use(patients);
 app.use(Medicines);
 app.use(twilio);
 app.use(Services);
-app.use(Diagnosis);
 app.use(UploadImage);
+app.use(Diagnosis);
+app.use(Certificates);
 app.use(Notifications);
 
 // retrieving images from file folders
-app.use('/files', express.static('files'), (req, res, err) =>{
-  if(err) res.send("Ops! no file found.");
+app.use("/files", express.static("files"), (req, res, err) => {
+  if (err) res.send("Ops! no file found.");
 });
 
 // this is function is for sending realtime data to client without refreshing the browser

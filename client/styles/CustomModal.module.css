@@ -125,17 +125,17 @@
 }
 
 .discard {
-  color: #b82623;
-  border: 1px solid #b82623;
+  color: #b82623!important;
+  border: 1px solid #b82623!important;
 }
 
 .save {
-  background-color: #b82623;
+  background-color: #b82623!important;
   color: white !important;
 }
 
 .save:hover {
-  background-color: #dd2f2c;
+  background-color: #dd2f2c!important;
   color: white !important;
 }
 

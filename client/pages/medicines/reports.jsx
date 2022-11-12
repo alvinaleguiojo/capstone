@@ -23,6 +23,11 @@ import {
 } from "@syncfusion/ej2-react-calendars";
 import { LegendToggle, SignalCellularNullSharp } from "@mui/icons-material";
 import moment from "moment";
+import PrintIcon from "@mui/icons-material/Print";
+import Tooltip from "@mui/material/Tooltip";
+import GetAppIcon from "@mui/icons-material/GetApp";
+import { IconButton } from "@mui/material";
+import * as XLSX from "xlsx";
 
 const Index = ({ Medicines, ReleasedMedicines }) => {
   useAuth(); // this will check if the user is authenticated else return login page
@@ -34,11 +39,24 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     useState(ReleasedMedicines);
   const [inStocksCount, setInstocksCount] = useState(0);
   const [dataSource, setDataSource] = useState([]);
+  const [reports, setReports] = useState([]);
 
   // set loading state
   setTimeout(() => {
     setLoading(false);
   }, 1000);
+
+  // reports
+  useEffect(() => {
+    setReports([
+      {
+        Inventory: medicinesData.length,
+        "Out-Of-Stocks": outOfStocksCount.length,
+        "On-hand": inStocks.length,
+        expired: expiredStocks.length,
+      },
+    ]);
+  }, [medicinesData, releasedMedicinesData]);
 
   const Mon = moment().day(1);
   let Monday = new Date(Mon);
@@ -175,7 +193,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     const today = moment().format("YYYY-MM-DD");
     const abortController = new AbortController();
 
-    console.log("abort");
+
     // mapping all the product name from medicinesData
     const medicineNames = medicinesData.map((data) => {
       return data.Name;
@@ -193,7 +211,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
       data.ExpiryDate > today ? expired.push(0) : expired.push(data.Stocks);
     });
 
-    // to check the unique value of the array 
+    // to check the unique value of the array
     // don't return the same value twice
     const unique = (value, index, self) => {
       return self.indexOf(value) === index;
@@ -206,7 +224,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     });
     //filter all the the same IDs
     const MedicineIDs = listOfID.filter(unique);
-    console.log(MedicineIDs);
 
     // Inititalize the quantity of the released Medicines
     let SumAllQuantity1 = 0;
@@ -339,7 +356,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     const today = moment().format("YYYY-MM-DD");
 
     const InStocksResults = medicinesData.filter((data) => {
-      const Stocks = data.Stocks > 0 && data.ExpiryDate > today;
+      const Stocks = data.Stocks > 0;
       return Stocks;
     });
 
@@ -492,8 +509,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
           array.push(SumAllQuantity1);
         }
       });
-
-      console.log(array);
     });
 
     setReleasedMedicinesDataSource({
@@ -526,10 +541,10 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
             shadeIntensity: 0.65,
           },
         },
-        title: {
-          text: "Total Released Medicines  Trend By Date",
-          align: "left",
-        },
+        // title: {
+        //   text: "Total Released Medicines  Trend By Date",
+        //   align: "left",
+        // },
         grid: {
           row: {
             colors: ["#f3f3f3", "transparent"], // takes an array which will be repeated on columns
@@ -549,14 +564,28 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
   const [servicesDataSource, setServicesDataSource] = useState({});
   useEffect(() => {
     const abortController = new AbortController();
+    // to get percentage
+    // total registered product divide by total value then multiply by 100
+
+    // const outOfStocksPercentage =
+    //   (outOfStocksCount.length / medicinesData.length) * 100;
+    // const onHandPercentage = (inStocks.length / medicinesData.length) * 100;
+    // const expiredPercentage =
+    //   (expiredStocks.length / medicinesData.length) * 100;
+
+    const outOfStocksPercentage =outOfStocksCount.length
+    const onHandPercentage = inStocks.length
+    const expiredPercentage = expiredStocks.length
+
     setServicesDataSource({
-      series: [100, 1500, 640, 150],
+      series: [outOfStocksPercentage, onHandPercentage, expiredPercentage],
       options: {
         chart: {
           width: 380,
           type: "pie",
         },
-        labels: ["Out-of-Stocks", "On-hold", "Released", "Expired"],
+        labels: ["Out-of-Stocks", "On-hand", "Expired"],
+        colors: ["#8a8fa0", "#099880", "#b82623"],
         responsive: [
           {
             breakpoint: 480,
@@ -575,12 +604,30 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     return () => {
       abortController.abort();
     };
-  }, []);
+  }, [outOfStocksCount, inStocks, expiredStocks]);
 
   // get value from date picker
   const getDateRange = (e) => {
     const selectedDateRange = e.value;
     setCalendar(selectedDateRange);
+  };
+ 
+  // export over all reports data
+  const handleExport = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(reports);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Reports");
+    XLSX.writeFile(wb, "Reports.xlsx");
+  };
+  
+  /// export released medicines data
+  const handleExportReleased = () => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(releasedMedicinesData);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Reports");
+    XLSX.writeFile(wb, "ReleasedMedicines.xlsx");
   };
 
   return (
@@ -679,9 +726,23 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
             {/* end tabs here */}
 
             {/* categories starts here */}
-            <Typography variant="h6" component="h6" color="#B82623">
-              Overall Reports
-            </Typography>
+
+            <Box
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="h6" component="h6" color="#B82623">
+                Overall Reports
+              </Typography>
+              <IconButton onClick={handleExport}>
+                <Tooltip title="Export Reports">
+                  <GetAppIcon style={{ color: "#8a8fa0" }} />
+                </Tooltip>
+              </IconButton>
+            </Box>
 
             {/* {loading ? (
               <Box
@@ -892,12 +953,24 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
                     </Box>
                   ) : (
                     <>
-                      {/* <span>Released Medicines </span> */}
+                      <Box
+                        style={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                        }}
+                      >
+                        <span>Released Medicines </span>
+                        <IconButton onClick={handleExportReleased}>
+                          <Tooltip title="Export Released Medicines Excel">
+                            <GetAppIcon style={{ color: "#8a8fa0" }} />
+                          </Tooltip>
+                        </IconButton>
+                      </Box>
                       <ApexCharts
                         options={releasedMedicinesDataSource.options}
                         series={releasedMedicinesDataSource.series}
                         type="area"
-                        height="100%"
+                        height="85%"
                         width="100%"
                       />
                     </>

@@ -1,11 +1,11 @@
 // import db connection
 const connection = require("../../db/connection");
 
-// Get All Patients
-const GetDiagnosisByIDPromise = ({ PatientID }) => {
+// Get Diagnosis By ID
+const GetDiagnosisDataByIDPromise = ({ DiagnosisID }) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * from Diagnosis WHERE PatientID = ${PatientID} ORDER BY Date DESC`,
+      `SELECT * from Diagnosis WHERE DiagnosisID = ${DiagnosisID}`,
       (error, Diagnosis) => {
         error && reject(error);
         return resolve(Diagnosis);
@@ -14,4 +14,4 @@ const GetDiagnosisByIDPromise = ({ PatientID }) => {
   });
 };
 
-module.exports = GetDiagnosisByIDPromise;
+module.exports = GetDiagnosisDataByIDPromise;

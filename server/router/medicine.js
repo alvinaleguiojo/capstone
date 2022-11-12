@@ -131,6 +131,9 @@ router.post("/medicine/register", async (req, res) => {
     ImageID,
   } = req.body;
 
+  // to check if the image is null then set the default image avatar to this patient
+  const Image = ImageID === null ? 187 : ImageID;
+
   try {
     await RegisterMedicinePromise({
       Name,
@@ -142,7 +145,7 @@ router.post("/medicine/register", async (req, res) => {
       Dosage,
       Description,
       Availability: true,
-      ImageID,
+      ImageID: Image,
     });
     res.status(200).json({ message: "Medicine added successfully" });
   } catch (err) {

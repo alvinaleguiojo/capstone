@@ -19,13 +19,16 @@ import Meta from "../../../../component/Meta";
 import { format } from "date-fns";
 import { useRouter } from "next/router";
 import { Divider, Breadcrumb } from "antd";
+import * as XLSX from "xlsx";
+import moment from "moment";
 
 const Index = ({ patient, Services }) => {
   const [appointment, setAppointment] = useState({});
   const [calendar, setCalendar] = useState(new Date());
   const [loading, setLoading] = useState(false);
   const [disabled, setDisabled] = useState(true);
-
+  const [exportData, setExportData] = useState([]);
+  const today = moment(appointment.Schedule).format("MMMM-DD-YYYY");
   // router
   const router = useRouter();
   const routeID = router.query._id;
@@ -62,18 +65,33 @@ const Index = ({ patient, Services }) => {
       .post(`${process.env.BaseURI}/appointment/create`, {
         ...appointment,
       })
-      .then(() => {
+      .then((response) => {
+        const exportDataToExcel = [
+          {
+            FirstName: patient[0].FirstName,
+            LastName: patient[0].LastName,
+            Schedule: today,
+            Notes: appointment.Notes,
+            ServiceID: appointment.ServiceID,
+            AppointmentID: response.data.appointmentData.insertId,
+          },
+        ];
+
+        exportDataToExcel && handleExport(exportDataToExcel);
+
         Swal.fire("Success!", "Appointment has been set!", "success").then(
           () => {
             setLoading(false);
-            setAppointment({
-              ...appointment,
-              Notes: "",
-              Schedule: "",
-              enabled: false,
-              ServiceID: 0,
-            });
-            router.push(`/patients/${routeID}`);
+            setTimeout(() => {
+              setAppointment({
+                ...appointment,
+                Notes: "",
+                Schedule: "",
+                enabled: false,
+                ServiceID: 0,
+              });
+              router.push(`/patients/${routeID}`);
+            }, 2000);
           }
         );
       })
@@ -83,6 +101,14 @@ const Index = ({ patient, Services }) => {
           "Please select a schedule and service type",
           "error"
         );
+        setLoading(false);
+        setAppointment({
+          ...appointment,
+          Notes: "",
+          Schedule: "",
+          enabled: false,
+          ServiceID: 0,
+        });
       });
 
     setAppointment({
@@ -92,6 +118,14 @@ const Index = ({ patient, Services }) => {
       enabled: false,
       ServiceID: 0,
     });
+  };
+
+  const handleExport = (exportDataToExcel) => {
+    const wb = XLSX.utils.book_new();
+    const ws = XLSX.utils.json_to_sheet(exportDataToExcel);
+
+    XLSX.utils.book_append_sheet(wb, ws, "Appointment");
+    XLSX.writeFile(wb, "Appointment.xlsx");
   };
 
   return (

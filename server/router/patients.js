@@ -178,6 +178,9 @@ router.post("/patient/register", async (req, res) => {
     ImageID,
   } = req.body;
 
+  // to check if the image is null then set the default image avatar to this patient
+  const Image = ImageID === null ? 186 : ImageID;
+
   try {
     const newPatient = await RegisterPatientPromise({
       LastName,
@@ -190,9 +193,10 @@ router.post("/patient/register", async (req, res) => {
       Street,
       Baranggay,
       City,
-      ImageID,
+      ImageID: Image,
       CreatedDate: date,
     });
+
     const PatientID = await newPatient.insertId;
     await AddPatientHistoryPromise({
       PatientID,

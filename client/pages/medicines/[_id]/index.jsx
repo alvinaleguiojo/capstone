@@ -497,14 +497,14 @@ const Index = ({ Medicines }) => {
                     <Button
                       variant="outlined"
                       style={{ color: "#b82623", border: "1px solid #b82623" }}
-                      onClick={()=>setDisabled(true)}
+                      onClick={() => setDisabled(true)}
                     >
                       Cancel
                     </Button>
                   )}
 
                   <Button
-                    // disabled={disabled}
+                    //  loading={loading}
                     className={
                       disabled ? styles.proceedBtnDisabled : styles.proceedBtn
                     }

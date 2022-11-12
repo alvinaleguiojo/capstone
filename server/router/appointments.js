@@ -81,7 +81,7 @@ router.post("/appointment/create", async (req, res) => {
   const appointmentSchedule = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
   try {
-    await CreateAppointmentsPromise({
+    const response = await CreateAppointmentsPromise({
       PatientID,
       Schedule: appointmentSchedule,
       ServiceID,
@@ -89,7 +89,12 @@ router.post("/appointment/create", async (req, res) => {
       Notes,
       isAllDay: true,
     });
-    res.status(200).json({ message: "Appointment added successfully" });
+    res
+      .status(200)
+      .json({
+        appointmentData: response,
+        message: "Appointment added successfully",
+      });
   } catch (err) {
     res.status(400).json({ message: "Invalid data entry" });
   }
@@ -97,7 +102,6 @@ router.post("/appointment/create", async (req, res) => {
 
 // update appointment's data
 router.patch("/appointment/update/:id", async (req, res) => {
-  console.log(req.params.id)
   try {
     await UpdateAppointmentPromiseByID({
       AppointmentID: req.params.id,

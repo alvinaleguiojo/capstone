@@ -1,0 +1,22 @@
+<div class="certificate">
+    <p class="text-center">Republic of the Philippines</p>
+    <p  class="text-center">City of Talisay</p>
+    <p  class="text-center">Barangay Dumlog Health Center</p>
+    
+    <h1 class="text-center text-3xl font-bold">MEDICAL CERTIFICATE</h1>
+        
+     <p  class="text-right">November 12, 2022</p>
+     <p  class="text-right">date</p>
+        
+  <p  class="text-left text-sm">To Whom It May Concern:</p>
+  <br/>
+    <p  class="text-left text-sm ml-8"> THIS IS TO CERTIFY that <strong>{{Name}}</strong> of <strong>{{Address}}</strong> </p>
+     <p class="text-left text-sm">Was examined and treated at the Barangay Health Center on <strong>{{date}}</strong> </p>
+  <p  class="text-left text-sm">with the following diagnosis: <strong>{{diagnosis}}</strong></p>
+    <p  class="text-left text-sm"> And would need medical attention for <strong>{{Physician}}</strong> days barring complication.</p>
+ 
+  <br/>
+    <p  class="text-right">{{Physician}}</p>
+     <p  class="text-right">Baranggay Nutrition Scholar</p>
+
+</div>

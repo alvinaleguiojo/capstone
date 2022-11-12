@@ -3,11 +3,18 @@
 @host = {{hostname}}:{{port}}
 @contentType = application/json
 
+
+# GET https://api.pdfmonkey.io/api/v1/current_user
+# Authorization: Bearer UGY1PBXDMZ_u_jbMrGEh
+
 # # Retrieving or Read Data from DB
-GET {{host}}/users 
+# GET {{host}}/users 
 
 # # retrieving or Read Data from DB By ID
 # GET {{host}}/patients/63156f41b289c06579965e5a
+
+# GET {{host}}/patient/diagnosis/data/16
+# GET {{host}}/diagnosis
 
 # retrieving or Read  AND Paginate Data from DB 
 # GET {{host}}/todos?page=1&limit=10

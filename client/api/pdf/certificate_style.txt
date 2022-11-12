@@ -1,0 +1,13 @@
+@import url("https://pdfmonkey-resources.s3.eu-west-3.amazonaws.com/css/tailwind-light.min.css");
+
+body {
+  font-size: 10px;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+  border: 10px solid #ff8886;
+}
+
+.certificate{
+  padding: 30px;
+}

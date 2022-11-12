@@ -30,6 +30,8 @@ import {
   PresetsDirective,
   PresetDirective,
 } from "@syncfusion/ej2-react-calendars";
+import { IconButton } from "@mui/material";
+import GridTableDiagnosis from "../../../component/GridTableDiagnosis";
 
 // get all records from patient ID
 const columns = [
@@ -61,7 +63,7 @@ const diagnosiscolumns = [
   {
     id: "Diagnose",
     label: "Diagnose",
-    minWidth: 170,
+    width: 170,
     align: "left",
     format: (value) => value.toLocaleString("en-US"),
   },
@@ -121,8 +123,8 @@ function createDataMedicines(Name, Quantity, ReleasedDate, ExpiryDate) {
   return { Name, Quantity, ReleasedDate, ExpiryDate };
 }
 
-function createDiagnosisData(Diagnose, Date, Notes) {
-  return { Diagnose, Date, Notes };
+function createDiagnosisData(DiagnosisID, Diagnose, Date, Notes) {
+  return { DiagnosisID, Diagnose, Date, Notes };
 }
 
 const PatientProfile = ({
@@ -140,6 +142,7 @@ const PatientProfile = ({
   const id = router.query._id;
   const [loading, setLoading] = useState(true);
   const [staffData, setStaffData] = useState(null);
+  const [diagnosisID, setDiagnosisID] = useState(null);
 
   // date picker state
   const [calendar, setCalendar] = useState([]);
@@ -235,7 +238,7 @@ const PatientProfile = ({
       day: "numeric",
     });
     return diagnosisRows.push(
-      createDiagnosisData(data.Diagnose, date, data.Notes)
+      createDiagnosisData(data.DiagnosisID, data.Diagnose, date, data.Notes)
     );
   });
 
@@ -338,8 +341,7 @@ const PatientProfile = ({
             text,
             phone,
           })
-          .then((res) => {
-            console.log(res);
+          .then(() => {
             Swal.fire("Success!", "Appointment has been set!", "success");
           })
           .catch((error) => {
@@ -377,6 +379,11 @@ const PatientProfile = ({
   };
 
   const handleDiagnosis = async () => {
+    //setting up the heaaders
+    const headers = {
+      Authorization: `Bearer ${process.env.PDF_API_SECRET}`,
+    };
+
     const patientName = `${patient[0].FirstName}  ${patient[0].LastName}`;
     const today = format(new Date(), "MMMM dd, yyyy");
 
@@ -415,6 +422,7 @@ const PatientProfile = ({
       const StaffID = staffData.StaffID;
       const Diagnose = formValues[0];
       const Notes = formValues[1];
+      let DiagnosisID = null;
 
       try {
         axios
@@ -424,12 +432,51 @@ const PatientProfile = ({
             Diagnose,
             Notes,
           })
-          .then(() => {
+          .then((response) => {
+            setDiagnosisID(response.data.DiagnosisID.insertId);
+            DiagnosisID = response.data.DiagnosisID.insertId;
+
+            console.log("diagnosisid:" + DiagnosisID);
             setDiagnosisData([
-              { Diagnose, Date: today, Notes },
+              {
+                Diagnose,
+                Date: today,
+                Notes,
+              },
               ...diagnosisData,
             ]);
             Swal.fire("Success!", "Diagnosis has been added!", "success");
+          })
+          .then(() => {
+            axios
+              .post(
+                `${process.env.PDF_API_URL}/documents`,
+                {
+                  document: {
+                    document_template_id:
+                      "02792BF0-EA57-4C92-9537-1687D75AEDEF",
+                    payload: {
+                      Name: patientName,
+                      Address: `${patient[0].Street} ${patient[0].Baranggay} ${patient[0].City}}`,
+                      date: today,
+                      diagnosis: Diagnose,
+                      Physician: `${staffData.FirstName} ${staffData.LastName}`,
+                    },
+                    meta: {
+                      clientId: "ABC1234-DE",
+                      _filename: `${patientName}-medical-certificate.pdf`,
+                    },
+                    status: "pending",
+                  },
+                },
+                { headers }
+              )
+              .then((response) =>
+                axios.post(`${process.env.BaseURI}/certificates/create`, {
+                  DiagnosisID,
+                  PDFLinkID: response.data.document.id,
+                })
+              );
           });
       } catch (error) {
         console.log(error.message);
@@ -462,13 +509,6 @@ const PatientProfile = ({
                 {/* left container starts here */}
                 <Box className={styles.left__main}>
                   <Box className={styles.backButton}>
-                    {/* <span
-                      onClick={() => router.push("/patients")}
-                      style={{ cursor: "pointer" }}
-                    >
-                      Back to Patients {">"}
-                    </span>
-                    <span style={{ color: "grey" }}>Profile</span> */}
                     <Breadcrumb>
                       <Breadcrumb.Item
                         onClick={() => router.push("/patients")}
@@ -481,7 +521,7 @@ const PatientProfile = ({
                       </Breadcrumb.Item>
                     </Breadcrumb>
                   </Box>
-                  <Box className={styles.content}>
+                  <Box className={styles.content} style={{ minWidth: "330px" }}>
                     <Box className={styles.ProfileImageContainer}>
                       {patientImage !== null ? (
                         <Image
@@ -551,7 +591,7 @@ const PatientProfile = ({
                             {patientData.Phone}
                           </Typography>
                           <Tooltip title="Phone Number should start with +63">
-                            <Button
+                            <IconButton
                               onClick={() => {
                                 handleMessageModal(patientData.Phone);
                               }}
@@ -562,7 +602,7 @@ const PatientProfile = ({
                                 height={25}
                                 width={25}
                               />
-                            </Button>
+                            </IconButton>
                           </Tooltip>
                         </Box>
                       </Box>
@@ -703,31 +743,33 @@ const PatientProfile = ({
                           <TabPanel value={value} index={1}>
                             {!loading && (
                               <>
-                                <GridTable
+                                <GridTableDiagnosis
                                   rows={diagnosisRows}
                                   columns={diagnosiscolumns}
-                                  // path="medicines"
+                                  path="diagnosis"
                                   maxHeight={380}
                                   firstRow={4}
                                   rowPerPage={[4]}
                                   // showModal={true}
+                                  id={patientData.PatientID}
                                 />
-                                {staffData.Role == "MIDWIFE" || staffData.Role == "ADMIN" && (
-                                  <Box
-                                    className={styles.getStartedBtn}
-                                    variant="contained"
-                                    onClick={
-                                      () => handleDiagnosis()
-                                      // localStorage.setItem(
-                                      //   "Patient",
-                                      //   JSON.stringify(patientData)
-                                      // );
-                                      // router.push(`/medicines`);
-                                    }
-                                  >
-                                    Add Diagnosis
-                                  </Box>
-                                )}
+                                {staffData.Role == "MIDWIFE" ||
+                                  (staffData.Role == "ADMIN" && (
+                                    <Box
+                                      className={styles.getStartedBtn}
+                                      variant="contained"
+                                      onClick={
+                                        () => handleDiagnosis()
+                                        // localStorage.setItem(
+                                        //   "Patient",
+                                        //   JSON.stringify(patientData)
+                                        // );
+                                        // router.push(`/medicines`);
+                                      }
+                                    >
+                                      Add Diagnosis
+                                    </Box>
+                                  ))}
                               </>
                             )}
                           </TabPanel>
@@ -743,21 +785,22 @@ const PatientProfile = ({
                                   rowPerPage={[4]}
                                 />
 
-                                {staffData.Role == "BNS" || staffData.Role == "ADMIN" && (
-                                  <Box
-                                    className={styles.getStartedBtn}
-                                    variant="contained"
-                                    onClick={() => {
-                                      localStorage.setItem(
-                                        "Patient",
-                                        JSON.stringify(patientData)
-                                      );
-                                      router.push(`/medicines`);
-                                    }}
-                                  >
-                                    Release Medicine
-                                  </Box>
-                                )}
+                                {staffData.Role == "BNS" ||
+                                  (staffData.Role == "ADMIN" && (
+                                    <Box
+                                      className={styles.getStartedBtn}
+                                      variant="contained"
+                                      onClick={() => {
+                                        localStorage.setItem(
+                                          "Patient",
+                                          JSON.stringify(patientData)
+                                        );
+                                        router.push(`/medicines`);
+                                      }}
+                                    >
+                                      Release Medicine
+                                    </Box>
+                                  ))}
                               </>
                             )}
                           </TabPanel>
@@ -820,7 +863,7 @@ export async function getStaticPaths() {
 
     return {
       paths: Patients.map((patient) => {
-        return { params: { _id: patient.PatientID.toString() } };
+        return { params: { _id: JSON.stringify(patient.PatientID) } };
       }),
       fallback: false,
     };

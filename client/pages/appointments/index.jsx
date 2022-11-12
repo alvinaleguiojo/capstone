@@ -54,7 +54,6 @@ const Index = ({ appointments, services }) => {
       Color: service.Color,
     }));
     setServicesData(newService);
-    console.log("services", newService);
   }, []);
 
   const popupOpen = (args) => {
@@ -119,7 +118,7 @@ const Index = ({ appointments, services }) => {
               selectedDate={
                 new Date(new Date().getFullYear(), new Date().getMonth())
               }
-              popupOpen={popupOpen}
+              // popupOpen={popupOpen}
             >
               <ResourcesDirective>
                 <ResourceDirective
@@ -158,7 +157,6 @@ export default Index;
 export const getServerSideProps = async ({ context }) => {
   try {
     const res = await fetch(`${process.env.BaseURI}/appointmentswithpatients`);
-    console.log();
     const { Appointments } = await res.json();
 
     const serviceRes = await fetch(`${process.env.BaseURI}/services`);
