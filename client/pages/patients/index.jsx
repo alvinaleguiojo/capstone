@@ -32,6 +32,11 @@ const Index = ({ patients }) => {
     setTheme(enabled);
   }, []);
 
+  useEffect(() => {
+    router.query.q !== null &&
+      (router.query.q !== undefined && setSearchTerm(router.query.q));
+  }, [router]);
+
   // fetch patient Data
 
   useEffect(() => {
@@ -118,6 +123,7 @@ const Index = ({ patients }) => {
                       theme ? styles.search__input__dark : styles.search__input
                     }
                     onChange={handleSearch}
+                    value={searchTerm || ""}
                   />
                   <Image
                     src={SearchIcon}

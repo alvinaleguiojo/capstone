@@ -11,18 +11,15 @@ import Swal from "sweetalert2";
 import { Button, IconButton } from "@mui/material";
 import CustomizedSwitches from "./CustomizedSwitches";
 import SettingsIcon from "@mui/icons-material/Settings";
-import NotificationsNoneIcon from "@mui/icons-material/NotificationsNone";
 import LinearProgress from "@mui/material/LinearProgress";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { CSSTransition } from "react-transition-group";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import DarkModeIcon from "@mui/icons-material/DarkMode";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CustomModal from "./CustomModal";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import CloseIcon from "@mui/icons-material/Close";
-import SearchIcon from "@mui/icons-material/Search";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -36,6 +33,7 @@ import Tooltip from "@mui/material/Tooltip";
 
 import { TransitionGroup } from "react-transition-group";
 import Collapse from "@mui/material/Collapse";
+import SearchIcon from "@mui/icons-material/Search";
 
 // date validation and manipulation functions
 import moment from "moment";
@@ -149,7 +147,10 @@ const Navbar = () => {
             <Box className={styles.navbar__right}>
               <Box className={styles.user}>
                 {/* <Image src={UserIcon} alt="user avatar" heigh={40} width={40} /> */}
-                <Box className={styles.avatar}>
+                <Box
+                  className={styles.avatar}
+                  onClick={() => router.push("/profile")}
+                >
                   <Typography variant="h5" component="h5" color="#fff">
                     {staffData &&
                       staffData.FirstName.substring(0, 1).toUpperCase()}
@@ -182,6 +183,18 @@ const Navbar = () => {
                 </Box>
               </Box>
             </Box>
+{/* 
+            <Box className={styles.search}>
+              <Box className={styles.search__input}>
+                <input
+                  type="text"
+                  placeholder="Search for..."
+                  // onChange={handleSearch}
+                  // value={searchTerm || ""}
+                />
+                <SearchIcon style={{ color: "#8a8fa0" }} />
+              </Box>
+            </Box> */}
 
             <Box className={styles.header__icons}>
               {medicinesList.length > 0 && (
@@ -534,6 +547,7 @@ function DropdownMenu() {
                 <AccountCircleIcon fontSize="medium" />
               </IconButton>
             }
+            goToMenu="profle"
           >
             Profile
           </DropdownItem>

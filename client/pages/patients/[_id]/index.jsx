@@ -32,6 +32,7 @@ import {
 } from "@syncfusion/ej2-react-calendars";
 import { IconButton } from "@mui/material";
 import GridTableDiagnosis from "../../../component/GridTableDiagnosis";
+import GridTableReleased from "../../../component/GridTableReleased";
 
 // get all records from patient ID
 const columns = [
@@ -436,7 +437,25 @@ const PatientProfile = ({
             setDiagnosisID(response.data.DiagnosisID.insertId);
             DiagnosisID = response.data.DiagnosisID.insertId;
 
-            console.log("diagnosisid:" + DiagnosisID);
+            // revalidate the path of the new created diagnoses
+            axios
+              .get(
+                `${process.env.Revalidate_Path}/patients/${PatientID}&secret=${process.env.MY_SECRET_TOKEN}`
+              )
+              .then(() => {
+                console.log("revalidated");
+                axios
+                  .get(
+                    `${process.env.Revalidate_Path}/patients/${PatientID}/diagnosis/${DiagnosisID}&secret=${process.env.MY_SECRET_TOKEN}`
+                  )
+                  .then(() => {
+                    console.log("revalidate the diagnosis path");
+                  });
+              })
+              .catch(() => {
+                console.log("error revalidation");
+              });
+
             setDiagnosisData([
               {
                 Diagnose,
@@ -735,7 +754,7 @@ const PatientProfile = ({
                                     )
                                   }
                                 >
-                                  Set Appointment
+                                  Add Appointment
                                 </Box>
                               </>
                             )}
@@ -776,10 +795,10 @@ const PatientProfile = ({
                           <TabPanel value={value} index={2}>
                             {!loading && (
                               <>
-                                <GridTable
+                                <GridTableReleased
                                   rows={medicinesRows}
                                   columns={releasedMedicinesColumns}
-                                  path="medicines"
+                                  path="/medicines/released"
                                   maxHeight={380}
                                   firstRow={4}
                                   rowPerPage={[4]}
@@ -798,7 +817,7 @@ const PatientProfile = ({
                                         router.push(`/medicines`);
                                       }}
                                     >
-                                      Release Medicine
+                                      Select Medicine
                                     </Box>
                                   ))}
                               </>
@@ -865,7 +884,7 @@ export async function getStaticPaths() {
       paths: Patients.map((patient) => {
         return { params: { _id: JSON.stringify(patient.PatientID) } };
       }),
-      fallback: 'blocking',
+      fallback: "blocking",
     };
   } catch (err) {
     console.log("Ops path in invaid!");

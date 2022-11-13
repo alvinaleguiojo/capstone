@@ -6,7 +6,6 @@ const RetrieveCertificateByIDPromise = require("../AsyncAwait/Certificates/Retri
 
 // Get Patient's List of Certificates
 router.get("/patient/certificate/:id", async (req, res) => {
-  console.log("id" + req.body.DiagnosisID);
   try {
     const resultElements = await RetrieveCertificateByIDPromise({
       DiagnosisID: req.params.id,
@@ -14,7 +13,7 @@ router.get("/patient/certificate/:id", async (req, res) => {
     res.status(200).json({ Certificates: resultElements });
   } catch (error) {
     console.log(error.message);
-    res.sendStatus(500);
+    res.sendStatus(400);
   }
 });
 

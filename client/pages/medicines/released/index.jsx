@@ -29,6 +29,10 @@ const Index = ({ Medicines }) => {
   const [previousPage, setPreviousPage] = useState(0);
 
   useEffect(() => {
+    setSearchTerm(router.query.q);
+  }, [router]);
+
+  useEffect(() => {
     setTimeout(() => {
       setLoading(false);
     }, 500);
@@ -157,6 +161,7 @@ const Index = ({ Medicines }) => {
                 placeholder="Search for Medicine Name or Patient Name"
                 className={styles.search__input}
                 onChange={handleSearch}
+                value={searchTerm || ""}
               />
               <Image
                 src={SearchIcon}
@@ -169,10 +174,7 @@ const Index = ({ Medicines }) => {
             <div id="scrollableDiv" className={styles.scrollableDiv}>
               {data.map((request, index) => {
                 return (
-                  <Box
-                    className={styles.medicine__list}
-                    key={index}
-                  >
+                  <Box className={styles.medicine__list} key={index}>
                     <ReleasedMedicine
                       key={request.ReleasedID}
                       loading={loading}

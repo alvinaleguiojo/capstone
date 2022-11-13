@@ -54,13 +54,16 @@ ChartJS.register(
   Legend
 );
 
-const Index = ({ Appointments }) => {
+const Index = ({ Appointments, Patients }) => {
   const [theme, setTheme] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggleCalendar, setToggleCalendar] = useState(false);
   const [calendar, setCalendar] = useState([]);
   const [appointments, setAppointments] = useState(Appointments || []);
   const [appointmentsDataSource, setAppointmentsDataSource] = useState({});
+  const [completed, setCompleted] = useState(null);
+  const [cancelled, setCancelled] = useState(null);
+  const [patientsData, setPatients] = useState([]);
 
   const hour = new Date().getHours();
   const dateFormat = "MMM/dd/yyyy";
@@ -87,6 +90,30 @@ const Index = ({ Appointments }) => {
     new Date().getMonth(),
     new Date().getDay() - 1
   );
+
+  useEffect(() => {
+    const listOfPatients = patientsData.filter((value) => {
+      const patientsCreatedDate = moment(value.CreatedDate).format(
+        "YYYY-MM-DD"
+      );
+      console.log(patientsCreatedDate);
+      return patientsCreatedDate;
+    });
+    console.log(listOfPatients);
+  }, []);
+
+  // filter the appointment and return the list of completed appointment
+  useEffect(() => {
+    const completedAppointment = appointments.filter((value) => {
+      return value.Status == "Completed";
+    });
+    setCompleted(completedAppointment);
+
+    const cancelledAppointment = appointments.filter((value) => {
+      return value.Status == "Cancelled";
+    });
+    setCancelled(cancelledAppointment);
+  }, [appointments]);
 
   // startDate.setDate(startDate.getDate() + 30);
   // endDate.setDate(endDate.getDate() + 30);
@@ -625,7 +652,7 @@ const Index = ({ Appointments }) => {
                           color: "#B82623",
                         }}
                       >
-                        20
+                        {completed.length}
                       </Typography>
                     </Box>
                   )}
@@ -662,7 +689,7 @@ const Index = ({ Appointments }) => {
                           color: "#B82623",
                         }}
                       >
-                        5
+                        {cancelled.length}
                       </Typography>
                     </Box>
                   )}
@@ -742,8 +769,12 @@ export const getServerSideProps = async (context) => {
     const res = await fetch(`${process.env.BaseURI}/appointments/today`);
     const { Appointments } = await res.json();
 
+    const resPatients = await fetch(`${process.env.BaseURI}/all_patients`);
+    const { Patients } = await resPatients.json();
+
     return {
       props: {
+        Patients,
         Appointments,
       },
     };

@@ -20,6 +20,8 @@ const nextConfig = {
     PDF_API_URL: "https://api.pdfmonkey.io/api/v1",
     PDF_API_TemaplateID: "02792BF0-EA57-4C92-9537-1687D75AEDEF",
     PDF_API_SECRET: "UGY1PBXDMZ_u_jbMrGEh",
+    MY_SECRET_TOKEN:"supersecret",
+    Revalidate_Path: "http://localhost:3000/api/revalidate?path="
   },
 };
 

@@ -39,7 +39,7 @@ const Index = ({ Medicines }) => {
   const [filename, setFilename] = useState("");
   const maxNumber = 69;
 
-  const [medicine, setMedicine] = useState(Medicines);
+  const [medicine, setMedicine] = useState(...Medicines);
 
   // going back to patient page list
   const handleBack = () => {
@@ -115,11 +115,20 @@ const Index = ({ Medicines }) => {
     });
     axios
       .patch(
-        `${process.env.BaseURI}/midicine/stocks/update/${medicine[0].MedicineID}`,
+        `${process.env.BaseURI}/midicine/stocks/update/${medicine.MedicineID}`,
         { ...medicine }
       )
       .then(() => {
         setDisabled(true);
+        axios
+          .get(
+            `${process.env.Revalidate_Path}/medicines/${medicine.MedicineID}/&secret=${process.env.MY_SECRET_TOKEN}`
+          )
+          .then(() => {
+            console.log("revalidate the medicine path");
+          })
+          .catch((error) => console.log("error revalidation"));
+
         Toast.fire({
           icon: "success",
           title: "Changes are saved",
@@ -290,7 +299,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="Generic Name"
-                            value={medicine[0].Name || ""}
+                            value={medicine.Name || ""}
                             disabled={true}
                           />
                         </Box>
@@ -313,12 +322,9 @@ const Index = ({ Medicines }) => {
                             }
                             type="number"
                             name="Stocks"
-                            value={
-                              disabled
-                                ? medicine[0].Stocks || ""
-                                : medicine.Stocks
-                            }
+                            value={medicine.Stocks}
                             disabled={disabled}
+                            min={1}
                           />
                         </Box>
                         <Box style={{ width: "30%" }}>
@@ -337,7 +343,7 @@ const Index = ({ Medicines }) => {
                                 Unit: e.target.value,
                               })
                             }
-                            value={medicine[0].Unit || ""}
+                            value={medicine.Unit || ""}
                             disabled={true}
                           >
                             <option value="microgram">microgram μg</option>
@@ -364,7 +370,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="number"
                             name="middleName"
-                            value={medicine[0].Size || ""}
+                            value={medicine.Size || ""}
                             disabled={true}
                           />
                         </Box>
@@ -389,18 +395,7 @@ const Index = ({ Medicines }) => {
                             }
                             type={disabled ? "text" : "date"}
                             name="Expiry Date"
-                            value={
-                              disabled
-                                ? new Date(
-                                    medicine[0].ExpiryDate
-                                  ).toLocaleDateString("en-us", {
-                                    // weekday: "long",
-                                    year: "numeric",
-                                    month: "long",
-                                    day: "numeric",
-                                  }) || ""
-                                : medicine.ExpireDate
-                            }
+                            value={moment(medicine.ExpiryDate).format("YYYY-MM-DD")}
                             disabled={disabled}
                           />
                         </Box>
@@ -423,7 +418,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="City"
-                            value={medicine[0].Manufacturer || ""}
+                            value={medicine.Manufacturer || ""}
                             disabled={true}
                           />
                         </Box>
@@ -446,7 +441,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="Dosage"
-                            value={medicine[0].Dosage || ""}
+                            value={medicine.Dosage || ""}
                             disabled={true}
                           />
                         </Box>
@@ -477,7 +472,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="Description"
-                            value={medicine[0].Description || "No Description"}
+                            value={medicine.Description || "No Description"}
                             disabled={true}
                           />
                         </Box>
@@ -536,7 +531,7 @@ export async function getStaticPaths() {
       paths: Medicines.map((medicine) => {
         return { params: { _id: medicine.MedicineID.toString() } };
       }),
-      fallback: 'blocking',
+      fallback: "blocking",
     };
   } catch (err) {
     console.log("Ops path in invaid!");

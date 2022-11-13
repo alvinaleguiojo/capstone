@@ -231,7 +231,7 @@ const Index = ({ patient, Diagnosis, patientImage, Staff }) => {
                 {/* right container starts here */}
                 <Box className={styles.right__container}>
                   <Typography variant="h6" component="h6">
-                    Diagnosis
+                    Diagnosis Details
                   </Typography>
 
                   <label>
@@ -260,10 +260,11 @@ const Index = ({ patient, Diagnosis, patientImage, Staff }) => {
                       // if the disabled is false and has a certificate then enable this button
                       disabled={disabled}
                       onClick={() => handleExportPFD(pdfUrl)}
+                      style={{ backgroundColor: !disabled && "#b82623" }}
                     >
                       <FileDownloadIcon />
                       {/* <Link href={pdfUrl}>Export PDF</Link> */}
-                      Export PDF
+                      Export MEDICAL CERTIFICATE
                     </Button>
                   )}
                 </Box>
@@ -293,7 +294,7 @@ export async function getStaticPaths() {
           },
         };
       }),
-      fallback: 'blocking',
+      fallback: "blocking",
     };
   } catch (err) {
     console.log("Ops path in invaid!");

@@ -193,8 +193,7 @@ router.post("/patient/register", async (req, res) => {
       Street,
       Baranggay,
       City,
-      ImageID: Image,
-      CreatedDate: date,
+      ImageID: Image
     });
 
     const PatientID = await newPatient.insertId;

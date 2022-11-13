@@ -13,10 +13,9 @@ const RegisterPatientPromise = ({
   Street,
   Baranggay,
   City,
-  ImageID,
-  CreatedDate,
+  ImageID
 }) => {
-  const newUser = `INSERT INTO Patients (LastName, FirstName, MiddleName, Suffix, Phone , BirthDate, Gender, Street, Baranggay, City, ImageID,  CreatedDate ) VALUES ('${LastName}', '${FirstName}', '${MiddleName}', '${Suffix}', '${Phone}', '${BirthDate}', '${Gender}', '${Street}', '${Baranggay}', '${City}', ${ImageID}, '${CreatedDate}')`;
+  const newUser = `INSERT INTO Patients (LastName, FirstName, MiddleName, Suffix, Phone , BirthDate, Gender, Street, Baranggay, City, ImageID ) VALUES ('${LastName}', '${FirstName}', '${MiddleName}', '${Suffix}', '${Phone}', '${BirthDate}', '${Gender}', '${Street}', '${Baranggay}', '${City}', ${ImageID})`;
   return new Promise((resolve, reject) => {
     connection.query(newUser, (error, newCreatedUser) => {
       error && reject(error);
