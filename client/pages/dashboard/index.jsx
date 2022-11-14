@@ -54,7 +54,7 @@ ChartJS.register(
   Legend
 );
 
-const Index = ({ Appointments, Patients }) => {
+const Index = ({ Appointments, AllAppointments }) => {
   const [theme, setTheme] = useState(false);
   const [loading, setLoading] = useState(true);
   const [toggleCalendar, setToggleCalendar] = useState(false);
@@ -64,6 +64,9 @@ const Index = ({ Appointments, Patients }) => {
   const [completed, setCompleted] = useState(null);
   const [cancelled, setCancelled] = useState(null);
   const [patientsData, setPatients] = useState([]);
+  const [AllAppointmentsData, setAllAppointmentsData] =
+    useState(AllAppointments);
+  const [ongoingPatient, setOngoingPatient] = useState([]);
 
   const hour = new Date().getHours();
   const dateFormat = "MMM/dd/yyyy";
@@ -126,25 +129,29 @@ const Index = ({ Appointments, Patients }) => {
   const yesterday = moment().subtract(1, "days").calendar();
   const Mon = moment().day(1);
   let Monday = new Date(Mon);
+  const MondayOrig = Monday;
   Monday = moment(Monday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
   const Tue = moment().day(2);
   let Tuesday = new Date(Tue);
+  const TuesdayOrig = Tuesday;
   Tuesday = moment(Tuesday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
   const Wed = moment().day(3);
   let Wednesday = new Date(Wed);
+  const WednesdayOrig = Wednesday;
   Wednesday = moment(Wednesday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
   const Thu = moment().day(4);
   let Thursday = new Date(Thu);
+  const ThursdayOrig = Thursday;
   Thursday = moment(Thursday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
   const Fri = moment().day(5);
   let Friday = new Date(Fri);
+  const FridayOrig = Friday;
   Friday = moment(Friday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
   const Sat = moment().day(6);
   let Saturday = new Date(Sat);
+  const SaturdayOrig = Saturday;
   Saturday = moment(Saturday).format("MMM. DD, YYYY"); // November 5th 2022, 9:14:37 am
-  const Weekdays = [
-    `${Monday}, ${Tuesday}, ${Wednesday}, ${Thursday}, ${Friday}, ${Saturday}`,
-  ];
+  const Weekdays = [Monday, Tuesday, Wednesday, Thursday, Friday, Saturday];
 
   const weekStart = new Date(
     new Date(
@@ -180,19 +187,157 @@ const Index = ({ Appointments, Patients }) => {
   const yearEnd = new Date(
     new Date(new Date().getFullYear() - 1, 11, 31).toDateString()
   );
-
   //date picker custom dates ends here
 
   useEffect(() => {
+    // filtering all appointment that matches to monday
+    const mondaysAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(MondayOrig).format("YYYY-MM-DD")
+      );
+    });
+    // filtering all mondaysAppointment that has completed status
+    // setMondaysAppointment(mondaysAppointment);
+    const mondaysCompeletedAppointment = mondaysAppointment.filter((value) => {
+      return value.Status === "Completed";
+    });
+    const mondaysCancelledAppointment = mondaysAppointment.filter((value) => {
+      return value.Status === "Cancelled";
+    });
+
+    const mondaysOngoingAppointment = mondaysAppointment.filter((value) => {
+      return value.Status === "Ongoing";
+    });
+    setOngoingPatient(mondaysOngoingAppointment);
+    console.log(mondaysOngoingAppointment);
+
+    const mondaysCompletedCount = mondaysCompeletedAppointment.length;
+    const mondaysCancelledCount = mondaysCancelledAppointment.length;
+    /// end of mondays appointment
+
+    // filtering all appointment that matches to Tuesday
+    const tuesdayAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(TuesdayOrig).format("YYYY-MM-DD")
+      );
+    });
+
+    const tuesdayCompeletedAppointment = tuesdayAppointment.filter((value) => {
+      return value.Status === "Completed";
+    });
+    const tuesdayCancelledAppointment = tuesdayAppointment.filter((value) => {
+      return value.Status === "Cancelled";
+    });
+    const tuesdayCompletedCount = tuesdayCompeletedAppointment.length;
+    const tuesdayCancelledCount = tuesdayCancelledAppointment.length;
+    /// end of tuesday appointment
+
+    // filtering all appointment that matches to Wednesday
+    const wednesdayAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(WednesdayOrig).format("YYYY-MM-DD")
+      );
+    });
+
+    const wednesdayCompeletedAppointment = wednesdayAppointment.filter(
+      (value) => {
+        return value.Status === "Completed";
+      }
+    );
+    const wednesdayCancelledAppointment = wednesdayAppointment.filter(
+      (value) => {
+        return value.Status === "Cancelled";
+      }
+    );
+    const wednesdayCompletedCount = wednesdayCompeletedAppointment.length;
+    const wednesdayCancelledCount = wednesdayCancelledAppointment.length;
+    /// end of tuesday appointment
+
+    // filtering all appointment that matches to Thursday
+    const thursdayAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(ThursdayOrig).format("YYYY-MM-DD")
+      );
+    });
+    const thursdayCompeletedAppointment = thursdayAppointment.filter(
+      (value) => {
+        return value.Status === "Completed";
+      }
+    );
+    const thursdayCancelledAppointment = thursdayAppointment.filter((value) => {
+      return value.Status === "Cancelled";
+    });
+
+    const thursdayCompletedCount = thursdayCompeletedAppointment.length;
+    const thursdayCancelledCount = thursdayCancelledAppointment.length;
+    /// end of tuesday appointment
+
+    // filtering all appointment that matches to Friday
+    const fridaysAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(FridayOrig).format("YYYY-MM-DD")
+      );
+    });
+
+    const fridayCompeletedAppointment = fridaysAppointment.filter((value) => {
+      return value.Status === "Completed";
+    });
+    const fridayCancelledAppointment = fridaysAppointment.filter((value) => {
+      return value.Status === "Cancelled";
+    });
+    const fridayCompletedCount = fridayCompeletedAppointment.length;
+    const fridayCancelledCount = fridayCancelledAppointment.length;
+    /// end of tuesday appointment
+
+    // filtering all appointment that matches to Saturday
+    const saturdayAppointment = AllAppointmentsData.filter((value) => {
+      return (
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+        moment(SaturdayOrig).format("YYYY-MM-DD")
+      );
+    });
+
+    const saturdayCompeletedAppointment = saturdayAppointment.filter(
+      (value) => {
+        return value.Status === "Completed";
+      }
+    );
+    const saturdayCancelledAppointment = saturdayAppointment.filter((value) => {
+      return value.Status === "Cancelled";
+    });
+
+    const saturdayCompletedCount = saturdayCompeletedAppointment.length;
+    const saturdayCancelledCount = saturdayCancelledAppointment.length;
+    /// end of tuesday appointment
+
     setAppointmentsDataSource({
       series: [
         {
           name: "Completed",
-          data: [15, 18, 22, 17, 19, 20],
+          data: [
+            mondaysCompletedCount,
+            tuesdayCompletedCount,
+            wednesdayCompletedCount,
+            thursdayCompletedCount,
+            fridayCompletedCount,
+            saturdayCompletedCount,
+          ],
         },
         {
           name: "Cancelled",
-          data: [7, 8, 8, 9, 7, 12],
+          data: [
+            mondaysCancelledCount,
+            tuesdayCancelledCount,
+            wednesdayCancelledCount,
+            thursdayCancelledCount,
+            fridayCancelledCount,
+            saturdayCancelledCount,
+          ],
         },
       ],
       options: {
@@ -573,7 +718,7 @@ const Index = ({ Appointments, Patients }) => {
                           color: "white",
                         }}
                       >
-                        {appointments.length}
+                        {ongoingPatient.length}
                       </Typography>
                     </Box>
                   )}
@@ -772,10 +917,14 @@ export const getServerSideProps = async (context) => {
     const resPatients = await fetch(`${process.env.BaseURI}/all_patients`);
     const { Patients } = await resPatients.json();
 
+    const appointmentRes = await fetch(`${process.env.BaseURI}/appointments`);
+    const { Appointments: AllAppointments } = await appointmentRes.json();
+
     return {
       props: {
         Patients,
         Appointments,
+        AllAppointments,
       },
     };
   } catch (error) {
