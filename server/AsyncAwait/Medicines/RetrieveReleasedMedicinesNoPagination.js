@@ -5,12 +5,8 @@ const connection = require("../../db/connection");
 const RetrieveReleasedMedicinesNoPagition = () => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `Select * 
-      FROM Medicines
-      INNER JOIN ReleasedMedicines
-      on ReleasedMedicines.MedicineID = Medicines.MedicineID
-      INNER join Images
-      on Images.ImageID = Medicines.ImageID ORDER BY ReleasedDate DESC`,
+      `Select Medicines.MedicineID, Images.Image, Medicines.Name, Patients.PatientID, Patients.FirstName, Patients.LastName, ReleasedMedicines.Quantity, ReleasedMedicines.ReleasedDate FROM Medicines INNER JOIN ReleasedMedicines on ReleasedMedicines.MedicineID = Medicines.MedicineID INNER JOIN Patients on ReleasedMedicines.PatientID = Patients.PatientID INNER join Images on Images.ImageID = Medicines.ImageID ORDER BY ReleasedDate DESC; 
+      `,
       (error, Medicines) => {
         error && reject(error);
         return resolve(Medicines);
@@ -18,5 +14,15 @@ const RetrieveReleasedMedicinesNoPagition = () => {
     );
   });
 };
+
+
+// old query 
+
+// Select * 
+//       FROM Medicines
+//       INNER JOIN ReleasedMedicines
+//       on ReleasedMedicines.MedicineID = Medicines.MedicineID
+//       INNER join Images
+//       on Images.ImageID = Medicines.ImageID ORDER BY ReleasedDate DESC
 
 module.exports = RetrieveReleasedMedicinesNoPagition;

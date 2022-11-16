@@ -193,7 +193,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     const today = moment().format("YYYY-MM-DD");
     const abortController = new AbortController();
 
-
     // mapping all the product name from medicinesData
     const medicineNames = medicinesData.map((data) => {
       return data.Name;
@@ -224,7 +223,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     });
     //filter all the the same IDs
     const MedicineIDs = listOfID.filter(unique);
-
+    console.log(MedicineIDs.length)
     // Inititalize the quantity of the released Medicines
     let SumAllQuantity1 = 0;
     // store the quantity base on the ID of the medicines
@@ -246,7 +245,6 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
         // if it is equal to the last index of the array
         // then push the quantity to the new array
         if (releasedMedicinesCount.length - 1 == index) {
-          // console.log("date:"+ date)
           array.push(SumAllQuantity1);
         }
       });
@@ -493,6 +491,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     // mapping released Medicines
     let SumAllQuantity1 = 0;
     let array = [];
+    console.log(array);
 
     Dates.forEach((date) => {
       const releasedMedicinesCount = releasedMedicinesData.filter(
@@ -573,9 +572,9 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     // const expiredPercentage =
     //   (expiredStocks.length / medicinesData.length) * 100;
 
-    const outOfStocksPercentage =outOfStocksCount.length
-    const onHandPercentage = inStocks.length
-    const expiredPercentage = expiredStocks.length
+    const outOfStocksPercentage = outOfStocksCount.length;
+    const onHandPercentage = inStocks.length;
+    const expiredPercentage = expiredStocks.length;
 
     setServicesDataSource({
       series: [outOfStocksPercentage, onHandPercentage, expiredPercentage],
@@ -611,7 +610,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     const selectedDateRange = e.value;
     setCalendar(selectedDateRange);
   };
- 
+
   // export over all reports data
   const handleExport = () => {
     const wb = XLSX.utils.book_new();
@@ -620,7 +619,7 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
     XLSX.utils.book_append_sheet(wb, ws, "Reports");
     XLSX.writeFile(wb, "Reports.xlsx");
   };
-  
+
   /// export released medicines data
   const handleExportReleased = () => {
     const wb = XLSX.utils.book_new();
@@ -1051,8 +1050,11 @@ const Index = ({ Medicines, ReleasedMedicines }) => {
 export default Index;
 
 export const getServerSideProps = async (context) => {
-  context.res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=60');
-  
+  context.res.setHeader(
+    "Cache-Control",
+    "s-maxage=20, stale-while-revalidate=60"
+  );
+
   try {
     const res = await fetch(`${process.env.BaseURI}/allmedicines`);
     const resReleased = await fetch(

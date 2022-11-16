@@ -68,10 +68,10 @@ const CardTemplate = (props) => {
 
           <Box className={styles.content}>
             <Typography variant="caption" component="h5">
-              Patient Name
+              Patient
             </Typography>
             <Typography variant="body1" component="h5">
-              {props.data.FirstName + " " + props.data.LastName}
+              {props.data.LastName}
             </Typography>
           </Box>
 

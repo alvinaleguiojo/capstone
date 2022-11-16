@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Navbar from "../../../../component/Navbar";
@@ -21,6 +21,7 @@ import { useRouter } from "next/router";
 import { Divider, Breadcrumb } from "antd";
 import * as XLSX from "xlsx";
 import moment from "moment";
+import exportAsImage from "../../../../utils/exportAsImage";
 
 const Index = ({ patient, Services }) => {
   const [appointment, setAppointment] = useState({});
@@ -29,9 +30,28 @@ const Index = ({ patient, Services }) => {
   const [disabled, setDisabled] = useState(true);
   const [exportData, setExportData] = useState([]);
   const today = moment(appointment.Schedule).format("MMMM-DD-YYYY");
+  const [appoinmentID, setAppoinmentID] = useState(null);
+
   // router
   const router = useRouter();
   const routeID = router.query._id;
+  const exportRef = useRef();
+
+  function DownloadFile(props) {
+    return (
+      <div className="parent">
+        <div ref={exportRef} style={{ width: "250px", padding: "5px" }}>
+          <p>Appointment: #{appoinmentID}</p>
+          <p>
+            Patient Name:
+            {" " + props.patient.FirstName + " " +props.patient.LastName}
+          </p>
+          <p>Schedule: {moment(calendar).format("MMMM DD,YYYY")}</p>
+          <p>Service: {props.Service}</p>
+        </div>
+      </div>
+    );
+  }
 
   useEffect(() => {
     console.log(appointment);
@@ -66,6 +86,7 @@ const Index = ({ patient, Services }) => {
         ...appointment,
       })
       .then((response) => {
+        setAppoinmentID(response.data.appointmentData.insertId);
         const exportDataToExcel = [
           {
             FirstName: patient[0].FirstName,
@@ -77,11 +98,12 @@ const Index = ({ patient, Services }) => {
           },
         ];
 
-        exportDataToExcel && handleExport(exportDataToExcel);
+        //exportDataToExcel && handleExport(exportDataToExcel);
 
         Swal.fire("Success!", "Appointment has been set!", "success").then(
           () => {
             setLoading(false);
+            exportAsImage(exportRef.current, "Appointment");
             setTimeout(() => {
               setAppointment({
                 ...appointment,
@@ -90,6 +112,7 @@ const Index = ({ patient, Services }) => {
                 enabled: false,
                 ServiceID: 0,
               });
+
               router.push(`/patients/${routeID}`);
             }, 2000);
           }
@@ -310,7 +333,7 @@ const Index = ({ patient, Services }) => {
                                 ...appointment,
                                 ServiceID: service.ServiceID,
                                 // enabled: e.target.checked,
-                                // ServiceType: service.ServiceType,
+                                ServiceType: service.ServiceType,
                               });
                             }}
                           />
@@ -330,6 +353,17 @@ const Index = ({ patient, Services }) => {
                     >
                       Set Appointment
                     </LoadingButton>
+                  </Box>
+                  <Box
+                    style={{ position: "absolute", zIndex: "-2", top: "200px" }}
+                  >
+                    {appoinmentID && (
+                      <DownloadFile
+                        patient={patientData}
+                        Schedule={appointment.Schedule}
+                        Service={appointment.ServiceType}
+                      />
+                    )}
                   </Box>
                   {/* calendar end here */}
                 </Box>
@@ -353,7 +387,7 @@ export async function getStaticPaths() {
       paths: Patients.map((patient) => {
         return { params: { _id: patient.PatientID.toString() } };
       }),
-      fallback: 'blocking',
+      fallback: "blocking",
     };
   } catch (err) {
     console.log("Ops path in invaid!");

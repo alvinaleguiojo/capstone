@@ -29,13 +29,13 @@ const Index = () => {
   const [user, setUser] = useState({});
   const [disabled, setDisabled] = useState(true);
   const [terms, setTerms] = useState(false);
-  const [privacy, setPrivacy] = useState(false);
+  // const [privacy, setPrivacy] = useState(false);
   const [serverResponse, setServerResponse] = useState("");
   const [modal, setModal] = useState(false);
 
   // terms redux
-  const dispatch = useDispatch();
-  const TemsConditionModal = useSelector((state) => state.terms.value);
+  // const dispatch = useDispatch();
+  // const TemsConditionModal = useSelector((state) => state.terms.value);
   
   useEffect(() => {
     setModal(false)
@@ -58,12 +58,12 @@ const Index = () => {
     let userInput = Object.values(user).includes("");
     !userInput &&
     Object.keys(user).length >= 5 &&
-    terms == true &&
-    privacy == true &&
+    terms &&
+    // privacy == true &&
     user.Password === user.ConfirmPassword
       ? setDisabled(false)
       : setDisabled(true);
-  }, [user, terms, privacy]);
+  }, [user, terms]); //privacy
 
   // send a request for registration to the server
   const handleSubmit = (e) => {
@@ -91,7 +91,7 @@ const Index = () => {
         });
         router.push("/dashboard");
         setTerms(false);
-        setPrivacy(false);
+        // setPrivacy(false);
       })
       .catch((err) => {
         console.log("Error" + err);
@@ -122,7 +122,7 @@ const Index = () => {
       ConfirmPassword: "",
     });
     setTerms(false);
-    setPrivacy(false);
+    // setPrivacy(false);
   };
 
   return (
@@ -235,10 +235,10 @@ const Index = () => {
 
             <Box
               className={styles.terms}
-              onClick={() => {
-                setModal(true);
-                dispatch(termsModal());
-              }}
+              // onClick={() => {
+              //   setModal(true);
+              //   dispatch(termsModal());
+              // }}
             >
               <FormControlLabel
                 control={
