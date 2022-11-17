@@ -10,6 +10,7 @@ const DashboardAppointmentsPromise = require("../AsyncAwait/Appointments/dashboa
 const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/AppointmentsByDateRange");
 const GetAllAppointmentswithPatientsPromise = require("../AsyncAwait/Appointments/AppointmentswithPatients");
 const UpdateAppointmentPromiseByID = require("../AsyncAwait/Appointments/UpdateAppointment");
+const RemoveAppointmentByIDPromise = require("../AsyncAwait/Appointments/RemoveAppointment");
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
@@ -66,11 +67,16 @@ router.get("/appointments/today", async (req, res) => {
 });
 
 // Remove appointment from the list
-router.delete("/delete/:id", async (req, res) => {
-  const id = req.params.id;
-  await Appointments.findByIdAndRemove(id).exec();
-  res.send("Appointment has been deleted");
-  console.log("Appointment has been deleted");
+router.delete("/appointment/delete/:id", async (req, res) => {
+  const ID = req.params.id;
+  try {
+    const appointments = await GetAllAppointmentsPromise();
+    const id = await appointments.filter((id) => id.AppointmentID == ID);
+    await RemoveAppointmentByIDPromise({ AppointmentID: id[0].AppointmentID });
+    res.json({ message: "Appointment has been deleted successfully" });
+  } catch (error) {
+    res.status(400).json({ message: "Invalid AppointmentID" });
+  }
 });
 
 // create new Appointment
@@ -89,12 +95,10 @@ router.post("/appointment/create", async (req, res) => {
       Notes,
       isAllDay: true,
     });
-    res
-      .status(200)
-      .json({
-        appointmentData: response,
-        message: "Appointment added successfully",
-      });
+    res.status(200).json({
+      appointmentData: response,
+      message: "Appointment added successfully",
+    });
   } catch (err) {
     res.status(400).json({ message: "Invalid data entry" });
   }

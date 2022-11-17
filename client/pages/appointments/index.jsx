@@ -4,6 +4,7 @@ import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
 import contentStyles from "../../styles/Content.module.css";
 import reusableStyle from "../../styles/Reusable.module.css";
+
 import {
   ScheduleComponent,
   Day,
@@ -16,11 +17,11 @@ import {
   DragAndDrop,
   ResourcesDirective,
   ResourceDirective,
-  PopupOpenEventArgs
 } from "@syncfusion/ej2-react-schedule";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Typography from "@mui/material/Typography";
 import Meta from "../../component/Meta";
+import axios from "axios";
 
 const Index = ({ appointments, services }) => {
   const [appointmentsData, setAppointmentsData] = useState([]);
@@ -58,14 +59,32 @@ const Index = ({ appointments, services }) => {
     setServicesData(newService);
   }, []);
 
-  const popupOpen = (args) => {
-    let isCell = args.target.classList.contains('e-work-cells') || args.target.classList.contains('e-header-cells'); 
-    if (args.type === "QuickInfo" && isCell) { 
-      args.cancel = true; 
-    } 
-  };
+  // to listen the scheduler modal events
+  const popupOpen = async (args) => {
+    if (args.type === "DeleteAlert") {
+      try {
+        await axios.delete(
+          `${process.env.BaseURI}/appointment/delete/${args.data.Id}`
+        );
+      } catch (error) {
+        console.log(error.message);
+      }
+    }
 
-  const onDeleteClick = () => {};
+    console.log(args);
+
+    // disabled the cell if it is empty
+    try {
+      let isCell =
+        args.target.classList.contains("e-work-cells") ||
+        args.target.classList.contains("e-header-cells");
+      if (args.type === "QuickInfo" && isCell) {
+        args.cancel = true;
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   return (
     <Box>
@@ -101,6 +120,7 @@ const Index = ({ appointments, services }) => {
                       title: "Patient Name",
                       validation: {
                         required: true,
+                        disabled: true,
                       },
                     },
                     location: {
@@ -121,7 +141,7 @@ const Index = ({ appointments, services }) => {
                 selectedDate={
                   new Date(new Date().getFullYear(), new Date().getMonth())
                 }
-                // popupOpen={popupOpen}
+                popupOpen={popupOpen}
               >
                 <ResourcesDirective>
                   <ResourceDirective
