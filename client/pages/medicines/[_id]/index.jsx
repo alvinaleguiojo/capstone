@@ -418,7 +418,7 @@ const Index = ({ Medicines }) => {
                             }
                             type="text"
                             name="City"
-                            value={medicine.Manufacturer || ""}
+                            value={medicine.Manufacturer || "No Manufacturer"}
                             disabled={true}
                           />
                         </Box>

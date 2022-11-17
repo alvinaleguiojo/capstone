@@ -190,10 +190,7 @@ router.patch("/midicine/stocks/update/:id", async (req, res) => {
   const { Stocks, ExpiryDate } = req.body;
   const MedicineID = req.params.id;
   const NewStocks = Stocks;
-
-  console.log(MedicineID);
-  console.log(NewStocks);
-  console.log(ExpiryDate);
+  
   try {
     await UpdateStocksExpiryDatePromise({
       MedicineID,

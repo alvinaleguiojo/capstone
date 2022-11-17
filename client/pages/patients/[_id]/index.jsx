@@ -239,7 +239,12 @@ const PatientProfile = ({
       day: "numeric",
     });
     return diagnosisRows.push(
-      createDiagnosisData(data.DiagnosisID, data.Diagnose, date, data.Notes)
+      createDiagnosisData(
+        data.DiagnosisID,
+        data.Diagnose.slice(0, 35),
+        date,
+        data.Notes.slice(0, 35)
+      )
     );
   });
 
