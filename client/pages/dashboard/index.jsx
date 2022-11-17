@@ -94,17 +94,6 @@ const Index = ({ Appointments, AllAppointments }) => {
     new Date().getDay() - 1
   );
 
-  useEffect(() => {
-    const listOfPatients = patientsData.filter((value) => {
-      const patientsCreatedDate = moment(value.CreatedDate).format(
-        "YYYY-MM-DD"
-      );
-      console.log(patientsCreatedDate);
-      return patientsCreatedDate;
-    });
-    console.log(listOfPatients);
-  }, []);
-
   // filter the appointment and return the list of completed appointment
   useEffect(() => {
     const completedAppointment = appointments.filter((value) => {
@@ -206,11 +195,15 @@ const Index = ({ Appointments, AllAppointments }) => {
       return value.Status === "Cancelled";
     });
 
-    const mondaysOngoingAppointment = mondaysAppointment.filter((value) => {
-      return value.Status === "Ongoing";
+    const TodaysOngoingAppointment = AllAppointmentsData.filter((value) => {
+      console.log(value.Schedule);
+      return (
+        value.Status === "Ongoing" &&
+        moment(value.Schedule).format("YYYY-MM-DD") ===
+          moment().format("YYYY-MM-DD")
+      );
     });
-    setOngoingPatient(mondaysOngoingAppointment);
-    console.log(mondaysOngoingAppointment);
+    setOngoingPatient(TodaysOngoingAppointment);
 
     const mondaysCompletedCount = mondaysCompeletedAppointment.length;
     const mondaysCancelledCount = mondaysCancelledAppointment.length;
@@ -613,15 +606,13 @@ const Index = ({ Appointments, AllAppointments }) => {
                 )}
               </Box>
 
-              <Box className={styles.right__content}>
+              <Box
+                className={styles.right__content}
+                style={{ borderLeft: "1px solid #B82623" }}
+              >
                 <Box className={styles.monthly__reports}>
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    color="#B82623"
-                    className={styles.header__cell}
-                  >
-                    Reports
+                  <Typography color="#B82623" className={styles.header__cell}>
+                    Today&apos;s Reports
                   </Typography>
 
                   <Box className={styles.monthly__filter}>
@@ -860,6 +851,9 @@ const Index = ({ Appointments, AllAppointments }) => {
                    This Week
                   </Typography> */}
                 </Box>
+                <Typography color="#B82623" className={styles.header__cell}>
+                  This Week
+                </Typography>
                 <Box
                   style={{
                     display: "flex",
@@ -881,12 +875,13 @@ const Index = ({ Appointments, AllAppointments }) => {
                   ) : null}
 
                   {/* <Bar options={chartOptions} data={chartData} /> */}
+
                   {!loading ? (
                     <ApexCharts
                       options={appointmentsDataSource.options}
                       series={appointmentsDataSource.series}
                       type="bar"
-                      height={300}
+                      height={260}
                       width={600}
                     />
                   ) : null}

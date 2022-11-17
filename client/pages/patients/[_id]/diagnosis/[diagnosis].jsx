@@ -76,6 +76,58 @@ const Index = ({ patient, Diagnosis, patientImage, Staff }) => {
     });
   };
 
+  // send sms to patient open modal
+  const handleMessageModal = async (phone) => {
+    const { value: text } = await Swal.fire({
+      input: "textarea",
+      inputLabel: "Message",
+      inputPlaceholder: "Type your message here...",
+      inputAttributes: {
+        "aria-label": "Type your message here",
+      },
+      showCancelButton: true,
+      allowOutsideClick: false,
+    });
+
+    if (text) {
+      try {
+        await axios
+          .post(`${process.env.BaseURI}/sendMessagetoPatient`, {
+            text,
+            phone,
+          })
+          .then(() => {
+            Swal.fire("Success!", "Appointment has been set!", "success");
+          })
+          .catch((error) => {
+            console.log(error);
+            Swal.fire({
+              icon: "error",
+              title: "Oops...",
+              text: `${error.response.data.message}`,
+              // footer: '<a href="">Why do I have this issue?</a>',
+            });
+          });
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: `${err.message}`,
+          // footer: '<a href="">Why do I have this issue?</a>',
+        });
+      }
+    }
+    if (text == "") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+        // footer: '<a href="">Why do I have this issue?</a>',
+      });
+    }
+  };
+
   return (
     <>
       {patient.map((patientData) => {

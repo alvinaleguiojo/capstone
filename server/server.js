@@ -27,6 +27,7 @@ const twilio = require("./router/twilio");
 const Diagnosis = require("./router/diagnosis");
 const Certificates = require("./router/certificate");
 const Notifications = require("./router/notifications");
+const History = require("./router/history");
 
 // import User Model
 const UserCredentialPromise = require("./AsyncAwait/Users/UserLogin");
@@ -61,6 +62,7 @@ app.use(UploadImage);
 app.use(Diagnosis);
 app.use(Certificates);
 app.use(Notifications);
+app.use(History);
 
 // retrieving images from file folders
 app.use("/files", express.static("files"), (req, res, err) => {

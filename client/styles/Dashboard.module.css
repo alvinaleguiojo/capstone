@@ -79,11 +79,13 @@
   gap: 0.5rem;
   width: 100%;
   padding-right: 10px;
+  padding-left: 10px;
 }
 
 .right__content {
-  padding-left: 30px;
+  padding-left: 10px;
   /* padding-right: 30px; */
+  gap: 0.3rem;
   display: flex;
   flex-direction: column;
   width: 100%;

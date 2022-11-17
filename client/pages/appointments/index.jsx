@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../../component/Navbar";
 import Tabs from "../../component/Tabs";
 import Box from "@mui/material/Box";
@@ -16,6 +16,7 @@ import {
   DragAndDrop,
   ResourcesDirective,
   ResourceDirective,
+  PopupOpenEventArgs
 } from "@syncfusion/ej2-react-schedule";
 import { DatePickerComponent } from "@syncfusion/ej2-react-calendars";
 import Typography from "@mui/material/Typography";
@@ -24,6 +25,7 @@ import Meta from "../../component/Meta";
 const Index = ({ appointments, services }) => {
   const [appointmentsData, setAppointmentsData] = useState([]);
   const [servicesData, setServicesData] = useState([]);
+  const ref = useRef();
 
   useEffect(() => {
     const newAppointments = appointments.map((appointment) => ({
@@ -57,13 +59,13 @@ const Index = ({ appointments, services }) => {
   }, []);
 
   const popupOpen = (args) => {
-    let isEmptyCell =
-      args.target.classList.contains("e-work-cells") ||
-      args.target.classList.contains("e-header-cells"); // checking whether the cell is empty or not
-    if ((args.type === "QuickInfo" || args.type === "Editor") && isEmptyCell) {
-      args.cancel = true;
-    }
+    let isCell = args.target.classList.contains('e-work-cells') || args.target.classList.contains('e-header-cells'); 
+    if (args.type === "QuickInfo" && isCell) { 
+      args.cancel = true; 
+    } 
   };
+
+  const onDeleteClick = () => {};
 
   return (
     <Box>
@@ -87,62 +89,64 @@ const Index = ({ appointments, services }) => {
             List of Appointments
           </Typography>
           {appointmentsData && (
-            <ScheduleComponent
-              currentView="Month"
-              eventSettings={{
-                dataSource: appointmentsData,
-                fields: {
-                  id: "Id",
-                  subject: {
-                    name: "Subject",
-                    title: "Patient Name",
-                    validation: {
-                      required: true,
+            <>
+              <ScheduleComponent
+                currentView="Month"
+                eventSettings={{
+                  dataSource: appointmentsData,
+                  fields: {
+                    id: "Id",
+                    subject: {
+                      name: "Subject",
+                      title: "Patient Name",
+                      validation: {
+                        required: true,
+                      },
                     },
-                  },
-                  location: {
-                    name: "Location",
-                    title: "Address",
-                    validation: {
-                      required: true,
+                    location: {
+                      name: "Location",
+                      title: "Address",
+                      validation: {
+                        required: true,
+                      },
                     },
+                    description: {
+                      name: "Description",
+                      title: "Event Description",
+                    },
+                    startTime: { name: "StartTime", title: "Start Duration" },
+                    endTime: { name: "EndTime", title: "End Duration" },
                   },
-                  description: {
-                    name: "Description",
-                    title: "Event Description",
-                  },
-                  startTime: { name: "StartTime", title: "Start Duration" },
-                  endTime: { name: "EndTime", title: "End Duration" },
-                },
-              }}
-              selectedDate={
-                new Date(new Date().getFullYear(), new Date().getMonth())
-              }
-              // popupOpen={popupOpen}
-            >
-              <ResourcesDirective>
-                <ResourceDirective
-                  field="ResourceID"
-                  title="Service Name"
-                  name="Resources"
-                  textField="Name"
-                  idField="Id"
-                  colorField="Color"
-                  dataSource={servicesData}
-                ></ResourceDirective>
-              </ResourcesDirective>
-              <Inject
-                services={[
-                  Day,
-                  Week,
-                  WorkWeek,
-                  Month,
-                  Agenda,
-                  Resize,
-                  DragAndDrop,
-                ]}
-              />
-            </ScheduleComponent>
+                }}
+                selectedDate={
+                  new Date(new Date().getFullYear(), new Date().getMonth())
+                }
+                // popupOpen={popupOpen}
+              >
+                <ResourcesDirective>
+                  <ResourceDirective
+                    field="ResourceID"
+                    title="Service Name"
+                    name="Resources"
+                    textField="Name"
+                    idField="Id"
+                    colorField="Color"
+                    dataSource={servicesData}
+                  ></ResourceDirective>
+                </ResourcesDirective>
+                <Inject
+                  services={[
+                    Day,
+                    Week,
+                    WorkWeek,
+                    Month,
+                    Agenda,
+                    Resize,
+                    DragAndDrop,
+                  ]}
+                />
+              </ScheduleComponent>
+            </>
           )}
 
           {!appointmentsData && <h1>Loading...</h1>}

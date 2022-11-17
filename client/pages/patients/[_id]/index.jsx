@@ -33,6 +33,7 @@ import {
 import { IconButton } from "@mui/material";
 import GridTableDiagnosis from "../../../component/GridTableDiagnosis";
 import GridTableReleased from "../../../component/GridTableReleased";
+import { borderRadius } from "@mui/system";
 
 // get all records from patient ID
 const columns = [
@@ -134,6 +135,7 @@ const PatientProfile = ({
   records,
   patientImage,
   Medicines,
+  History,
 }) => {
   const [sendMessage, setSendMessage] = useState("");
   const [medicinesData, setMedicinesData] = useState(Medicines);
@@ -730,6 +732,7 @@ const PatientProfile = ({
                                 label="Released Medicines"
                                 {...a11yProps(2)}
                               />
+                              <Tab label="History" {...a11yProps(3)} />
                             </Tabs>
                           </Box>
                           {loading && (
@@ -827,6 +830,48 @@ const PatientProfile = ({
                                   ))}
                               </>
                             )}
+                          </TabPanel>
+
+                          <TabPanel value={value} index={3}>
+                            <div
+                              style={{
+                                display: "flex",
+                                flexDirection: "column",
+                              }}
+                            >
+                              {History.map((data, index) => {
+                                return (
+                                  <div
+                                    key={index}
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "column",
+                                      border: "1px solid #dbdff3",
+                                      padding: "10px",
+                                    }}
+                                  >
+                                    <h3>History</h3>
+                                    <label>
+                                      Medice Intake: {data.MedicineIntake}
+                                    </label>
+                                    <label>Allergies: {data.Allergies}</label>
+                                    <label>
+                                      Measles:{" "}
+                                      {data.Measles === 1 ? "Yes" : "No"}
+                                    </label>
+                                    <label>
+                                      Immunization:{" "}
+                                      {data.Immunization === 1 ? "Yes" : "No"}
+                                    </label>
+                                    <label>
+                                      Tuberculosis:{" "}
+                                      {data.Tuberculosis === 1 ? "Yes" : "No"}
+                                    </label>
+                                  </div>
+                                );
+                              })}
+                              {History.length <= 0 && <h4>No history</h4>}
+                            </div>
                           </TabPanel>
                         </Box>
                       </Box>
@@ -927,6 +972,11 @@ export async function getStaticProps({ params }) {
     const patientProfilePic = await imageRes.json();
     const patientImage = (await patientProfilePic[0].Image) || null;
 
+    const resHistory = await fetch(
+      `${process.env.BaseURI}/patient/history/${params._id}`
+    );
+    const { History } = await resHistory.json();
+
     return {
       props: {
         patient,
@@ -934,6 +984,7 @@ export async function getStaticProps({ params }) {
         patientImage,
         Medicines,
         Diagnosis,
+        History,
       },
       revalidate: 1,
     };
