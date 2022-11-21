@@ -44,7 +44,7 @@ const Index = ({ patient, Services }) => {
           <p>Appointment: #{appoinmentID}</p>
           <p>
             Patient Name:
-            {" " + props.patient.FirstName + " " +props.patient.LastName}
+            {" " + props.patient.FirstName + " " + props.patient.LastName}
           </p>
           <p>Schedule: {moment(calendar).format("MMMM DD,YYYY")}</p>
           <p>Service: {props.Service}</p>
@@ -328,11 +328,12 @@ const Index = ({ patient, Services }) => {
                         control={
                           <Checkbox
                             value={appointment.enabled}
-                            onChange={() => {
+                            onChange={(e) => {
+                              e.preventDefault();
                               setAppointment({
                                 ...appointment,
                                 ServiceID: service.ServiceID,
-                                // enabled: e.target.checked,
+                                enabled: e.target.checked,
                                 ServiceType: service.ServiceType,
                               });
                             }}

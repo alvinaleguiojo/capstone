@@ -41,6 +41,9 @@ import moment from "moment";
 // user Verification
 import Verification from "./Verification";
 
+import Popover from "@mui/material/Popover";
+import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
+
 const Navbar = () => {
   const router = useRouter();
   const [patientData, setPatientData] = useState();
@@ -203,26 +206,64 @@ const Navbar = () => {
               )}
               {(staffData && staffData.Role === "BNS") ||
                 (staffData && staffData.Role === "ADMIN" && (
-                  <Tooltip title="Medicine Cart">
-                    <IconButton
-                      onClick={handleRequestMedicineFocus}
-                      style={{ backgroundColor: "#dbdff3" }}
-                    >
-                      <MedicalServicesIcon
-                        fontSize="small"
-                        className={
-                          theme
-                            ? styles.header__icon__dark
-                            : requestGroupFocus
-                            ? styles.header__icon_active
-                            : styles.header__icon
-                        }
-                      />
-                    </IconButton>
-                  </Tooltip>
+                  // <Tooltip title="Medicine Cart">
+                  <PopupState variant="popover" popupId="demo-popup-popover">
+                    {(popupState) => (
+                      <div>
+                        {/* <Button variant="contained" {...bindTrigger(popupState)}>
+                    Open Popover
+                  </Button> */}
+                        <IconButton
+                          onClick={handleRequestMedicineFocus}
+                          style={{ backgroundColor: "#dbdff3" }}
+                          {...bindTrigger(popupState)}
+                        >
+                          <MedicalServicesIcon
+                            fontSize="small"
+                            className={
+                              theme
+                                ? styles.header__icon__dark
+                                : requestGroupFocus
+                                ? styles.header__icon_active
+                                : styles.header__icon
+                            }
+                          />
+                        </IconButton>
+
+                        <Popover
+                          {...bindPopover(popupState)}
+                          anchorOrigin={{
+                            vertical: "bottom",
+                            horizontal: "center",
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "center",
+                          }}
+                        >
+                          {/* <Typography sx={{ p: 2 }}>
+                            The content of the Popover.
+                          </Typography> */}
+                          {/* <Box style={{width:"300px", height:"400px"}}> */}
+                          <MedicineCart
+                            medicines={medicinesList}
+                            patientName={
+                              patientData !== null && patientData !== undefined
+                                ? patientData.FirstName +
+                                  " " +
+                                  patientData.LastName
+                                : "  Add Patient to this request"
+                            }
+                          />
+                          {/* </Box> */}
+                        </Popover>
+                      </div>
+                    )}
+                  </PopupState>
+                  // </Tooltip>
                 ))}
 
-              {requestGroupFocus && (
+              {/* {requestGroupFocus && (
                 <MedicineCart
                   medicines={medicinesList}
                   patientName={
@@ -231,7 +272,7 @@ const Navbar = () => {
                       : "  Add Patient to this request"
                   }
                 />
-              )}
+              )} */}
 
               {/* {medicinesList.length > 0 && (
                 <Box className={styles.notification__count}>
@@ -240,7 +281,7 @@ const Navbar = () => {
                   </Typography>
                 </Box>
               )} */}
-{/* 
+              {/* 
               {staffData && staffData.Role === "ADMIN" && (
                 <Tooltip title="Notification">
                   <IconButton
@@ -396,6 +437,12 @@ const MedicineCart = () => {
           <Button
             disabled={medicinesList.length <= 0 && true}
             onClick={() => router.push("/medicines/request")}
+            variant="outlined"
+            style={{
+              flex: 1,
+              border: medicinesList.length > 0 && "1px solid #b82623",
+              color: medicinesList.length > 0 && "#b82623",
+            }}
           >
             View All
           </Button>

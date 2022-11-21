@@ -26,7 +26,7 @@ import axios from "axios";
 const Index = ({ appointments, services }) => {
   const [appointmentsData, setAppointmentsData] = useState([]);
   const [servicesData, setServicesData] = useState([]);
-  const ref = useRef();
+  const scheduleObj = useRef();
 
   useEffect(() => {
     const newAppointments = appointments.map((appointment) => ({
@@ -61,17 +61,22 @@ const Index = ({ appointments, services }) => {
 
   // to listen the scheduler modal events
   const popupOpen = async (args) => {
+    // removing appointment from the list
     if (args.type === "DeleteAlert") {
       try {
         await axios.delete(
           `${process.env.BaseURI}/appointment/delete/${args.data.Id}`
         );
       } catch (error) {
-        console.log(error.message);
+        console.log(error);
       }
     }
 
-    console.log(args);
+    // update appointment
+    if (args.type === "Editor") {
+      console.log(scheduleObj);
+    }
+    // console.log(args);
 
     // disabled the cell if it is empty
     try {
@@ -82,7 +87,7 @@ const Index = ({ appointments, services }) => {
         args.cancel = true;
       }
     } catch (error) {
-      console.log(error.message);
+      console.log(error);
     }
   };
 
@@ -110,6 +115,7 @@ const Index = ({ appointments, services }) => {
           {appointmentsData && (
             <>
               <ScheduleComponent
+                ref={scheduleObj}
                 currentView="Month"
                 eventSettings={{
                   dataSource: appointmentsData,
@@ -120,7 +126,6 @@ const Index = ({ appointments, services }) => {
                       title: "Patient Name",
                       validation: {
                         required: true,
-                        disabled: true,
                       },
                     },
                     location: {

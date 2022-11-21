@@ -139,7 +139,7 @@
 }
 
 /* Medicine Cart Here */
-.MedicineCart {
+/* .MedicineCart {
   display: flex;
   flex-direction: column;
   position: absolute;
@@ -152,17 +152,28 @@
   -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   background-color: #fff;
-  /* translate: 0px 107px; */
   right: 0;
   top: 60px;
   padding: 30px 15px;
   border-radius: 5px;
+} */
+
+.MedicineCart {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.request__cards {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .request__card {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
 }
 
 .request__card:hover {

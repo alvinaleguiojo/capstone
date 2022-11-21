@@ -64,6 +64,25 @@ a {
   text-overflow: ellipsis !important;
 }
 
+.css-q34dxg {
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-weight: 400;
+  font-size: 0.875rem;
+  line-height: 1.43;
+  letter-spacing: 0.01071em;
+  display: table-cell;
+  vertical-align: inherit;
+  border-bottom: 1px solid rgba(224, 224, 224, 1);
+  text-align: left;
+  padding: 16px;
+  color: rgba(0, 0, 0, 0.87);
+  max-width: 150px;
+  /* ellipsis */
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
 .react-calendar {
   border: none !important;
   background-color: #dbdff3 !important;
@@ -304,4 +323,55 @@ a {
 
 .e-today {
   display: none !important;
+}
+
+/* material ui popper styling here */
+.css-1dmzujt {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+  padding: 10px !important;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87) !important;
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+  border-radius: 10px !important;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  position: absolute !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-width: 300px !important;
+  min-height: 100px !important;
+  max-width: calc(100% - 32px) !important;
+  max-height: calc(100% - 32px) !important;
+  outline: 0 !important;
+  translate: 15px 10px;
+}
+
+.css-3bmhjh-MuiPaper-root-MuiPopover-paper {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2rem !important;
+  padding: 10px !important;
+  background-color: #fff;
+  color: rgba(0, 0, 0, 0.87) !important;
+  -webkit-transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+  transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+  border-radius: 10px !important;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1) !important;
+  border: 1px solid rgba(0, 0, 0, 0.1) !important;
+  position: absolute !important;
+  overflow-y: auto !important;
+  overflow-x: hidden !important;
+  min-width: 300px !important;
+  min-height: 100px !important;
+  max-width: calc(100% - 32px) !important;
+  max-height: calc(100% - 32px) !important;
+  outline: 0 !important;
+  translate: 15px 10px;
 }

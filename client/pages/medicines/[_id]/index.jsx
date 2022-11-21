@@ -148,6 +148,17 @@ const Index = ({ Medicines }) => {
     setDisabled(false);
   };
 
+  const handleStocks = (e) => {
+    e.preventDefault();
+    const re = /^[0-9\b]+$/;
+    if (e.target.value > 1 || re.test(e.target.value)) {
+      setMedicine({
+        ...medicine,
+        Stocks: e.target.value,
+      });
+    }
+  };
+
   return (
     <>
       {/* useAuth is to check if the user is authenticated */}
@@ -314,17 +325,12 @@ const Index = ({ Medicines }) => {
                           </Typography>
                           <input
                             className={styles.input__register}
-                            onChange={(e) =>
-                              setMedicine({
-                                ...medicine,
-                                Stocks: e.target.value,
-                              })
-                            }
+                            onChange={handleStocks}
                             type="number"
                             name="Stocks"
                             value={medicine.Stocks}
                             disabled={disabled}
-                            min={1}
+                            min="1"
                           />
                         </Box>
                         <Box style={{ width: "30%" }}>
@@ -395,7 +401,9 @@ const Index = ({ Medicines }) => {
                             }
                             type={disabled ? "text" : "date"}
                             name="Expiry Date"
-                            value={moment(medicine.ExpiryDate).format("YYYY-MM-DD")}
+                            value={moment(medicine.ExpiryDate).format(
+                              "YYYY-MM-DD"
+                            )}
                             disabled={disabled}
                           />
                         </Box>

@@ -243,9 +243,9 @@ const PatientProfile = ({
     return diagnosisRows.push(
       createDiagnosisData(
         data.DiagnosisID,
-        data.Diagnose.slice(0, 35),
+        data.Diagnose,
         date,
-        data.Notes.slice(0, 35)
+        data.Notes
       )
     );
   });
