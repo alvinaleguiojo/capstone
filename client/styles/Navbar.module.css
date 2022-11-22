@@ -7,6 +7,7 @@
   background-color: #b82623;
   border-radius: 999px;
   color: #fff;
+  cursor: pointer;
 }
 
 .btn__dropdown {
@@ -109,9 +110,10 @@
 
 .user {
   display: flex;
-  justify-content: space-evenly;
+  gap: 10px;
+  justify-content: center;
   align-items: center;
-  width: 320px;
+  min-width: 250px;
 }
 
 .header__icons {
@@ -199,6 +201,12 @@
   z-index: 1;
   top: 5px;
   right: 40px;
+}
+
+.role {
+  background-color: #b825232c;
+  text-align: center;
+  border-radius: 10px;
 }
 
 .add__patient {

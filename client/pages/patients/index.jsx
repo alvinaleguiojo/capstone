@@ -34,7 +34,8 @@ const Index = ({ patients }) => {
 
   useEffect(() => {
     router.query.q !== null &&
-      (router.query.q !== undefined && setSearchTerm(router.query.q));
+      router.query.q !== undefined &&
+      setSearchTerm(router.query.q);
   }, [router]);
 
   // fetch patient Data
@@ -152,8 +153,8 @@ const Index = ({ patients }) => {
                   );
                 })}
                 {patientData.length <= 0 && (
-                  <Typography variant="h5" component="h5" color="#B82623">
-                    No words or phrases found
+                  <Typography variant="body1" component="h6" color="#B82623">
+                    No results or phrases found
                   </Typography>
                 )}
 

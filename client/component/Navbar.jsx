@@ -19,6 +19,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CustomModal from "./CustomModal";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts";
 import CloseIcon from "@mui/icons-material/Close";
 import AddBoxIcon from "@mui/icons-material/AddBox";
 import { useSelector, useDispatch } from "react-redux";
@@ -160,7 +161,12 @@ const Navbar = () => {
                   <Typography variant="h5" component="h5" color="#b82623">
                     {staffData && staffData.LastName.toUpperCase()}
                   </Typography>
-                  <Typography variant="caption" component="h5" color="#b82623">
+                  <Typography
+                    variant="caption"
+                    component="h5"
+                    color="#b82623"
+                    className={styles.role}
+                  >
                     {staffData && staffData.Role === "ADMIN" && userRole[0]}
                     {staffData && staffData.Role === "BNS" && userRole[1]}
                     {staffData && staffData.Role === "MIDWIFE" && userRole[2]}
@@ -564,7 +570,10 @@ function DropdownMenu() {
             ? handleLogout
             : () =>
                 (props.goToMenu && setActiveMenu(props.goToMenu)) ||
-                props.goToMenu === "settings"
+                props.goToMenu === "profile"
+                  ? router.push("/profile")
+                  : (props.goToMenu && setActiveMenu(props.goToMenu)) ||
+                    props.goToMenu === "settings"
                   ? router.query._id
                     ? router.push(`${router.query._id}?settings=services`)
                     : router.push(`?settings=services`)
@@ -590,12 +599,12 @@ function DropdownMenu() {
           <DropdownItem
             leftIcon={
               <IconButton style={{ backgroundColor: "#dbdff3" }}>
-                <AccountCircleIcon fontSize="medium" />
+                <ManageAccountsIcon fontSize="medium" />
               </IconButton>
             }
-            goToMenu="profle"
+            goToMenu="account"
           >
-            Profile
+            Account
           </DropdownItem>
           {/* <DropdownItem
             leftIcon={
@@ -648,6 +657,42 @@ function DropdownMenu() {
           ></DropdownItem>
           <DropdownItem>
             <CustomizedSwitches />
+          </DropdownItem>
+        </div>
+      </CSSTransition>
+
+      <CSSTransition
+        in={activeMenu === "account"}
+        unmountOnExit
+        timeout={500}
+        classNames="menu-secondary"
+        onEnter={calculateHeight}
+      >
+        <div className={styles.menu}>
+          <DropdownItem
+            leftIcon={<ArrowBackIcon />}
+            goToMenu="main"
+          ></DropdownItem>
+          <DropdownItem
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <AccountCircleIcon fontSize="medium" />
+              </IconButton>
+            }
+            goToMenu="profile"
+          >
+            Profile Settings
+          </DropdownItem>
+
+          <DropdownItem
+            leftIcon={
+              <IconButton style={{ backgroundColor: "#dbdff3" }}>
+                <LogoutIcon fontSize="medium" />
+              </IconButton>
+            }
+            goToMenu="main"
+          >
+            Account Settings
           </DropdownItem>
         </div>
       </CSSTransition>

@@ -1,21 +1,72 @@
 .inputs {
   display: flex;
-  justify-content: space-between;
+  align-items: center;
   padding: 10px;
+  gap: 1rem;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  background-color: #fff;
+}
+
+.input__container {
+  display: flex;
+  flex-direction: column;
 }
 
 .inputs input {
   padding: 10px;
+  background-color: #dadef2;
+  border: none;
+  border-radius: 10px;
+  min-width: 280px;
 }
 
-.reset__password {
+.inputs select {
+  padding: 10px;
+  background-color: #dadef2;
+  border: none;
+  border-radius: 10px;
+  min-width: 300px;
+}
+
+.inputs label {
+  color: grey;
+}
+
+.location{
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: border-box;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 2px 8px rgba(0, 0, 0, 0.08);
-  z-index: 1;
-  border-radius: 10px;
+  
+  position: absolute;
+  background-color: #fff;
+  box-sizing: border-box;
+  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -webkit-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  -moz-box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
   padding: 10px;
+  translate: 1px 65px;
+  z-index: 1;
+}
+
+.search__result {
+  cursor: pointer;
+}
+
+.search__result:hover {
+  color: #b82623;
+}
+
+.verified {
+  display: flex;
+  align-items: center;
+  padding: 5px;
+  background-color: #b82623;
+  color: #fff;
+  border-radius: 0px 0px 10px 10px;
 }

@@ -195,8 +195,8 @@ const Index = ({ Medicines }) => {
               )}
             </div>
             {data.length <= 0 && (
-              <Typography variant="h5" component="h5" color="#B82623">
-                No words or phrases found
+              <Typography variant="body1" component="h6" color="#B82623">
+                No results or phrases found
               </Typography>
             )}
 

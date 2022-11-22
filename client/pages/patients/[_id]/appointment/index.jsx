@@ -31,6 +31,7 @@ const Index = ({ patient, Services }) => {
   const [exportData, setExportData] = useState([]);
   const today = moment(appointment.Schedule).format("MMMM-DD-YYYY");
   const [appoinmentID, setAppoinmentID] = useState(null);
+  const [services, setServices] = useState(Services);
 
   // router
   const router = useRouter();
@@ -322,7 +323,7 @@ const Index = ({ patient, Services }) => {
                       Type of Service:
                     </Typography>
 
-                    {Services.map((service) => (
+                    {services.map((service) => (
                       <FormControlLabel
                         key={service.ServiceID}
                         control={
@@ -330,6 +331,7 @@ const Index = ({ patient, Services }) => {
                             value={appointment.enabled}
                             onChange={(e) => {
                               e.preventDefault();
+                              
                               setAppointment({
                                 ...appointment,
                                 ServiceID: service.ServiceID,

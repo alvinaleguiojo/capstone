@@ -564,8 +564,8 @@ const PatientProfile = ({
 
                     {/* <CustomWebcam/> */}
                     <Typography
-                      variant="h5"
-                      component="h5"
+                      variant="body1"
+                      component="h6"
                       color="#B82623"
                       style={{ textAlign: "center" }}
                     >
