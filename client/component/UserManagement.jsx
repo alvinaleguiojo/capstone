@@ -276,7 +276,7 @@ const UserManagement = () => {
                     </IconButton>
                   )}
                   {user.StaffID == staffID && (
-                    <Box style={{ color: "transparent", width:"40px" }}></Box>
+                    <Box style={{ color: "transparent", width: "40px" }}></Box>
                   )}
 
                   {/* display action option when user action state is true */}

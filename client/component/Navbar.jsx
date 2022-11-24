@@ -165,7 +165,8 @@ const Navbar = () => {
                     variant="caption"
                     component="h5"
                     color="#b82623"
-                    className={styles.role}
+                    // className={styles.role}
+                    style={{textAlign:"center"}}
                   >
                     {staffData && staffData.Role === "ADMIN" && userRole[0]}
                     {staffData && staffData.Role === "BNS" && userRole[1]}

@@ -9,7 +9,7 @@ const MedicinesByDateIDPromise = ({ PatientID, StartDate, EndDate }) => {
       FROM Medicines
       INNER JOIN ReleasedMedicines
       ON Medicines.MedicineID = ReleasedMedicines.MedicineID
-      WHERE PatientID = ${PatientID} AND ReleasedMedicines.ReleasedDate >= '${StartDate}' AND ReleasedMedicines.ReleasedDate <='${EndDate}' ORDER BY ReleasedMedicines.ReleasedDate DESC`,
+      WHERE PatientID = ${PatientID} AND ReleasedMedicines.ReleasedDate BETWEEN '${StartDate}' AND '${EndDate}' ORDER BY ReleasedMedicines.ReleasedDate DESC`,
       (error, Medicines) => {
         error && reject(error);
         return resolve(Medicines);

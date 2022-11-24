@@ -5,6 +5,7 @@ const getById = require("../middleware/getById");
 const { validateToken } = require("../middleware/JWT");
 const paginatedResults = require("../middleware/paginatedResults");
 // const paginatedData = require("../middleware/pagination");
+const moment = require("moment");
 
 // import db connection
 const connection = require("../db/connection");
@@ -126,11 +127,22 @@ router.get("/patient/profile/records/:id", async (req, res) => {
 router.get("/patient/appointments/:id", async (req, res) => {
   const PatientID = req.params.id;
   const { StartDate, EndDate } = req.query;
+
+  // start date add 31 days
+  const startdate = new Date(StartDate);
+  startdate.setDate(startdate.getDate() + 31);
+  const start = moment(startdate).format("YYYY-MM-DD");
+
+  // end date add 31 days
+  const enddate = new Date(EndDate);
+  enddate.setDate(enddate.getDate() + 31);
+  const end = moment(enddate).format("YYYY-MM-DD");
+
   try {
     const Medicines = await PatientAppointmentByDatePromise({
       PatientID,
-      StartDate,
-      EndDate,
+      StartDate: start,
+      EndDate: end,
     });
     res.json(Medicines);
   } catch (error) {
@@ -193,7 +205,7 @@ router.post("/patient/register", async (req, res) => {
       Street,
       Baranggay,
       City,
-      ImageID: Image
+      ImageID: Image,
     });
 
     const PatientID = await newPatient.insertId;
