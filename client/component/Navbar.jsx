@@ -166,7 +166,7 @@ const Navbar = () => {
                     component="h5"
                     color="#b82623"
                     // className={styles.role}
-                    style={{textAlign:"center"}}
+                    style={{ textAlign: "center" }}
                   >
                     {staffData && staffData.Role === "ADMIN" && userRole[0]}
                     {staffData && staffData.Role === "BNS" && userRole[1]}
@@ -408,6 +408,9 @@ const MedicineCart = () => {
                           {medicine.Quantity}
                           <IconButton
                             deductQuantity
+                            disabled={
+                              medicine.Stocks === medicine.Quantity && true
+                            }
                             onClick={() =>
                               dispatch(addQuantity({ id: medicine.MedicineID }))
                             }

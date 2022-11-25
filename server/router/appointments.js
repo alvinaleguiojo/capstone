@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const Appointments = require("../model/appointment");
 const paginatedResults = require("../middleware/paginatedResults");
+const moment = require("moment");
 
 // import for AsyncAwait Functions
 const CreateAppointmentsPromise = require("../AsyncAwait/Appointments/AddAppointment");
@@ -11,6 +12,7 @@ const SelectAppointmentsByDateRange = require("../AsyncAwait/Appointments/Appoin
 const GetAllAppointmentswithPatientsPromise = require("../AsyncAwait/Appointments/AppointmentswithPatients");
 const UpdateAppointmentPromiseByID = require("../AsyncAwait/Appointments/UpdateAppointment");
 const RemoveAppointmentByIDPromise = require("../AsyncAwait/Appointments/RemoveAppointment");
+const AutoUpdateStatusPromiseByID = require("../AsyncAwait/Appointments/AutoUpdateStatus");
 
 //get all appointments
 // router.get("/list_appointments", paginatedResults(Appointments), (req, res) => {
@@ -116,5 +118,22 @@ router.patch("/appointment/update/:id", async (req, res) => {
     console.log(err.message);
   }
 });
+
+setInterval(() => {
+  async function UpdateStatus() {
+    const today = moment().format("YYYY-MM-DD");
+
+    try {
+      await AutoUpdateStatusPromiseByID({
+        today,
+        Status: "Cancelled",
+      });
+      console.log("Appointments Status has been cancelled");
+    } catch (err) {
+      console.log(err.message);
+    }
+  }
+  UpdateStatus();
+}, 1000 * 60 * 12);
 
 module.exports = router;

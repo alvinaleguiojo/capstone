@@ -139,6 +139,8 @@ a {
   border: none;
   outline: none;
   border-radius: 5px;
+  min-height: 45px;
+  max-height: 80px;
 }
 
 .input__wrapper span {

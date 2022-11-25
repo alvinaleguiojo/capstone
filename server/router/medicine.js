@@ -6,6 +6,7 @@ const getById = require("../middleware/getById");
 const bcrypt = require("bcrypt");
 const cookieParser = require("cookie-parser");
 const { createTokens, validateToken } = require("../middleware/JWT");
+const moment = require("moment");
 
 router.use(cookieParser());
 require("dotenv").config();
@@ -259,11 +260,23 @@ router.get("/medicines/:id", async (req, res) => {
 router.get("/medicines/date/:id", async (req, res) => {
   const { StartDate, EndDate } = req.query;
 
+  // start date add 31 days
+  const startdate = new Date(StartDate);
+  startdate.setDate(startdate.getDate() + 31);
+  const start = moment(startdate).format("YYYY-MM-DD");
+  console.log(start);
+
+  // end date add 31 days
+  const enddate = new Date(EndDate);
+  enddate.setDate(enddate.getDate() + 31);
+  const end = moment(enddate).format("YYYY-MM-DD");
+  console.log(end);
+
   try {
     const resultElements = await MedicinesByDateIDPromise({
       PatientID: req.params.id,
-      StartDate,
-      EndDate,
+      StartDate: start,
+      EndDate: end,
     });
     res.status(200).json({ Medicines: resultElements });
   } catch (error) {

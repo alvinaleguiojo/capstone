@@ -403,7 +403,7 @@ const PatientProfile = ({
         `<div class="input__wrapper"><label>Physician</label><span>${
           staffData.FirstName + " " + staffData.LastName
         }</span></div>` +
-        '<div class="input__wrapper"><label>Diagnosis</label><input id="swal-input1"></div>' +
+        '<div class="input__wrapper"><label>Diagnosis</label><textarea id="swal-input1"></textarea></div>' +
         '<div class="input__wrapper"><label>Additional Notes</label><textarea id="swal-input2"></textarea></div></div>',
       focusConfirm: false,
       allowOutsideClick: false,
