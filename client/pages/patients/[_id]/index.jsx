@@ -241,12 +241,7 @@ const PatientProfile = ({
       day: "numeric",
     });
     return diagnosisRows.push(
-      createDiagnosisData(
-        data.DiagnosisID,
-        data.Diagnose,
-        date,
-        data.Notes
-      )
+      createDiagnosisData(data.DiagnosisID, data.Diagnose, date, data.Notes)
     );
   });
 
@@ -479,8 +474,7 @@ const PatientProfile = ({
                 `${process.env.PDF_API_URL}/documents`,
                 {
                   document: {
-                    document_template_id:
-                      "02792BF0-EA57-4C92-9537-1687D75AEDEF",
+                    document_template_id: process.env.PDF_API_TemaplateID,
                     payload: {
                       Name: patientName,
                       Address: `${patient[0].Street} ${patient[0].Baranggay} ${patient[0].City}}`,
@@ -498,11 +492,19 @@ const PatientProfile = ({
                 { headers }
               )
               .then((response) =>
-                axios.post(`${process.env.BaseURI}/certificates/create`, {
-                  DiagnosisID,
-                  PDFLinkID: response.data.document.id,
-                })
-              );
+                axios
+                  .post(`${process.env.BaseURI}/certificates/create`, {
+                    DiagnosisID,
+                    PDFLinkID: response.data.document.id,
+                  })
+                  .then()
+                  .catch((error) => {
+                    console.log(error);
+                  })
+              )
+              .catch((error) => {
+                console.log(error);
+              });
           });
       } catch (error) {
         console.log(error.message);
