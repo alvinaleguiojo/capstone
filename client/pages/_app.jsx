@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "../styles/globals.css";
-import 'antd/dist/antd.css';
+import "antd/dist/antd.css";
 import NextProgress from "next-progress";
 import Layout from "../component/Layout";
 import { configureStore } from "@reduxjs/toolkit";
@@ -17,15 +17,13 @@ import { useRouter } from "next/router";
 import { registerLicense } from "@syncfusion/ej2-base";
 
 // Registering Syncfusion license key
-registerLicense(
-  "ORg4AjUWIQA/Gnt2VVhjQlFac19JXGJWfFZpR2NbfU54flFHalxUVBYiSV9jS3xSdkdlW39bcHZTRWVaWA=="
-);
+registerLicense(process.env.SYNCFUSION_KEY);
 
 const store = configureStore({
   reducer: {
     user: userApiReducer,
     medicines: medicinesRequestReducer,
-    terms: termsReducer
+    terms: termsReducer,
   },
 });
 
