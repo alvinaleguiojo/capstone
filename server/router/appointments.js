@@ -84,14 +84,16 @@ router.delete("/appointment/delete/:id", async (req, res) => {
 // create new Appointment
 router.post("/appointment/create", async (req, res) => {
   const { PatientID, Schedule, ServiceID, Notes } = req.body;
-  const date = new Date(Schedule);
-  date.setDate(date.getDate() + 30);
-  const appointmentSchedule = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  const schedule = moment(Schedule).format("YYYY-MM-DD");
+  // const date = new Date(Schedule);
+  // date.setDate(date.getDate() + 31);
+  // const appointmentSchedule = `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
 
   try {
     const response = await CreateAppointmentsPromise({
       PatientID,
-      Schedule: appointmentSchedule,
+      // Schedule: appointmentSchedule,
+      Schedule: schedule,
       ServiceID,
       Status: "Pending",
       Notes,
