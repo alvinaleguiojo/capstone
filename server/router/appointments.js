@@ -86,7 +86,7 @@ router.post("/appointment/create", async (req, res) => {
   const { PatientID, Schedule, ServiceID, Notes } = req.body;
 
   const date = new Date(Schedule);
-  date.setDate(date.getDate() + 1);
+  // date.setDate(date.getDate() + 1);
   const schedule = moment(date).format("YYYY-MM-DD");
 
   try {

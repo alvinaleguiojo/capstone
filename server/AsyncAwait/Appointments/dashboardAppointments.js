@@ -5,7 +5,7 @@ const moment = require("moment");
 // Get All Patients
 const DashboardAppointmentsPromise = () => {
   const today = new Date();
-  today.setDate(today.getDate() + 1);
+  // today.setDate(today.getDate() + 1);
   // ✅ 31 Day added
   // console.log(date);
   const date = moment(today).format("YYYY-MM-DD");
