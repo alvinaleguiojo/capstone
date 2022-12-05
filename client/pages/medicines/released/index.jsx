@@ -196,7 +196,7 @@ const Index = ({ Medicines }) => {
             </div>
             {data.length <= 0 && (
               <Typography variant="body1" component="h6" color="#B82623">
-                No results or phrases found
+                Medicine not found
               </Typography>
             )}
 

@@ -45,11 +45,9 @@ function MyApp({ Component, pageProps }) {
       axios
         .get(`${process.env.BaseURI}`, { withCredentials: true })
         .then((response) => {
-          console.log(response);
           return setAuthenticated(true);
         })
         .catch((error) => {
-          console.log(error.message);
           return setAuthenticated(false);
           // router.push("/forbidden");
         });

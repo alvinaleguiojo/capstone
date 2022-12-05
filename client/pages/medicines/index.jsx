@@ -180,7 +180,7 @@ const Index = ({ Medicines }) => {
             })}
             {data.length <= 0 && (
               <Typography variant="body1" component="h6" color="#B82623">
-                No results or phrases found
+                Medicine not found
               </Typography>
             )}
 
@@ -211,7 +211,10 @@ const Index = ({ Medicines }) => {
 export default Index;
 
 export const getServerSideProps = async (context) => {
-  context.res.setHeader('Cache-Control', 's-maxage=20, stale-while-revalidate=60');
+  context.res.setHeader(
+    "Cache-Control",
+    "s-maxage=20, stale-while-revalidate=60"
+  );
 
   try {
     const res = await fetch(`${process.env.BaseURI}/medicineswithimage`);

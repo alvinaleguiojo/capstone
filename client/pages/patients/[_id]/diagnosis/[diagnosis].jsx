@@ -360,7 +360,6 @@ export async function getStaticProps({ params }) {
       `${process.env.BaseURI}/patient/${params._id}`
     );
     const patient = await resPatient.json();
-    console.log(patient);
 
     // fetch Diagnosis By ID
     const res = await fetch(

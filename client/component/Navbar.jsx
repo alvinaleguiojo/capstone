@@ -134,7 +134,7 @@ const Navbar = () => {
           sx={{ width: "100%", color: "red" }}
           style={{ position: "absolute", zIndex: 5 }}
         >
-          <LinearProgress color="inherit" />
+          <LinearProgress color="inherit"/>
         </Box>
       )}
       {router.route !== "/" &&

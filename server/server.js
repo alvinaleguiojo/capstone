@@ -89,7 +89,7 @@ io.on("connection", (socket) => {
   socket.on("email", async (data) => {
     try {
       const user = await UserCredentialPromise(data);
-      users.length > 0 &&
+      user.length > 0 &&
         user[0].Email === data &&
         socket.emit("error", { message: "*Email already exist!", email: data });
     } catch (error) {
@@ -117,4 +117,3 @@ io.on("connection", (socket) => {
 server.listen(process.env.SERVER_PORT || 8080, () => {
   console.log("Server is running");
 });
-  

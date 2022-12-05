@@ -154,7 +154,7 @@ const Index = ({ patients }) => {
                 })}
                 {patientData.length <= 0 && (
                   <Typography variant="body1" component="h6" color="#B82623">
-                    No results or phrases found
+                    Patient not found
                   </Typography>
                 )}
 

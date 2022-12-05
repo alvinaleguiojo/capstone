@@ -12,7 +12,7 @@ import VerifiedIcon from "@mui/icons-material/Verified";
 
 const Index = () => {
   const router = useRouter();
-  const [disabled, setDisabled] = useState(false);
+  const [disabled, setDisabled] = useState(true);
   const [staffData, setStaffData] = useState({});
   const [searchLocations, setSearchLocations] = useState(null);
   const [location, setLocation] = useState(null);
@@ -229,7 +229,7 @@ const Index = () => {
                   {/* contact end here */}
 
                   {/* address here */}
-                  <Box className={styles.card}>
+                  {/* <Box className={styles.card}>
                     <Typography
                       variant="caption"
                       component="h5"
@@ -244,7 +244,7 @@ const Index = () => {
                         " " +
                         staffData.City}
                     </Typography>
-                  </Box>
+                  </Box> */}
                   {/* card end here */}
                 </Box>
               </Box>
@@ -273,17 +273,18 @@ const Index = () => {
                 </Typography>
 
                 <Box className={Profile.inputs}>
+                
                   <Box className={Profile.input__container}>
-                    <label>Email</label>
-                    <input type="email" placeholder="email" />
+                    <label>First Name</label>
+                    <input type="text" placeholder="First Name" />
                   </Box>
                   <Box className={Profile.input__container}>
-                    <label>Old Password</label>
-                    <input type="password" placeholder="password" />
+                    <label>Last Name</label>
+                    <input type="text" placeholder="Last Name" />
                   </Box>
                   <Box className={Profile.input__container}>
-                    <label>New Password</label>
-                    <input type="password" placeholder="password" />
+                    <label>Middle Name</label>
+                    <input type="text" placeholder="Middle Name" />
                   </Box>
                 </Box>
 
@@ -410,7 +411,7 @@ const Index = () => {
               </Box>
               {/* bottom content starts here */}
               <Box>
-                <Box>Security</Box>
+                {/* <Box>Security</Box> */}
                 <Box className={Profile.verified}>
                   <VerifiedIcon fontSize="small" />
                   Verified October 12, 2022
