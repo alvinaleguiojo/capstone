@@ -91,7 +91,7 @@ io.on("connection", (socket) => {
       const user = await UserCredentialPromise(data);
       user.length > 0 &&
         user[0].Email === data &&
-        socket.emit("error", { message: "*Email already exist!", email: data });
+        socket.emit("error", { message: "*Email already exist.", email: data });
     } catch (error) {
       socket.emit("error", { message: "" });
     }

@@ -76,15 +76,18 @@ const CardTemplate = (props) => {
 
   return (
     <Box className={theme ? styles.card__dark : styles.card}>
-      {props.staffData.Role === "BNS" ||
-        (props.staffData.Role == "ADMIN" && (
-          <Checkbox
-            {...label}
-            checked={checked}
-            onChange={(event) => handleChange(event, props.data)}
-            disabled={props.data.Stocks > 0 && props.data.ExpiryDate > today ? false : true}
-          />
-        ))}
+      {props.staffData.Role !== "BHW" && (
+        <Checkbox
+          {...label}
+          checked={checked}
+          onChange={(event) => handleChange(event, props.data)}
+          disabled={
+            props.data.Stocks > 0 && props.data.ExpiryDate > today
+              ? false
+              : true
+          }
+        />
+      )}
 
       <Box className={styles.imageContainer}>
         {props.loading ? (

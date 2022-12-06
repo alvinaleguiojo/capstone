@@ -107,3 +107,43 @@
   display: flex;
   justify-content: space-between;
 }
+
+
+/* modal here */
+.agree {
+  background-color: #b82623 !important;
+}
+.agree:hover {
+  background-color: #d62e2b !important;
+}
+
+.disagree {
+  color: #b82623 !important;
+  border: solid 1px #b82623 !important;
+}
+.disagree:hover {
+  color: #b82623 !important;
+  border: solid 1px #b82623 !important;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.contents {
+  overflow-y: scroll;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  max-height: 450px;
+  inset: 10px 20px 30px 40px;
+}
+
+.contents::-webkit-scrollbar {
+  /* WebKit */
+  width: 0;
+  height: 0;
+}
+
+

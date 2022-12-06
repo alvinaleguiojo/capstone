@@ -136,8 +136,8 @@ const Index = ({ Medicines }) => {
                     </Typography>
                   </Box>
                 </Box>
-                {(staffData && staffData.Role === "BNS") ||
-                  (staffData && staffData.Role === "ADMIN" && (
+                {
+                  (staffData && staffData.Role !== "BHW" && (
                     <Box className={MedicineStyles.AddMedicine}>
                       <Button
                         onClick={() => router.push("/medicines/register")}

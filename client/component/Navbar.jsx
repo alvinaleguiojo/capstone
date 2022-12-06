@@ -134,7 +134,7 @@ const Navbar = () => {
           sx={{ width: "100%", color: "red" }}
           style={{ position: "absolute", zIndex: 5 }}
         >
-          <LinearProgress color="inherit"/>
+          <LinearProgress color="inherit" />
         </Box>
       )}
       {router.route !== "/" &&
@@ -211,64 +211,63 @@ const Navbar = () => {
                   </Typography>
                 </Box>
               )}
-              {(staffData && staffData.Role === "BNS") ||
-                (staffData && staffData.Role === "ADMIN" && (
-                  // <Tooltip title="Medicine Cart">
-                  <PopupState variant="popover" popupId="demo-popup-popover">
-                    {(popupState) => (
-                      <div>
-                        {/* <Button variant="contained" {...bindTrigger(popupState)}>
+              {staffData && staffData.Role !== "BHW" && (
+                // <Tooltip title="Medicine Cart">
+                <PopupState variant="popover" popupId="demo-popup-popover">
+                  {(popupState) => (
+                    <div>
+                      {/* <Button variant="contained" {...bindTrigger(popupState)}>
                     Open Popover
                   </Button> */}
-                        <IconButton
-                          onClick={handleRequestMedicineFocus}
-                          style={{ backgroundColor: "#dbdff3" }}
-                          {...bindTrigger(popupState)}
-                        >
-                          <MedicalServicesIcon
-                            fontSize="small"
-                            className={
-                              theme
-                                ? styles.header__icon__dark
-                                : requestGroupFocus
-                                ? styles.header__icon_active
-                                : styles.header__icon
-                            }
-                          />
-                        </IconButton>
+                      <IconButton
+                        onClick={handleRequestMedicineFocus}
+                        style={{ backgroundColor: "#dbdff3" }}
+                        {...bindTrigger(popupState)}
+                      >
+                        <MedicalServicesIcon
+                          fontSize="small"
+                          className={
+                            theme
+                              ? styles.header__icon__dark
+                              : requestGroupFocus
+                              ? styles.header__icon_active
+                              : styles.header__icon
+                          }
+                        />
+                      </IconButton>
 
-                        <Popover
-                          {...bindPopover(popupState)}
-                          anchorOrigin={{
-                            vertical: "bottom",
-                            horizontal: "center",
-                          }}
-                          transformOrigin={{
-                            vertical: "top",
-                            horizontal: "center",
-                          }}
-                        >
-                          {/* <Typography sx={{ p: 2 }}>
+                      <Popover
+                        {...bindPopover(popupState)}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "center",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "center",
+                        }}
+                      >
+                        {/* <Typography sx={{ p: 2 }}>
                             The content of the Popover.
                           </Typography> */}
-                          {/* <Box style={{width:"300px", height:"400px"}}> */}
-                          <MedicineCart
-                            medicines={medicinesList}
-                            patientName={
-                              patientData !== null && patientData !== undefined
-                                ? patientData.FirstName +
-                                  " " +
-                                  patientData.LastName
-                                : "  Add Patient to this request"
-                            }
-                          />
-                          {/* </Box> */}
-                        </Popover>
-                      </div>
-                    )}
-                  </PopupState>
-                  // </Tooltip>
-                ))}
+                        {/* <Box style={{width:"300px", height:"400px"}}> */}
+                        <MedicineCart
+                          medicines={medicinesList}
+                          patientName={
+                            patientData !== null && patientData !== undefined
+                              ? patientData.FirstName +
+                                " " +
+                                patientData.LastName
+                              : "  Add Patient to this request"
+                          }
+                        />
+                        {/* </Box> */}
+                      </Popover>
+                    </div>
+                  )}
+                </PopupState>
+                // </Tooltip>
+              )}
 
               {/* {requestGroupFocus && (
                 <MedicineCart

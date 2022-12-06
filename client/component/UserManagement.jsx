@@ -142,7 +142,7 @@ const UserManagement = () => {
         Role: {
           ADMIN: "ADMIN",
           BNS: "BNS",
-          MIDWIFE: "MIDWIFE",
+          // MIDWIFE: "MIDWIFE",
           BHW: "BHW",
         },
       },

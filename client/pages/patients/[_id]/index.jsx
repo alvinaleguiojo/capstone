@@ -782,23 +782,22 @@ const PatientProfile = ({
                                   // showModal={true}
                                   id={patientData.PatientID}
                                 />
-                                {staffData.Role == "MIDWIFE" ||
-                                  (staffData.Role == "ADMIN" && (
-                                    <Box
-                                      className={styles.getStartedBtn}
-                                      variant="contained"
-                                      onClick={
-                                        () => handleDiagnosis()
-                                        // localStorage.setItem(
-                                        //   "Patient",
-                                        //   JSON.stringify(patientData)
-                                        // );
-                                        // router.push(`/medicines`);
-                                      }
-                                    >
-                                      Add Diagnosis
-                                    </Box>
-                                  ))}
+                                {staffData.Role !== "BHW" && (
+                                  <Box
+                                    className={styles.getStartedBtn}
+                                    variant="contained"
+                                    onClick={
+                                      () => handleDiagnosis()
+                                      // localStorage.setItem(
+                                      //   "Patient",
+                                      //   JSON.stringify(patientData)
+                                      // );
+                                      // router.push(`/medicines`);
+                                    }
+                                  >
+                                    Add Diagnosis
+                                  </Box>
+                                )}
                               </>
                             )}
                           </TabPanel>
@@ -814,22 +813,21 @@ const PatientProfile = ({
                                   rowPerPage={[4]}
                                 />
 
-                                {staffData.Role == "BNS" ||
-                                  (staffData.Role == "ADMIN" && (
-                                    <Box
-                                      className={styles.getStartedBtn}
-                                      variant="contained"
-                                      onClick={() => {
-                                        localStorage.setItem(
-                                          "Patient",
-                                          JSON.stringify(patientData)
-                                        );
-                                        router.push(`/medicines`);
-                                      }}
-                                    >
-                                      Select Medicine
-                                    </Box>
-                                  ))}
+                                {staffData.Role !== "BHW" && (
+                                  <Box
+                                    className={styles.getStartedBtn}
+                                    variant="contained"
+                                    onClick={() => {
+                                      localStorage.setItem(
+                                        "Patient",
+                                        JSON.stringify(patientData)
+                                      );
+                                      router.push(`/medicines`);
+                                    }}
+                                  >
+                                    Select Medicine
+                                  </Box>
+                                )}
                               </>
                             )}
                           </TabPanel>
