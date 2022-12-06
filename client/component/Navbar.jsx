@@ -159,7 +159,10 @@ const Navbar = () => {
                 </Box>
                 <Box className={styles.user__name}>
                   <Typography variant="h5" component="h5" color="#b82623">
-                    {staffData && staffData.LastName.toUpperCase()}
+                    {staffData &&
+                      staffData.FirstName.toUpperCase() +
+                        " " +
+                        staffData.LastName.toUpperCase()}
                   </Typography>
                   <Typography
                     variant="caption"

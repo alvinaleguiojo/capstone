@@ -30,6 +30,7 @@ const Index = ({ Medicines }) => {
   const [disabled, setDisabled] = useState(true);
   const [imageURL, setImageURL] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [staffData, setStaffData] = useState(null);
 
   // setting image to state
   const [images, setImages] = useState({
@@ -52,6 +53,17 @@ const Index = ({ Medicines }) => {
     const profilePicture = JSON.parse(localStorage.getItem("image"));
     medicine && setMedicine(medicine);
     profilePicture && setImageURL(profilePicture);
+
+    // fetch user data
+    const StaffID = localStorage.getItem("StaffID");
+    axios
+      .get(`${process.env.BaseURI}/user/${StaffID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
   }, []);
 
   const handleDeleteImage = async (filename) => {
@@ -506,17 +518,19 @@ const Index = ({ Medicines }) => {
                     </Button>
                   )}
 
-                  <Button
-                    //  loading={loading}
-                    className={
-                      disabled ? styles.proceedBtnDisabled : styles.proceedBtn
-                    }
-                    onClick={(e) =>
-                      disabled ? handleEdit(e) : handleUpdateSubmit(e)
-                    }
-                  >
-                    {disabled ? "Edit" : "Save"}
-                  </Button>
+                  {staffData && staffData.Role !== "BHW" && (
+                    <Button
+                      //  loading={loading}
+                      className={
+                        disabled ? styles.proceedBtnDisabled : styles.proceedBtn
+                      }
+                      onClick={(e) =>
+                        disabled ? handleEdit(e) : handleUpdateSubmit(e)
+                      }
+                    >
+                      {disabled ? "Edit" : "Save"}
+                    </Button>
+                  )}
                 </Box>
               </Box>
               {/* </Box> */}

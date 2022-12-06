@@ -149,6 +149,7 @@ const Index = ({ Medicines }) => {
                   ))}
               </Box>
             </Box>
+            
             <Box className={styles.search}>
               {/* Advance Search */}
               <input
