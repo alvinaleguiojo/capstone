@@ -27,6 +27,20 @@ const Index = () => {
   const [country, setCountry] = useState(null);
   const [zipcode, setZipcode] = useState(null);
 
+
+  useEffect(()=>{
+    // fetch user data
+    const StaffID = localStorage.getItem("StaffID");
+    axios
+      .get(`${process.env.BaseURI}/user/${StaffID}`)
+      .then((response) => {
+        setStaffData(response.data.result[0]);
+      })
+      .catch((error) => {
+        console.log(error.message);
+      });
+  },[])
+
   useEffect(() => {
     getGeocode();
   }, [searchLocations]);
@@ -276,15 +290,15 @@ const Index = () => {
                 
                   <Box className={Profile.input__container}>
                     <label>First Name</label>
-                    <input type="text" placeholder="First Name" />
+                    <input type="text" placeholder="First Name" value={staffData.FirstName} />
                   </Box>
                   <Box className={Profile.input__container}>
                     <label>Last Name</label>
-                    <input type="text" placeholder="Last Name" />
+                    <input type="text" placeholder="Last Name" value={staffData.LastName}/>
                   </Box>
                   <Box className={Profile.input__container}>
                     <label>Middle Name</label>
-                    <input type="text" placeholder="Middle Name" />
+                    <input type="text" placeholder="Middle Name" value={staffData.MiddleName || "Not Available"} />
                   </Box>
                 </Box>
 
@@ -335,7 +349,7 @@ const Index = () => {
                         <input
                           type="text"
                           placeholder="Street"
-                          value={street || ""}
+                          value={street || "" }
                           onChange={(e) => setStreet(e.target.value)}
                         />
                       </Box>
