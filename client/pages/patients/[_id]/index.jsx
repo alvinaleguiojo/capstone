@@ -477,7 +477,7 @@ const PatientProfile = ({
                     document_template_id: process.env.PDF_API_TemaplateID,
                     payload: {
                       Name: patientName,
-                      Address: `${patient[0].Street} ${patient[0].Baranggay} ${patient[0].City}}`,
+                      Address: `${patient[0].Street} ${patient[0].Baranggay} ${patient[0].City}`,
                       date: today,
                       diagnosis: Diagnose,
                       Physician: `${staffData.FirstName} ${staffData.LastName}`,
